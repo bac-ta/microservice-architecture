@@ -1,0 +1,4 @@
+grpc:
+  server:
+    port: ${GRPC-SERVER-PORT}
+    address: ${GRPC-SERVER-ADDRESS}
