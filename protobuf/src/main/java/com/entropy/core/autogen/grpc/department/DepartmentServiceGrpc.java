@@ -1,18 +1,11 @@
-package com.dimageshare.core.autogen.grpc.department;
+package com.entropy.core.autogen.grpc.department;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
 import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -30,25 +23,25 @@ public final class DepartmentServiceGrpc {
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getFindDepartmentsMethod()} instead. 
   public static final io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.dimageshare.core.autogen.grpc.department.DepartmentResponses> METHOD_FIND_DEPARTMENTS = getFindDepartmentsMethodHelper();
+          DepartmentResponses> METHOD_FIND_DEPARTMENTS = getFindDepartmentsMethodHelper();
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.dimageshare.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod;
+          DepartmentResponses> getFindDepartmentsMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.dimageshare.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod() {
+          DepartmentResponses> getFindDepartmentsMethod() {
     return getFindDepartmentsMethodHelper();
   }
 
   private static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-      com.dimageshare.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethodHelper() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.dimageshare.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod;
+          DepartmentResponses> getFindDepartmentsMethodHelper() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, DepartmentResponses> getFindDepartmentsMethod;
     if ((getFindDepartmentsMethod = DepartmentServiceGrpc.getFindDepartmentsMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getFindDepartmentsMethod = DepartmentServiceGrpc.getFindDepartmentsMethod) == null) {
           DepartmentServiceGrpc.getFindDepartmentsMethod = getFindDepartmentsMethod = 
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.dimageshare.core.autogen.grpc.department.DepartmentResponses>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, DepartmentResponses>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "findDepartments"))
@@ -56,7 +49,7 @@ public final class DepartmentServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.dimageshare.core.autogen.grpc.department.DepartmentResponses.getDefaultInstance()))
+                  DepartmentResponses.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("findDepartments"))
                   .build();
           }
@@ -66,34 +59,34 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getFindDepartmentByIdMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
-      com.dimageshare.core.autogen.grpc.department.Department> METHOD_FIND_DEPARTMENT_BY_ID = getFindDepartmentByIdMethodHelper();
+  public static final io.grpc.MethodDescriptor<DepartmentIdRequest,
+          Department> METHOD_FIND_DEPARTMENT_BY_ID = getFindDepartmentByIdMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
-      com.dimageshare.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod;
+  private static volatile io.grpc.MethodDescriptor<DepartmentIdRequest,
+          Department> getFindDepartmentByIdMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
-      com.dimageshare.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod() {
+  public static io.grpc.MethodDescriptor<DepartmentIdRequest,
+          Department> getFindDepartmentByIdMethod() {
     return getFindDepartmentByIdMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
-      com.dimageshare.core.autogen.grpc.department.Department> getFindDepartmentByIdMethodHelper() {
-    io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest, com.dimageshare.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod;
+  private static io.grpc.MethodDescriptor<DepartmentIdRequest,
+          Department> getFindDepartmentByIdMethodHelper() {
+    io.grpc.MethodDescriptor<DepartmentIdRequest, Department> getFindDepartmentByIdMethod;
     if ((getFindDepartmentByIdMethod = DepartmentServiceGrpc.getFindDepartmentByIdMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getFindDepartmentByIdMethod = DepartmentServiceGrpc.getFindDepartmentByIdMethod) == null) {
           DepartmentServiceGrpc.getFindDepartmentByIdMethod = getFindDepartmentByIdMethod = 
-              io.grpc.MethodDescriptor.<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest, com.dimageshare.core.autogen.grpc.department.Department>newBuilder()
+              io.grpc.MethodDescriptor.<DepartmentIdRequest, Department>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "findDepartmentById"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance()))
+                  DepartmentIdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.dimageshare.core.autogen.grpc.department.Department.getDefaultInstance()))
+                  Department.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("findDepartmentById"))
                   .build();
           }
@@ -103,32 +96,32 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getSaveDepartmentMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentSaving,
+  public static final io.grpc.MethodDescriptor<DepartmentSaving,
       com.google.protobuf.Empty> METHOD_SAVE_DEPARTMENT = getSaveDepartmentMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentSaving,
+  private static volatile io.grpc.MethodDescriptor<DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentSaving,
+  public static io.grpc.MethodDescriptor<DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethod() {
     return getSaveDepartmentMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentSaving,
+  private static io.grpc.MethodDescriptor<DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethodHelper() {
-    io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentSaving, com.google.protobuf.Empty> getSaveDepartmentMethod;
+    io.grpc.MethodDescriptor<DepartmentSaving, com.google.protobuf.Empty> getSaveDepartmentMethod;
     if ((getSaveDepartmentMethod = DepartmentServiceGrpc.getSaveDepartmentMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getSaveDepartmentMethod = DepartmentServiceGrpc.getSaveDepartmentMethod) == null) {
           DepartmentServiceGrpc.getSaveDepartmentMethod = getSaveDepartmentMethod = 
-              io.grpc.MethodDescriptor.<com.dimageshare.core.autogen.grpc.department.DepartmentSaving, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<DepartmentSaving, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "saveDepartment"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.dimageshare.core.autogen.grpc.department.DepartmentSaving.getDefaultInstance()))
+                  DepartmentSaving.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("saveDepartment"))
@@ -140,32 +133,32 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getRemoveDepartmentByIdMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
+  public static final io.grpc.MethodDescriptor<DepartmentIdRequest,
       com.google.protobuf.Empty> METHOD_REMOVE_DEPARTMENT_BY_ID = getRemoveDepartmentByIdMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
+  private static volatile io.grpc.MethodDescriptor<DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
+  public static io.grpc.MethodDescriptor<DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethod() {
     return getRemoveDepartmentByIdMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
+  private static io.grpc.MethodDescriptor<DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethodHelper() {
-    io.grpc.MethodDescriptor<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest, com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
+    io.grpc.MethodDescriptor<DepartmentIdRequest, com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
     if ((getRemoveDepartmentByIdMethod = DepartmentServiceGrpc.getRemoveDepartmentByIdMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getRemoveDepartmentByIdMethod = DepartmentServiceGrpc.getRemoveDepartmentByIdMethod) == null) {
           DepartmentServiceGrpc.getRemoveDepartmentByIdMethod = getRemoveDepartmentByIdMethod = 
-              io.grpc.MethodDescriptor.<com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<DepartmentIdRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "removeDepartmentById"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance()))
+                  DepartmentIdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("removeDepartmentById"))
@@ -206,28 +199,28 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public void findDepartments(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.DepartmentResponses> responseObserver) {
+        io.grpc.stub.StreamObserver<DepartmentResponses> responseObserver) {
       asyncUnimplementedUnaryCall(getFindDepartmentsMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void findDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request,
-        io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.Department> responseObserver) {
+    public void findDepartmentById(DepartmentIdRequest request,
+                                   io.grpc.stub.StreamObserver<Department> responseObserver) {
       asyncUnimplementedUnaryCall(getFindDepartmentByIdMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void saveDepartment(com.dimageshare.core.autogen.grpc.department.DepartmentSaving request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void saveDepartment(DepartmentSaving request,
+                               io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnimplementedUnaryCall(getSaveDepartmentMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void removeDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void removeDepartmentById(DepartmentIdRequest request,
+                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnimplementedUnaryCall(getRemoveDepartmentByIdMethodHelper(), responseObserver);
     }
 
@@ -238,27 +231,27 @@ public final class DepartmentServiceGrpc {
             asyncUnaryCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
-                com.dimageshare.core.autogen.grpc.department.DepartmentResponses>(
+                      DepartmentResponses>(
                   this, METHODID_FIND_DEPARTMENTS)))
           .addMethod(
             getFindDepartmentByIdMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
-                com.dimageshare.core.autogen.grpc.department.Department>(
+                      DepartmentIdRequest,
+                      Department>(
                   this, METHODID_FIND_DEPARTMENT_BY_ID)))
           .addMethod(
             getSaveDepartmentMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.dimageshare.core.autogen.grpc.department.DepartmentSaving,
+                      DepartmentSaving,
                 com.google.protobuf.Empty>(
                   this, METHODID_SAVE_DEPARTMENT)))
           .addMethod(
             getRemoveDepartmentByIdMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest,
+                      DepartmentIdRequest,
                 com.google.protobuf.Empty>(
                   this, METHODID_REMOVE_DEPARTMENT_BY_ID)))
           .build();
@@ -286,31 +279,31 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public void findDepartments(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.DepartmentResponses> responseObserver) {
+        io.grpc.stub.StreamObserver<DepartmentResponses> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getFindDepartmentsMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void findDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request,
-        io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.Department> responseObserver) {
+    public void findDepartmentById(DepartmentIdRequest request,
+                                   io.grpc.stub.StreamObserver<Department> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getFindDepartmentByIdMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void saveDepartment(com.dimageshare.core.autogen.grpc.department.DepartmentSaving request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void saveDepartment(DepartmentSaving request,
+                               io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getSaveDepartmentMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void removeDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request,
-        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void removeDepartmentById(DepartmentIdRequest request,
+                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getRemoveDepartmentByIdMethodHelper(), getCallOptions()), request, responseObserver);
     }
@@ -336,28 +329,28 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public com.dimageshare.core.autogen.grpc.department.DepartmentResponses findDepartments(com.google.protobuf.Empty request) {
+    public DepartmentResponses findDepartments(com.google.protobuf.Empty request) {
       return blockingUnaryCall(
           getChannel(), getFindDepartmentsMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.dimageshare.core.autogen.grpc.department.Department findDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request) {
+    public Department findDepartmentById(DepartmentIdRequest request) {
       return blockingUnaryCall(
           getChannel(), getFindDepartmentByIdMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty saveDepartment(com.dimageshare.core.autogen.grpc.department.DepartmentSaving request) {
+    public com.google.protobuf.Empty saveDepartment(DepartmentSaving request) {
       return blockingUnaryCall(
           getChannel(), getSaveDepartmentMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty removeDepartmentById(com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request) {
+    public com.google.protobuf.Empty removeDepartmentById(DepartmentIdRequest request) {
       return blockingUnaryCall(
           getChannel(), getRemoveDepartmentByIdMethodHelper(), getCallOptions(), request);
     }
@@ -383,7 +376,7 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.dimageshare.core.autogen.grpc.department.DepartmentResponses> findDepartments(
+    public com.google.common.util.concurrent.ListenableFuture<DepartmentResponses> findDepartments(
         com.google.protobuf.Empty request) {
       return futureUnaryCall(
           getChannel().newCall(getFindDepartmentsMethodHelper(), getCallOptions()), request);
@@ -391,8 +384,8 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.dimageshare.core.autogen.grpc.department.Department> findDepartmentById(
-        com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<Department> findDepartmentById(
+        DepartmentIdRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getFindDepartmentByIdMethodHelper(), getCallOptions()), request);
     }
@@ -400,7 +393,7 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> saveDepartment(
-        com.dimageshare.core.autogen.grpc.department.DepartmentSaving request) {
+        DepartmentSaving request) {
       return futureUnaryCall(
           getChannel().newCall(getSaveDepartmentMethodHelper(), getCallOptions()), request);
     }
@@ -408,7 +401,7 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> removeDepartmentById(
-        com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest request) {
+        DepartmentIdRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getRemoveDepartmentByIdMethodHelper(), getCallOptions()), request);
     }
@@ -438,18 +431,18 @@ public final class DepartmentServiceGrpc {
       switch (methodId) {
         case METHODID_FIND_DEPARTMENTS:
           serviceImpl.findDepartments((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.DepartmentResponses>) responseObserver);
+              (io.grpc.stub.StreamObserver<DepartmentResponses>) responseObserver);
           break;
         case METHODID_FIND_DEPARTMENT_BY_ID:
-          serviceImpl.findDepartmentById((com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest) request,
-              (io.grpc.stub.StreamObserver<com.dimageshare.core.autogen.grpc.department.Department>) responseObserver);
+          serviceImpl.findDepartmentById((DepartmentIdRequest) request,
+              (io.grpc.stub.StreamObserver<Department>) responseObserver);
           break;
         case METHODID_SAVE_DEPARTMENT:
-          serviceImpl.saveDepartment((com.dimageshare.core.autogen.grpc.department.DepartmentSaving) request,
+          serviceImpl.saveDepartment((DepartmentSaving) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_REMOVE_DEPARTMENT_BY_ID:
-          serviceImpl.removeDepartmentById((com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest) request,
+          serviceImpl.removeDepartmentById((DepartmentIdRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         default:
@@ -474,7 +467,7 @@ public final class DepartmentServiceGrpc {
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return com.dimageshare.core.autogen.grpc.department.DepartmentOuterClass.getDescriptor();
+      return DepartmentOuterClass.getDescriptor();
     }
 
     @java.lang.Override
