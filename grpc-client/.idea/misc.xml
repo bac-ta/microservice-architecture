@@ -4,6 +4,11 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../grpc-server/pom.xml" />
+        <option value="$PROJECT_DIR$/../department-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../master-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../protobuf/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-authentication/pom.xml" />
       </list>
     </option>
   </component>

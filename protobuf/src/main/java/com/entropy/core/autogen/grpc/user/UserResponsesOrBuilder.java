@@ -10,12 +10,12 @@ public interface UserResponsesOrBuilder extends
   /**
    * <code>repeated .user.User user = 1;</code>
    */
-  java.util.List<User>
+  java.util.List<com.entropy.core.autogen.grpc.user.User> 
       getUserList();
   /**
    * <code>repeated .user.User user = 1;</code>
    */
-  User getUser(int index);
+  com.entropy.core.autogen.grpc.user.User getUser(int index);
   /**
    * <code>repeated .user.User user = 1;</code>
    */
@@ -23,11 +23,11 @@ public interface UserResponsesOrBuilder extends
   /**
    * <code>repeated .user.User user = 1;</code>
    */
-  java.util.List<? extends UserOrBuilder>
+  java.util.List<? extends com.entropy.core.autogen.grpc.user.UserOrBuilder> 
       getUserOrBuilderList();
   /**
    * <code>repeated .user.User user = 1;</code>
    */
-  UserOrBuilder getUserOrBuilder(
+  com.entropy.core.autogen.grpc.user.UserOrBuilder getUserOrBuilder(
       int index);
 }

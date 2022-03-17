@@ -59,8 +59,8 @@ public final class DepartmentOuterClass {
       "department.DepartmentSaving\032\026.google.pro" +
       "tobuf.Empty\022O\n\024removeDepartmentById\022\037.de" +
       "partment.DepartmentIdRequest\032\026.google.pr" +
-      "otobuf.EmptyB0\n,com.entropy.core.aut" +
-      "ogen.grpc.departmentP\001b\006proto3"
+      "otobuf.EmptyB,\n(com.entropy.core.autogen" +
+      ".grpc.departmentP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

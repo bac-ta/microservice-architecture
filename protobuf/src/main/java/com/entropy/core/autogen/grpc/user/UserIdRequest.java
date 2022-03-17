@@ -69,14 +69,14 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return UserOuterClass.internal_static_user_UserIdRequest_descriptor;
+    return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserIdRequest_descriptor;
   }
 
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return UserOuterClass.internal_static_user_UserIdRequest_fieldAccessorTable
+    return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserIdRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            UserIdRequest.class, UserIdRequest.Builder.class);
+            com.entropy.core.autogen.grpc.user.UserIdRequest.class, com.entropy.core.autogen.grpc.user.UserIdRequest.Builder.class);
   }
 
   public static final int ID_FIELD_NUMBER = 1;
@@ -125,10 +125,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof UserIdRequest)) {
+    if (!(obj instanceof com.entropy.core.autogen.grpc.user.UserIdRequest)) {
       return super.equals(obj);
     }
-    UserIdRequest other = (UserIdRequest) obj;
+    com.entropy.core.autogen.grpc.user.UserIdRequest other = (com.entropy.core.autogen.grpc.user.UserIdRequest) obj;
 
     boolean result = true;
     result = result && (getId()
@@ -151,69 +151,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserIdRequest parseFrom(byte[] data)
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserIdRequest parseFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static UserIdRequest parseDelimitedFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static UserIdRequest parseDelimitedFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static UserIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -225,7 +225,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(UserIdRequest prototype) {
+  public static Builder newBuilder(com.entropy.core.autogen.grpc.user.UserIdRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() {
@@ -245,17 +245,17 @@ private static final long serialVersionUID = 0L;
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:user.UserIdRequest)
-          UserIdRequestOrBuilder {
+      com.entropy.core.autogen.grpc.user.UserIdRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return UserOuterClass.internal_static_user_UserIdRequest_descriptor;
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserIdRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return UserOuterClass.internal_static_user_UserIdRequest_fieldAccessorTable
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserIdRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              UserIdRequest.class, UserIdRequest.Builder.class);
+              com.entropy.core.autogen.grpc.user.UserIdRequest.class, com.entropy.core.autogen.grpc.user.UserIdRequest.Builder.class);
     }
 
     // Construct using com.entropy.core.autogen.grpc.user.UserIdRequest.newBuilder()
@@ -282,23 +282,23 @@ private static final long serialVersionUID = 0L;
 
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return UserOuterClass.internal_static_user_UserIdRequest_descriptor;
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserIdRequest_descriptor;
     }
 
-    public UserIdRequest getDefaultInstanceForType() {
-      return UserIdRequest.getDefaultInstance();
+    public com.entropy.core.autogen.grpc.user.UserIdRequest getDefaultInstanceForType() {
+      return com.entropy.core.autogen.grpc.user.UserIdRequest.getDefaultInstance();
     }
 
-    public UserIdRequest build() {
-      UserIdRequest result = buildPartial();
+    public com.entropy.core.autogen.grpc.user.UserIdRequest build() {
+      com.entropy.core.autogen.grpc.user.UserIdRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
       return result;
     }
 
-    public UserIdRequest buildPartial() {
-      UserIdRequest result = new UserIdRequest(this);
+    public com.entropy.core.autogen.grpc.user.UserIdRequest buildPartial() {
+      com.entropy.core.autogen.grpc.user.UserIdRequest result = new com.entropy.core.autogen.grpc.user.UserIdRequest(this);
       result.id_ = id_;
       onBuilt();
       return result;
@@ -331,16 +331,16 @@ private static final long serialVersionUID = 0L;
       return (Builder) super.addRepeatedField(field, value);
     }
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof UserIdRequest) {
-        return mergeFrom((UserIdRequest)other);
+      if (other instanceof com.entropy.core.autogen.grpc.user.UserIdRequest) {
+        return mergeFrom((com.entropy.core.autogen.grpc.user.UserIdRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(UserIdRequest other) {
-      if (other == UserIdRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.entropy.core.autogen.grpc.user.UserIdRequest other) {
+      if (other == com.entropy.core.autogen.grpc.user.UserIdRequest.getDefaultInstance()) return this;
       if (other.getId() != 0) {
         setId(other.getId());
       }
@@ -357,11 +357,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      UserIdRequest parsedMessage = null;
+      com.entropy.core.autogen.grpc.user.UserIdRequest parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (UserIdRequest) e.getUnfinishedMessage();
+        parsedMessage = (com.entropy.core.autogen.grpc.user.UserIdRequest) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -411,12 +411,12 @@ private static final long serialVersionUID = 0L;
   }
 
   // @@protoc_insertion_point(class_scope:user.UserIdRequest)
-  private static final UserIdRequest DEFAULT_INSTANCE;
+  private static final com.entropy.core.autogen.grpc.user.UserIdRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new UserIdRequest();
+    DEFAULT_INSTANCE = new com.entropy.core.autogen.grpc.user.UserIdRequest();
   }
 
-  public static UserIdRequest getDefaultInstance() {
+  public static com.entropy.core.autogen.grpc.user.UserIdRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -439,7 +439,7 @@ private static final long serialVersionUID = 0L;
     return PARSER;
   }
 
-  public UserIdRequest getDefaultInstanceForType() {
+  public com.entropy.core.autogen.grpc.user.UserIdRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

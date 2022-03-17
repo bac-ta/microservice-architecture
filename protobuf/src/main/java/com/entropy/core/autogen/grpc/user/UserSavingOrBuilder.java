@@ -24,7 +24,7 @@ public interface UserSavingOrBuilder extends
   /**
    * <code>.user.Gender gender = 2;</code>
    */
-  Gender getGender();
+  com.entropy.core.autogen.grpc.user.Gender getGender();
 
   /**
    * <code>string email = 3;</code>

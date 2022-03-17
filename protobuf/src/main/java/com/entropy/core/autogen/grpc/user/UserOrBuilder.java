@@ -29,7 +29,7 @@ public interface UserOrBuilder extends
   /**
    * <code>.user.Gender gender = 3;</code>
    */
-  Gender getGender();
+  com.entropy.core.autogen.grpc.user.Gender getGender();
 
   /**
    * <code>string email = 4;</code>

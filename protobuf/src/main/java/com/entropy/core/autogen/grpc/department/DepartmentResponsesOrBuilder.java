@@ -10,12 +10,12 @@ public interface DepartmentResponsesOrBuilder extends
   /**
    * <code>repeated .department.Department department = 1;</code>
    */
-  java.util.List<Department>
+  java.util.List<com.entropy.core.autogen.grpc.department.Department> 
       getDepartmentList();
   /**
    * <code>repeated .department.Department department = 1;</code>
    */
-  Department getDepartment(int index);
+  com.entropy.core.autogen.grpc.department.Department getDepartment(int index);
   /**
    * <code>repeated .department.Department department = 1;</code>
    */
@@ -23,11 +23,11 @@ public interface DepartmentResponsesOrBuilder extends
   /**
    * <code>repeated .department.Department department = 1;</code>
    */
-  java.util.List<? extends DepartmentOrBuilder>
+  java.util.List<? extends com.entropy.core.autogen.grpc.department.DepartmentOrBuilder> 
       getDepartmentOrBuilderList();
   /**
    * <code>repeated .department.Department department = 1;</code>
    */
-  DepartmentOrBuilder getDepartmentOrBuilder(
+  com.entropy.core.autogen.grpc.department.DepartmentOrBuilder getDepartmentOrBuilder(
       int index);
 }

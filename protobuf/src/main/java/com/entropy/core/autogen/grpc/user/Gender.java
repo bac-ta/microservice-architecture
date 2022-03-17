@@ -84,7 +84,7 @@ public enum Gender
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return UserOuterClass.getDescriptor().getEnumTypes().get(0);
+    return com.entropy.core.autogen.grpc.user.UserOuterClass.getDescriptor().getEnumTypes().get(0);
   }
 
   private static final Gender[] VALUES = values();

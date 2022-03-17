@@ -103,14 +103,14 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return UserOuterClass.internal_static_user_UserSaving_descriptor;
+    return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserSaving_descriptor;
   }
 
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return UserOuterClass.internal_static_user_UserSaving_fieldAccessorTable
+    return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserSaving_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            UserSaving.class, UserSaving.Builder.class);
+            com.entropy.core.autogen.grpc.user.UserSaving.class, com.entropy.core.autogen.grpc.user.UserSaving.Builder.class);
   }
 
   public static final int NAME_FIELD_NUMBER = 1;
@@ -158,9 +158,9 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>.user.Gender gender = 2;</code>
    */
-  public Gender getGender() {
-    Gender result = Gender.valueOf(gender_);
-    return result == null ? Gender.UNRECOGNIZED : result;
+  public com.entropy.core.autogen.grpc.user.Gender getGender() {
+    com.entropy.core.autogen.grpc.user.Gender result = com.entropy.core.autogen.grpc.user.Gender.valueOf(gender_);
+    return result == null ? com.entropy.core.autogen.grpc.user.Gender.UNRECOGNIZED : result;
   }
 
   public static final int EMAIL_FIELD_NUMBER = 3;
@@ -264,7 +264,7 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, name_);
     }
-    if (gender_ != Gender.MALE.getNumber()) {
+    if (gender_ != com.entropy.core.autogen.grpc.user.Gender.MALE.getNumber()) {
       output.writeEnum(2, gender_);
     }
     if (!getEmailBytes().isEmpty()) {
@@ -290,7 +290,7 @@ private static final long serialVersionUID = 0L;
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, name_);
     }
-    if (gender_ != Gender.MALE.getNumber()) {
+    if (gender_ != com.entropy.core.autogen.grpc.user.Gender.MALE.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(2, gender_);
     }
@@ -318,10 +318,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof UserSaving)) {
+    if (!(obj instanceof com.entropy.core.autogen.grpc.user.UserSaving)) {
       return super.equals(obj);
     }
-    UserSaving other = (UserSaving) obj;
+    com.entropy.core.autogen.grpc.user.UserSaving other = (com.entropy.core.autogen.grpc.user.UserSaving) obj;
 
     boolean result = true;
     result = result && getName()
@@ -363,69 +363,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserSaving parseFrom(byte[] data)
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static UserSaving parseFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static UserSaving parseDelimitedFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static UserSaving parseDelimitedFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static UserSaving parseFrom(
+  public static com.entropy.core.autogen.grpc.user.UserSaving parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -437,7 +437,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(UserSaving prototype) {
+  public static Builder newBuilder(com.entropy.core.autogen.grpc.user.UserSaving prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() {
@@ -457,17 +457,17 @@ private static final long serialVersionUID = 0L;
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:user.UserSaving)
-          UserSavingOrBuilder {
+      com.entropy.core.autogen.grpc.user.UserSavingOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return UserOuterClass.internal_static_user_UserSaving_descriptor;
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserSaving_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return UserOuterClass.internal_static_user_UserSaving_fieldAccessorTable
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserSaving_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              UserSaving.class, UserSaving.Builder.class);
+              com.entropy.core.autogen.grpc.user.UserSaving.class, com.entropy.core.autogen.grpc.user.UserSaving.Builder.class);
     }
 
     // Construct using com.entropy.core.autogen.grpc.user.UserSaving.newBuilder()
@@ -504,23 +504,23 @@ private static final long serialVersionUID = 0L;
 
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return UserOuterClass.internal_static_user_UserSaving_descriptor;
+      return com.entropy.core.autogen.grpc.user.UserOuterClass.internal_static_user_UserSaving_descriptor;
     }
 
-    public UserSaving getDefaultInstanceForType() {
-      return UserSaving.getDefaultInstance();
+    public com.entropy.core.autogen.grpc.user.UserSaving getDefaultInstanceForType() {
+      return com.entropy.core.autogen.grpc.user.UserSaving.getDefaultInstance();
     }
 
-    public UserSaving build() {
-      UserSaving result = buildPartial();
+    public com.entropy.core.autogen.grpc.user.UserSaving build() {
+      com.entropy.core.autogen.grpc.user.UserSaving result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
       return result;
     }
 
-    public UserSaving buildPartial() {
-      UserSaving result = new UserSaving(this);
+    public com.entropy.core.autogen.grpc.user.UserSaving buildPartial() {
+      com.entropy.core.autogen.grpc.user.UserSaving result = new com.entropy.core.autogen.grpc.user.UserSaving(this);
       result.name_ = name_;
       result.gender_ = gender_;
       result.email_ = email_;
@@ -558,16 +558,16 @@ private static final long serialVersionUID = 0L;
       return (Builder) super.addRepeatedField(field, value);
     }
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof UserSaving) {
-        return mergeFrom((UserSaving)other);
+      if (other instanceof com.entropy.core.autogen.grpc.user.UserSaving) {
+        return mergeFrom((com.entropy.core.autogen.grpc.user.UserSaving)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(UserSaving other) {
-      if (other == UserSaving.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.entropy.core.autogen.grpc.user.UserSaving other) {
+      if (other == com.entropy.core.autogen.grpc.user.UserSaving.getDefaultInstance()) return this;
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
@@ -602,11 +602,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      UserSaving parsedMessage = null;
+      com.entropy.core.autogen.grpc.user.UserSaving parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (UserSaving) e.getUnfinishedMessage();
+        parsedMessage = (com.entropy.core.autogen.grpc.user.UserSaving) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -703,14 +703,14 @@ private static final long serialVersionUID = 0L;
     /**
      * <code>.user.Gender gender = 2;</code>
      */
-    public Gender getGender() {
-      Gender result = Gender.valueOf(gender_);
-      return result == null ? Gender.UNRECOGNIZED : result;
+    public com.entropy.core.autogen.grpc.user.Gender getGender() {
+      com.entropy.core.autogen.grpc.user.Gender result = com.entropy.core.autogen.grpc.user.Gender.valueOf(gender_);
+      return result == null ? com.entropy.core.autogen.grpc.user.Gender.UNRECOGNIZED : result;
     }
     /**
      * <code>.user.Gender gender = 2;</code>
      */
-    public Builder setGender(Gender value) {
+    public Builder setGender(com.entropy.core.autogen.grpc.user.Gender value) {
       if (value == null) {
         throw new NullPointerException();
       }
@@ -933,12 +933,12 @@ private static final long serialVersionUID = 0L;
   }
 
   // @@protoc_insertion_point(class_scope:user.UserSaving)
-  private static final UserSaving DEFAULT_INSTANCE;
+  private static final com.entropy.core.autogen.grpc.user.UserSaving DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new UserSaving();
+    DEFAULT_INSTANCE = new com.entropy.core.autogen.grpc.user.UserSaving();
   }
 
-  public static UserSaving getDefaultInstance() {
+  public static com.entropy.core.autogen.grpc.user.UserSaving getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -961,7 +961,7 @@ private static final long serialVersionUID = 0L;
     return PARSER;
   }
 
-  public UserSaving getDefaultInstanceForType() {
+  public com.entropy.core.autogen.grpc.user.UserSaving getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

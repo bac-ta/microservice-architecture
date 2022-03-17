@@ -5,9 +5,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
-        <datasource-mapping>
-          <factory-entry name="entityManagerFactory" />
-        </datasource-mapping>
+        <datasource-mapping />
         <naming-strategy-map />
       </configuration>
     </facet>
@@ -92,10 +90,9 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.3.9.RELEASE" level="project" />
-    <orderEntry type="module" module-name="service-framework" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
-    <orderEntry type="module" module-name="protobuf-gen" />
-    <orderEntry type="module" module-name="grpc-server-starter" />
+    <orderEntry type="library" name="Maven: demo.service:service-framework:0.1.DEMO" level="project" />
+    <orderEntry type="library" name="Maven: com.dimageshare:protobuf-gen:0.1.DEMO" level="project" />
+    <orderEntry type="library" name="Maven: demo.spring.boot:grpc-server-starter:0.1.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-netty:1.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-core:1.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-context:1.10.1" level="project" />

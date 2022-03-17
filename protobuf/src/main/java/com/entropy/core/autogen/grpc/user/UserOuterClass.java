@@ -68,8 +68,8 @@ public final class UserOuterClass {
       "t\032\023.user.UserResponses\0224\n\010saveUser\022\020.use" +
       "r.UserSaving\032\026.google.protobuf.Empty\022=\n\016" +
       "removeUserById\022\023.user.UserIdRequest\032\026.go" +
-      "ogle.protobuf.EmptyB*\n&com.entropy.c" +
-      "ore.autogen.grpc.userP\001b\006proto3"
+      "ogle.protobuf.EmptyB&\n\"com.entropy.core." +
+      "autogen.grpc.userP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

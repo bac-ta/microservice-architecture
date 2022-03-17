@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../department-service/department-service.iml" filepath="$PROJECT_DIR$/../department-service/department-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../master-service/getway-service.iml" filepath="$PROJECT_DIR$/../master-service/getway-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/grpc-client.iml" filepath="$PROJECT_DIR$/grpc-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../grpc-server/grpc-server.iml" filepath="$PROJECT_DIR$/../grpc-server/grpc-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../protobuf/protobuf.iml" filepath="$PROJECT_DIR$/../protobuf/protobuf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../service-authentication/service-authentication.iml" filepath="$PROJECT_DIR$/../service-authentication/service-authentication.iml" />
+    </modules>
+  </component>
+</project>

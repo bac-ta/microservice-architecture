@@ -1,11 +1,18 @@
 package com.entropy.core.autogen.grpc.department;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
+import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
 import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
 import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 import static io.grpc.stub.ClientCalls.futureUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
+import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnaryCall;
+import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
 import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
@@ -23,25 +30,25 @@ public final class DepartmentServiceGrpc {
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getFindDepartmentsMethod()} instead. 
   public static final io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-          DepartmentResponses> METHOD_FIND_DEPARTMENTS = getFindDepartmentsMethodHelper();
+      com.entropy.core.autogen.grpc.department.DepartmentResponses> METHOD_FIND_DEPARTMENTS = getFindDepartmentsMethodHelper();
 
   private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-          DepartmentResponses> getFindDepartmentsMethod;
+      com.entropy.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-          DepartmentResponses> getFindDepartmentsMethod() {
+      com.entropy.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod() {
     return getFindDepartmentsMethodHelper();
   }
 
   private static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
-          DepartmentResponses> getFindDepartmentsMethodHelper() {
-    io.grpc.MethodDescriptor<com.google.protobuf.Empty, DepartmentResponses> getFindDepartmentsMethod;
+      com.entropy.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethodHelper() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.entropy.core.autogen.grpc.department.DepartmentResponses> getFindDepartmentsMethod;
     if ((getFindDepartmentsMethod = DepartmentServiceGrpc.getFindDepartmentsMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getFindDepartmentsMethod = DepartmentServiceGrpc.getFindDepartmentsMethod) == null) {
           DepartmentServiceGrpc.getFindDepartmentsMethod = getFindDepartmentsMethod = 
-              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, DepartmentResponses>newBuilder()
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.entropy.core.autogen.grpc.department.DepartmentResponses>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "findDepartments"))
@@ -49,7 +56,7 @@ public final class DepartmentServiceGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  DepartmentResponses.getDefaultInstance()))
+                  com.entropy.core.autogen.grpc.department.DepartmentResponses.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("findDepartments"))
                   .build();
           }
@@ -59,34 +66,34 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getFindDepartmentByIdMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<DepartmentIdRequest,
-          Department> METHOD_FIND_DEPARTMENT_BY_ID = getFindDepartmentByIdMethodHelper();
+  public static final io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
+      com.entropy.core.autogen.grpc.department.Department> METHOD_FIND_DEPARTMENT_BY_ID = getFindDepartmentByIdMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<DepartmentIdRequest,
-          Department> getFindDepartmentByIdMethod;
+  private static volatile io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
+      com.entropy.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<DepartmentIdRequest,
-          Department> getFindDepartmentByIdMethod() {
+  public static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
+      com.entropy.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod() {
     return getFindDepartmentByIdMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<DepartmentIdRequest,
-          Department> getFindDepartmentByIdMethodHelper() {
-    io.grpc.MethodDescriptor<DepartmentIdRequest, Department> getFindDepartmentByIdMethod;
+  private static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
+      com.entropy.core.autogen.grpc.department.Department> getFindDepartmentByIdMethodHelper() {
+    io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest, com.entropy.core.autogen.grpc.department.Department> getFindDepartmentByIdMethod;
     if ((getFindDepartmentByIdMethod = DepartmentServiceGrpc.getFindDepartmentByIdMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getFindDepartmentByIdMethod = DepartmentServiceGrpc.getFindDepartmentByIdMethod) == null) {
           DepartmentServiceGrpc.getFindDepartmentByIdMethod = getFindDepartmentByIdMethod = 
-              io.grpc.MethodDescriptor.<DepartmentIdRequest, Department>newBuilder()
+              io.grpc.MethodDescriptor.<com.entropy.core.autogen.grpc.department.DepartmentIdRequest, com.entropy.core.autogen.grpc.department.Department>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "findDepartmentById"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  DepartmentIdRequest.getDefaultInstance()))
+                  com.entropy.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  Department.getDefaultInstance()))
+                  com.entropy.core.autogen.grpc.department.Department.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("findDepartmentById"))
                   .build();
           }
@@ -96,32 +103,32 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getSaveDepartmentMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<DepartmentSaving,
+  public static final io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentSaving,
       com.google.protobuf.Empty> METHOD_SAVE_DEPARTMENT = getSaveDepartmentMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<DepartmentSaving,
+  private static volatile io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<DepartmentSaving,
+  public static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethod() {
     return getSaveDepartmentMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<DepartmentSaving,
+  private static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentSaving,
       com.google.protobuf.Empty> getSaveDepartmentMethodHelper() {
-    io.grpc.MethodDescriptor<DepartmentSaving, com.google.protobuf.Empty> getSaveDepartmentMethod;
+    io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentSaving, com.google.protobuf.Empty> getSaveDepartmentMethod;
     if ((getSaveDepartmentMethod = DepartmentServiceGrpc.getSaveDepartmentMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getSaveDepartmentMethod = DepartmentServiceGrpc.getSaveDepartmentMethod) == null) {
           DepartmentServiceGrpc.getSaveDepartmentMethod = getSaveDepartmentMethod = 
-              io.grpc.MethodDescriptor.<DepartmentSaving, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<com.entropy.core.autogen.grpc.department.DepartmentSaving, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "saveDepartment"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  DepartmentSaving.getDefaultInstance()))
+                  com.entropy.core.autogen.grpc.department.DepartmentSaving.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("saveDepartment"))
@@ -133,32 +140,32 @@ public final class DepartmentServiceGrpc {
   }
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
   @java.lang.Deprecated // Use {@link #getRemoveDepartmentByIdMethod()} instead. 
-  public static final io.grpc.MethodDescriptor<DepartmentIdRequest,
+  public static final io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
       com.google.protobuf.Empty> METHOD_REMOVE_DEPARTMENT_BY_ID = getRemoveDepartmentByIdMethodHelper();
 
-  private static volatile io.grpc.MethodDescriptor<DepartmentIdRequest,
+  private static volatile io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
 
   @io.grpc.ExperimentalApi("https://github.com/grpc/grpc-java/issues/1901")
-  public static io.grpc.MethodDescriptor<DepartmentIdRequest,
+  public static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethod() {
     return getRemoveDepartmentByIdMethodHelper();
   }
 
-  private static io.grpc.MethodDescriptor<DepartmentIdRequest,
+  private static io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
       com.google.protobuf.Empty> getRemoveDepartmentByIdMethodHelper() {
-    io.grpc.MethodDescriptor<DepartmentIdRequest, com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
+    io.grpc.MethodDescriptor<com.entropy.core.autogen.grpc.department.DepartmentIdRequest, com.google.protobuf.Empty> getRemoveDepartmentByIdMethod;
     if ((getRemoveDepartmentByIdMethod = DepartmentServiceGrpc.getRemoveDepartmentByIdMethod) == null) {
       synchronized (DepartmentServiceGrpc.class) {
         if ((getRemoveDepartmentByIdMethod = DepartmentServiceGrpc.getRemoveDepartmentByIdMethod) == null) {
           DepartmentServiceGrpc.getRemoveDepartmentByIdMethod = getRemoveDepartmentByIdMethod = 
-              io.grpc.MethodDescriptor.<DepartmentIdRequest, com.google.protobuf.Empty>newBuilder()
+              io.grpc.MethodDescriptor.<com.entropy.core.autogen.grpc.department.DepartmentIdRequest, com.google.protobuf.Empty>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "department.DepartmentService", "removeDepartmentById"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  DepartmentIdRequest.getDefaultInstance()))
+                  com.entropy.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.google.protobuf.Empty.getDefaultInstance()))
                   .setSchemaDescriptor(new DepartmentServiceMethodDescriptorSupplier("removeDepartmentById"))
@@ -199,28 +206,28 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public void findDepartments(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<DepartmentResponses> responseObserver) {
+        io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.DepartmentResponses> responseObserver) {
       asyncUnimplementedUnaryCall(getFindDepartmentsMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void findDepartmentById(DepartmentIdRequest request,
-                                   io.grpc.stub.StreamObserver<Department> responseObserver) {
+    public void findDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request,
+        io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.Department> responseObserver) {
       asyncUnimplementedUnaryCall(getFindDepartmentByIdMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void saveDepartment(DepartmentSaving request,
-                               io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void saveDepartment(com.entropy.core.autogen.grpc.department.DepartmentSaving request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnimplementedUnaryCall(getSaveDepartmentMethodHelper(), responseObserver);
     }
 
     /**
      */
-    public void removeDepartmentById(DepartmentIdRequest request,
-                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void removeDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnimplementedUnaryCall(getRemoveDepartmentByIdMethodHelper(), responseObserver);
     }
 
@@ -231,27 +238,27 @@ public final class DepartmentServiceGrpc {
             asyncUnaryCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
-                      DepartmentResponses>(
+                com.entropy.core.autogen.grpc.department.DepartmentResponses>(
                   this, METHODID_FIND_DEPARTMENTS)))
           .addMethod(
             getFindDepartmentByIdMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                      DepartmentIdRequest,
-                      Department>(
+                com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
+                com.entropy.core.autogen.grpc.department.Department>(
                   this, METHODID_FIND_DEPARTMENT_BY_ID)))
           .addMethod(
             getSaveDepartmentMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                      DepartmentSaving,
+                com.entropy.core.autogen.grpc.department.DepartmentSaving,
                 com.google.protobuf.Empty>(
                   this, METHODID_SAVE_DEPARTMENT)))
           .addMethod(
             getRemoveDepartmentByIdMethodHelper(),
             asyncUnaryCall(
               new MethodHandlers<
-                      DepartmentIdRequest,
+                com.entropy.core.autogen.grpc.department.DepartmentIdRequest,
                 com.google.protobuf.Empty>(
                   this, METHODID_REMOVE_DEPARTMENT_BY_ID)))
           .build();
@@ -279,31 +286,31 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public void findDepartments(com.google.protobuf.Empty request,
-        io.grpc.stub.StreamObserver<DepartmentResponses> responseObserver) {
+        io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.DepartmentResponses> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getFindDepartmentsMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void findDepartmentById(DepartmentIdRequest request,
-                                   io.grpc.stub.StreamObserver<Department> responseObserver) {
+    public void findDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request,
+        io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.Department> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getFindDepartmentByIdMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void saveDepartment(DepartmentSaving request,
-                               io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void saveDepartment(com.entropy.core.autogen.grpc.department.DepartmentSaving request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getSaveDepartmentMethodHelper(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void removeDepartmentById(DepartmentIdRequest request,
-                                     io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
+    public void removeDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request,
+        io.grpc.stub.StreamObserver<com.google.protobuf.Empty> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getRemoveDepartmentByIdMethodHelper(), getCallOptions()), request, responseObserver);
     }
@@ -329,28 +336,28 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public DepartmentResponses findDepartments(com.google.protobuf.Empty request) {
+    public com.entropy.core.autogen.grpc.department.DepartmentResponses findDepartments(com.google.protobuf.Empty request) {
       return blockingUnaryCall(
           getChannel(), getFindDepartmentsMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public Department findDepartmentById(DepartmentIdRequest request) {
+    public com.entropy.core.autogen.grpc.department.Department findDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request) {
       return blockingUnaryCall(
           getChannel(), getFindDepartmentByIdMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty saveDepartment(DepartmentSaving request) {
+    public com.google.protobuf.Empty saveDepartment(com.entropy.core.autogen.grpc.department.DepartmentSaving request) {
       return blockingUnaryCall(
           getChannel(), getSaveDepartmentMethodHelper(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.google.protobuf.Empty removeDepartmentById(DepartmentIdRequest request) {
+    public com.google.protobuf.Empty removeDepartmentById(com.entropy.core.autogen.grpc.department.DepartmentIdRequest request) {
       return blockingUnaryCall(
           getChannel(), getRemoveDepartmentByIdMethodHelper(), getCallOptions(), request);
     }
@@ -376,7 +383,7 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<DepartmentResponses> findDepartments(
+    public com.google.common.util.concurrent.ListenableFuture<com.entropy.core.autogen.grpc.department.DepartmentResponses> findDepartments(
         com.google.protobuf.Empty request) {
       return futureUnaryCall(
           getChannel().newCall(getFindDepartmentsMethodHelper(), getCallOptions()), request);
@@ -384,8 +391,8 @@ public final class DepartmentServiceGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<Department> findDepartmentById(
-        DepartmentIdRequest request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.entropy.core.autogen.grpc.department.Department> findDepartmentById(
+        com.entropy.core.autogen.grpc.department.DepartmentIdRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getFindDepartmentByIdMethodHelper(), getCallOptions()), request);
     }
@@ -393,7 +400,7 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> saveDepartment(
-        DepartmentSaving request) {
+        com.entropy.core.autogen.grpc.department.DepartmentSaving request) {
       return futureUnaryCall(
           getChannel().newCall(getSaveDepartmentMethodHelper(), getCallOptions()), request);
     }
@@ -401,7 +408,7 @@ public final class DepartmentServiceGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> removeDepartmentById(
-        DepartmentIdRequest request) {
+        com.entropy.core.autogen.grpc.department.DepartmentIdRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getRemoveDepartmentByIdMethodHelper(), getCallOptions()), request);
     }
@@ -431,18 +438,18 @@ public final class DepartmentServiceGrpc {
       switch (methodId) {
         case METHODID_FIND_DEPARTMENTS:
           serviceImpl.findDepartments((com.google.protobuf.Empty) request,
-              (io.grpc.stub.StreamObserver<DepartmentResponses>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.DepartmentResponses>) responseObserver);
           break;
         case METHODID_FIND_DEPARTMENT_BY_ID:
-          serviceImpl.findDepartmentById((DepartmentIdRequest) request,
-              (io.grpc.stub.StreamObserver<Department>) responseObserver);
+          serviceImpl.findDepartmentById((com.entropy.core.autogen.grpc.department.DepartmentIdRequest) request,
+              (io.grpc.stub.StreamObserver<com.entropy.core.autogen.grpc.department.Department>) responseObserver);
           break;
         case METHODID_SAVE_DEPARTMENT:
-          serviceImpl.saveDepartment((DepartmentSaving) request,
+          serviceImpl.saveDepartment((com.entropy.core.autogen.grpc.department.DepartmentSaving) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         case METHODID_REMOVE_DEPARTMENT_BY_ID:
-          serviceImpl.removeDepartmentById((DepartmentIdRequest) request,
+          serviceImpl.removeDepartmentById((com.entropy.core.autogen.grpc.department.DepartmentIdRequest) request,
               (io.grpc.stub.StreamObserver<com.google.protobuf.Empty>) responseObserver);
           break;
         default:
@@ -467,7 +474,7 @@ public final class DepartmentServiceGrpc {
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return DepartmentOuterClass.getDescriptor();
+      return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.getDescriptor();
     }
 
     @java.lang.Override

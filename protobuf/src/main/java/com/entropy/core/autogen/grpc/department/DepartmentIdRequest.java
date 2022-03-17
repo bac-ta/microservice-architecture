@@ -69,14 +69,14 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
+    return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
   }
 
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return DepartmentOuterClass.internal_static_department_DepartmentIdRequest_fieldAccessorTable
+    return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.internal_static_department_DepartmentIdRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            DepartmentIdRequest.class, DepartmentIdRequest.Builder.class);
+            com.entropy.core.autogen.grpc.department.DepartmentIdRequest.class, com.entropy.core.autogen.grpc.department.DepartmentIdRequest.Builder.class);
   }
 
   public static final int DPID_FIELD_NUMBER = 1;
@@ -125,10 +125,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof DepartmentIdRequest)) {
+    if (!(obj instanceof com.entropy.core.autogen.grpc.department.DepartmentIdRequest)) {
       return super.equals(obj);
     }
-    DepartmentIdRequest other = (DepartmentIdRequest) obj;
+    com.entropy.core.autogen.grpc.department.DepartmentIdRequest other = (com.entropy.core.autogen.grpc.department.DepartmentIdRequest) obj;
 
     boolean result = true;
     result = result && (getDpId()
@@ -151,69 +151,69 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DepartmentIdRequest parseFrom(byte[] data)
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static DepartmentIdRequest parseFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
-  public static DepartmentIdRequest parseDelimitedFrom(java.io.InputStream input)
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input);
   }
-  public static DepartmentIdRequest parseDelimitedFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessageV3
         .parseWithIOException(PARSER, input);
   }
-  public static DepartmentIdRequest parseFrom(
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -225,7 +225,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(DepartmentIdRequest prototype) {
+  public static Builder newBuilder(com.entropy.core.autogen.grpc.department.DepartmentIdRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() {
@@ -245,17 +245,17 @@ private static final long serialVersionUID = 0L;
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
       // @@protoc_insertion_point(builder_implements:department.DepartmentIdRequest)
-          DepartmentIdRequestOrBuilder {
+      com.entropy.core.autogen.grpc.department.DepartmentIdRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
+      return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return DepartmentOuterClass.internal_static_department_DepartmentIdRequest_fieldAccessorTable
+      return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.internal_static_department_DepartmentIdRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              DepartmentIdRequest.class, DepartmentIdRequest.Builder.class);
+              com.entropy.core.autogen.grpc.department.DepartmentIdRequest.class, com.entropy.core.autogen.grpc.department.DepartmentIdRequest.Builder.class);
     }
 
     // Construct using com.entropy.core.autogen.grpc.department.DepartmentIdRequest.newBuilder()
@@ -282,23 +282,23 @@ private static final long serialVersionUID = 0L;
 
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
+      return com.entropy.core.autogen.grpc.department.DepartmentOuterClass.internal_static_department_DepartmentIdRequest_descriptor;
     }
 
-    public DepartmentIdRequest getDefaultInstanceForType() {
-      return DepartmentIdRequest.getDefaultInstance();
+    public com.entropy.core.autogen.grpc.department.DepartmentIdRequest getDefaultInstanceForType() {
+      return com.entropy.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance();
     }
 
-    public DepartmentIdRequest build() {
-      DepartmentIdRequest result = buildPartial();
+    public com.entropy.core.autogen.grpc.department.DepartmentIdRequest build() {
+      com.entropy.core.autogen.grpc.department.DepartmentIdRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
       return result;
     }
 
-    public DepartmentIdRequest buildPartial() {
-      DepartmentIdRequest result = new DepartmentIdRequest(this);
+    public com.entropy.core.autogen.grpc.department.DepartmentIdRequest buildPartial() {
+      com.entropy.core.autogen.grpc.department.DepartmentIdRequest result = new com.entropy.core.autogen.grpc.department.DepartmentIdRequest(this);
       result.dpId_ = dpId_;
       onBuilt();
       return result;
@@ -331,16 +331,16 @@ private static final long serialVersionUID = 0L;
       return (Builder) super.addRepeatedField(field, value);
     }
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof DepartmentIdRequest) {
-        return mergeFrom((DepartmentIdRequest)other);
+      if (other instanceof com.entropy.core.autogen.grpc.department.DepartmentIdRequest) {
+        return mergeFrom((com.entropy.core.autogen.grpc.department.DepartmentIdRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(DepartmentIdRequest other) {
-      if (other == DepartmentIdRequest.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.entropy.core.autogen.grpc.department.DepartmentIdRequest other) {
+      if (other == com.entropy.core.autogen.grpc.department.DepartmentIdRequest.getDefaultInstance()) return this;
       if (other.getDpId() != 0) {
         setDpId(other.getDpId());
       }
@@ -357,11 +357,11 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      DepartmentIdRequest parsedMessage = null;
+      com.entropy.core.autogen.grpc.department.DepartmentIdRequest parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (DepartmentIdRequest) e.getUnfinishedMessage();
+        parsedMessage = (com.entropy.core.autogen.grpc.department.DepartmentIdRequest) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
         if (parsedMessage != null) {
@@ -411,12 +411,12 @@ private static final long serialVersionUID = 0L;
   }
 
   // @@protoc_insertion_point(class_scope:department.DepartmentIdRequest)
-  private static final DepartmentIdRequest DEFAULT_INSTANCE;
+  private static final com.entropy.core.autogen.grpc.department.DepartmentIdRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new DepartmentIdRequest();
+    DEFAULT_INSTANCE = new com.entropy.core.autogen.grpc.department.DepartmentIdRequest();
   }
 
-  public static DepartmentIdRequest getDefaultInstance() {
+  public static com.entropy.core.autogen.grpc.department.DepartmentIdRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
@@ -439,7 +439,7 @@ private static final long serialVersionUID = 0L;
     return PARSER;
   }
 
-  public DepartmentIdRequest getDefaultInstanceForType() {
+  public com.entropy.core.autogen.grpc.department.DepartmentIdRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 
