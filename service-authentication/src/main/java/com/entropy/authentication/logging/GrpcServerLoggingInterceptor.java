@@ -1,7 +1,7 @@
 package com.entropy.authentication.logging;
 
 import com.entropy.authentication.grpc.GrpcGlobals;
-import com.entropy.authentication.model.RequestInfo;
+import com.entropy.authentication.models.RequestInfo;
 import io.grpc.ForwardingServerCallListener.SimpleForwardingServerCallListener;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;

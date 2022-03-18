@@ -1,4 +1,4 @@
-package com.entropy.authentication.exception;
+package com.entropy.authentication.exceptions;
 
 import com.google.common.collect.Lists;
 import java.util.Collections;

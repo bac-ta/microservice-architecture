@@ -1,6 +1,6 @@
 package com.entropy.authentication.grpc;
 
-import com.entropy.authentication.model.RequestInfo;
+import com.entropy.authentication.models.RequestInfo;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;

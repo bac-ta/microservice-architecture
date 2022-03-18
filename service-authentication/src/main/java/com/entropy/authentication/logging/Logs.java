@@ -1,6 +1,6 @@
 package com.entropy.authentication.logging;
 
-import com.entropy.authentication.utils.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 final class Logs {
 
@@ -17,6 +17,6 @@ final class Logs {
     private Logs() {}
 
     static String toAlternateRequestIdIfEmpty(String requestId) {
-        return Strings.isEmpty(requestId) ? EMPTY_REQUEST_ID : requestId;
+        return StringUtils.isBlank(requestId) ? EMPTY_REQUEST_ID : requestId;
     }
 }

@@ -1,4 +1,4 @@
-package com.entropy.authentication.exception;
+package com.entropy.authentication.exceptions;
 
 import io.grpc.StatusRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;

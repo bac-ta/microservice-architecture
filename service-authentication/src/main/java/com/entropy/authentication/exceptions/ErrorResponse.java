@@ -1,4 +1,4 @@
-package com.entropy.authentication.exception;
+package com.entropy.authentication.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

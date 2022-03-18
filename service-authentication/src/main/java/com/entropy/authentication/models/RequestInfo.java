@@ -1,4 +1,4 @@
-package com.entropy.authentication.model;
+package com.entropy.authentication.models;
 
 
 import lombok.Data;
