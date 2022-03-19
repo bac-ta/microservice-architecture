@@ -1,11 +1,11 @@
-package com.dimageshare.department.service;
+package com.entropy.department.service;
 
-import com.dimageshare.core.autogen.grpc.department.Department;
-import com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest;
-import com.dimageshare.core.autogen.grpc.department.DepartmentResponses;
-import com.dimageshare.core.autogen.grpc.department.DepartmentSaving;
-import com.dimageshare.department.entity.DepartmentEntity;
-import com.dimageshare.department.repository.DepartmentRepository;
+import com.entropy.core.autogen.grpc.department.Department;
+import com.entropy.core.autogen.grpc.department.DepartmentIdRequest;
+import com.entropy.core.autogen.grpc.department.DepartmentResponses;
+import com.entropy.core.autogen.grpc.department.DepartmentSaving;
+import com.entropy.department.entity.DepartmentEntity;
+import com.entropy.department.repository.DepartmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

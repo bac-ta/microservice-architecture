@@ -92,9 +92,11 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.3.9.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: demo.service:service-framework:0.1.DEMO" level="project" />
-    <orderEntry type="library" name="Maven: com.dimageshare:protobuf-gen:0.1.DEMO" level="project" />
-    <orderEntry type="library" name="Maven: demo.spring.boot:grpc-server-starter:0.1.1" level="project" />
+    <orderEntry type="module" module-name="service-authentication" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.9.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="module" module-name="protobuf" />
+    <orderEntry type="module" module-name="grpc-server" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-netty:1.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-core:1.10.1" level="project" />
     <orderEntry type="library" name="Maven: io.grpc:grpc-context:1.10.1" level="project" />
@@ -148,7 +150,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-library:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.skyscreamer:jsonassert:1.4.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:4.3.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:4.0.1" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />

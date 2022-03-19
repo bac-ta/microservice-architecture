@@ -1,14 +1,14 @@
-package com.dimageshare.department.rpc;
+package com.entropy.department.rpc;
 
-import com.dimageshare.core.autogen.grpc.department.Department;
-import com.dimageshare.core.autogen.grpc.department.DepartmentIdRequest;
-import com.dimageshare.core.autogen.grpc.department.DepartmentResponses;
-import com.dimageshare.core.autogen.grpc.department.DepartmentSaving;
-import com.dimageshare.core.autogen.grpc.department.DepartmentServiceGrpc;
+import com.entropy.core.autogen.grpc.department.Department;
+import com.entropy.core.autogen.grpc.department.DepartmentIdRequest;
+import com.entropy.core.autogen.grpc.department.DepartmentResponses;
+import com.entropy.core.autogen.grpc.department.DepartmentSaving;
+import com.entropy.core.autogen.grpc.department.DepartmentServiceGrpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 
-import com.dimageshare.department.service.DepartmentService;
+import com.entropy.department.service.DepartmentService;
 import demo.spring.boot.grpc.server.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,11 +1,11 @@
-package com.dimageshare.department;
+package com.entropy.department;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.dimageshare.department", "com.dimageshare.department.service"})
+@ComponentScan(basePackages = {"com.entropy.department", "com.entropy.department.service"})
 public class DepartmentServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DepartmentServiceApplication.class, args);

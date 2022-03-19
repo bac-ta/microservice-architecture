@@ -6,7 +6,7 @@
 
   <groupId>com.entropy</groupId>
   <artifactId>protobuf</artifactId>
-  <version>0.1.DEMO</version>
+  <version>0.0.1-SNAPSHOT</version>
 
   <name>protobuf-gen</name>
   <description>Demo Protocol Buffer Auto Generate Java Code Project</description>

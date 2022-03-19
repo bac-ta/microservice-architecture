@@ -1,6 +1,6 @@
-package com.dimageshare.department.repository;
+package com.entropy.department.repository;
 
-import com.dimageshare.department.entity.DepartmentEntity;
+import com.entropy.department.entity.DepartmentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

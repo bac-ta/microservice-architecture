@@ -1,7 +1,7 @@
-package com.dimageshare.department.entity;
+package com.entropy.department.entity;
 
-import com.dimageshare.core.autogen.grpc.department.Department;
-import com.dimageshare.core.autogen.grpc.department.DepartmentSaving;
+import com.entropy.core.autogen.grpc.department.Department;
+import com.entropy.core.autogen.grpc.department.DepartmentSaving;
 import lombok.Data;
 
 import javax.persistence.Column;

@@ -1,4 +1,4 @@
-package com.dimageshare.department.rpc;
+package com.entropy.department.rpc;
 
 import com.google.common.collect.Lists;
 import demo.service.framework.grpc.ErrorHandlingInterceptor;

@@ -1,4 +1,4 @@
-package com.dimageshare.department;
+package com.entropy.department;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

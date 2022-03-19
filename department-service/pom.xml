@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.dimageshare</groupId>
+    <groupId>com.entropy</groupId>
     <artifactId>department-service</artifactId>
-    <version>0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>department-service</name>
@@ -26,8 +26,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <grpc.version>1.10.1</grpc.version>
-        <protobuf.version>0.1.DEMO</protobuf.version>
-        <framework.version>0.1.DEMO</framework.version>
+        <protobuf.version>0.0.1-SNAPSHOT</protobuf.version>
+        <service-authentication.version>0.0.1-SNAPSHOT</service-authentication.version>
         <appName>${project.artifactId}-${project.version}</appName>
     </properties>
 
@@ -51,19 +51,19 @@
         </dependency>
 
         <dependency>
-            <groupId>demo.service</groupId>
-            <artifactId>service-framework</artifactId>
-            <version>${framework.version}</version>
+            <groupId>com.entropy</groupId>
+            <artifactId>service-authentication</artifactId>
+            <version>${service-authentication.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.dimageshare</groupId>
-            <artifactId>protobuf-gen</artifactId>
+            <groupId>com.entropy</groupId>
+            <artifactId>protobuf</artifactId>
             <version>${protobuf.version}</version>
         </dependency>
         <dependency>
-            <groupId>demo.spring.boot</groupId>
-            <artifactId>grpc-server-starter</artifactId>
-            <version>0.1.1</version>
+            <groupId>com.entropy</groupId>
+            <artifactId>grpc-server</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- gRPC -->
