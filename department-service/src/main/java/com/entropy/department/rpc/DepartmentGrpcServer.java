@@ -5,14 +5,14 @@ import com.entropy.core.autogen.grpc.department.DepartmentIdRequest;
 import com.entropy.core.autogen.grpc.department.DepartmentResponses;
 import com.entropy.core.autogen.grpc.department.DepartmentSaving;
 import com.entropy.core.autogen.grpc.department.DepartmentServiceGrpc;
+import com.entropy.grpcserver.models.annotations.GrpcServer;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 
 import com.entropy.department.service.DepartmentService;
-import demo.spring.boot.grpc.server.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@GrpcService(value = DepartmentServiceGrpc.class)
+@GrpcServer(value = DepartmentServiceGrpc.class)
 public class DepartmentGrpcServer extends DepartmentServiceGrpc.DepartmentServiceImplBase {
 
     private DepartmentService service;
