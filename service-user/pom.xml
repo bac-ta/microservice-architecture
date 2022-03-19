@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.4.RELEASE</version>
+        <version>2.3.4.RELEASE</version>
         <relativePath/>
     </parent>
 
@@ -27,7 +27,7 @@
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
         <grpc.version>1.10.1</grpc.version>
         <protobuf.version>0.0.1-SNAPSHOT</protobuf.version>
-        <framework.version>0.0.1-SNAPSHOT</framework.version>
+        <service-authentication.version>0.0.1-SNAPSHOT</service-authentication.version>
         <appName>${project.artifactId}-${project.version}</appName>
         <grpc-server.version>0.0.1-SNAPSHOT</grpc-server.version>
     </properties>
@@ -50,11 +50,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <!-- demo -->
+        <!--Service authentication-->
         <dependency>
             <groupId>com.entropy</groupId>
             <artifactId>service-authentication</artifactId>
-            <version>${framework.version}</version>
+            <version>${service-authentication.version}</version>
         </dependency>
         <dependency>
             <groupId>com.entropy</groupId>

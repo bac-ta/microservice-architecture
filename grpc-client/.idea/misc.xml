@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <writeAnnotations>
+      <writeAnnotation name="com.entropy.grpc.client.models.annotations.GrpcClient" />
+    </writeAnnotations>
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -11,6 +16,9 @@
         <option value="$PROJECT_DIR$/../user-service/pom.xml" />
         <option value="$PROJECT_DIR$/../service-department/pom.xml" />
         <option value="$PROJECT_DIR$/../service-user/pom.xml" />
+        <option value="$PROJECT_DIR$/../master-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../getway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-gateway/pom.xml" />
       </list>
     </option>
   </component>

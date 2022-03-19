@@ -1,6 +1,6 @@
 package com.entropy.grpc.client.models;
 
-import com.entropy.grpc.client.services.ClientInterceptorInitializerService;
+import com.entropy.grpc.client.services.GrpcClientInterceptorInitializerService;
 import io.grpc.ClientInterceptor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +24,9 @@ public class ClientInterceptorContext implements ApplicationContextAware {
 
     @PostConstruct
     public void init() {
-        Map<String, ClientInterceptorInitializerService> adapters =
-                applicationContext.getBeansOfType(ClientInterceptorInitializerService.class);
-        for (ClientInterceptorInitializerService initializer : adapters.values()) {
+        Map<String, GrpcClientInterceptorInitializerService> adapters =
+                applicationContext.getBeansOfType(GrpcClientInterceptorInitializerService.class);
+        for (GrpcClientInterceptorInitializerService initializer : adapters.values()) {
             Collection<ClientInterceptor> interceptors = initializer.interceptors();
             if (interceptors != null && interceptors.size() != 0) {
                 clientInterceptors.addAll(interceptors);
