@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../department-service/department-service.iml" filepath="$PROJECT_DIR$/../department-service/department-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/../master-service/getway-service.iml" filepath="$PROJECT_DIR$/../master-service/getway-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/grpc-client.iml" filepath="$PROJECT_DIR$/grpc-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/../grpc-server/grpc-server.iml" filepath="$PROJECT_DIR$/../grpc-server/grpc-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/../protobuf/protobuf.iml" filepath="$PROJECT_DIR$/../protobuf/protobuf.iml" />
       <module fileurl="file://$PROJECT_DIR$/../service-authentication/service-authentication.iml" filepath="$PROJECT_DIR$/../service-authentication/service-authentication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../service-department/service-department.iml" filepath="$PROJECT_DIR$/../service-department/service-department.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../service-user/service-user.iml" filepath="$PROJECT_DIR$/../service-user/service-user.iml" />
     </modules>
   </component>
 </project>

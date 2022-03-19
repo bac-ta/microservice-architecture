@@ -6,9 +6,11 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../grpc-server/pom.xml" />
         <option value="$PROJECT_DIR$/../department-service/pom.xml" />
-        <option value="$PROJECT_DIR$/../master-service/pom.xml" />
         <option value="$PROJECT_DIR$/../protobuf/pom.xml" />
         <option value="$PROJECT_DIR$/../service-authentication/pom.xml" />
+        <option value="$PROJECT_DIR$/../user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-department/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-user/pom.xml" />
       </list>
     </option>
   </component>

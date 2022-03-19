@@ -11,16 +11,19 @@
         <module name="grpc-client" />
         <module name="service-authentication" />
         <module name="grpc-server" />
-        <module name="department-service" />
+        <module name="service-user" />
+        <module name="service-department" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="department-service" target="1.8" />
       <module name="getway-service" target="1.8" />
       <module name="grpc-client" target="1.8" />
       <module name="grpc-server" target="1.8" />
+      <module name="master-service" target="1.8" />
       <module name="protobuf" target="1.8" />
       <module name="service-authentication" target="1.8" />
+      <module name="service-department" target="1.8" />
+      <module name="service-user" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
