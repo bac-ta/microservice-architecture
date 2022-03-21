@@ -1,19 +1,20 @@
-package com.entropy.authentication.security;
+package com.entropy.authentication.services.impls;
 
+import com.entropy.authentication.services.EncryptService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service(value = "bCryptService")
-public class BCryptService implements EncryptService {
+public class BCryptServiceImpl implements EncryptService {
 
     private final PasswordEncoder encoder;
 
-    public BCryptService() {
+    public BCryptServiceImpl() {
         this(new BCryptPasswordEncoder());
     }
 
-    public BCryptService(PasswordEncoder encoder) {
+    public BCryptServiceImpl(PasswordEncoder encoder) {
         this.encoder = encoder;
     }
 

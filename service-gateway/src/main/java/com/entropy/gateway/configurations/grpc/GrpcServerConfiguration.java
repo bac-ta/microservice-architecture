@@ -1,6 +1,6 @@
 package com.entropy.gateway.configurations.grpc;
 
-import com.entropy.authentication.security.Interceptor.grpc.ErrorHandlingInterceptor;
+import com.entropy.authentication.securities.Interceptors.grpc.ErrorHandlingInterceptor;
 import com.entropy.authentication.logging.GrpcServerLoggingInterceptor;
 import com.entropy.grpcserver.services.GrpcServerInterceptorInitializerService;
 import com.google.common.collect.Lists;

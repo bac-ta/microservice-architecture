@@ -1,4 +1,4 @@
-package com.entropy.authentication.security.Interceptor.grpc;
+package com.entropy.authentication.securities.Interceptors.grpc;
 
 import io.grpc.Context;
 import io.grpc.Contexts;

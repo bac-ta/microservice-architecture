@@ -1,4 +1,4 @@
-package com.entropy.authentication.security;
+package com.entropy.authentication.services;
 
 public interface EncryptService {
 

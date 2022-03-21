@@ -1,12 +1,14 @@
-package com.entropy.authentication.security;
+package com.entropy.authentication.services.impls;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import com.entropy.authentication.services.EncryptService;
 import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Service;
 
 @Service(value = "shaPasswordService")
-public class ShaPasswordService implements EncryptService {
+public class ShaPasswordServiceImpl implements EncryptService {
 
     // Static variables
     // ------------------------------------------------------------------------

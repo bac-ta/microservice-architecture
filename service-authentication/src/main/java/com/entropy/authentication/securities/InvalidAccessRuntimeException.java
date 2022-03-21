@@ -1,4 +1,4 @@
-package com.entropy.authentication.security;
+package com.entropy.authentication.securities;
 
 public class InvalidAccessRuntimeException extends RuntimeException {
 

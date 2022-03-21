@@ -1,7 +1,7 @@
-package com.entropy.authentication.models;
+package com.entropy.authentication.configurations;
 
 import com.entropy.authentication.ServiceAuthenticationConfiguration;
-import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobal;
+import com.entropy.authentication.securities.Interceptors.grpc.GrpcGlobal;
 import com.entropy.authentication.utils.DateUtil;
 import io.grpc.Context;
 import lombok.NoArgsConstructor;

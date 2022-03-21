@@ -1,12 +1,10 @@
-package com.entropy.authentication.security.Interceptor.grpc;
+package com.entropy.authentication.securities.Interceptors.grpc;
 
-import com.entropy.authentication.models.RequestInfo;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
-import io.grpc.Context;
-import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
+import io.grpc.ForwardingClientCall;
 import io.grpc.ForwardingClientCallListener;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -14,23 +12,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("Duplicates")
-public class GrpcHeaderClientInterceptor implements ClientInterceptor {
+public class GrpcAuthClientInterceptor implements ClientInterceptor {
 
     // Logger
-    private static final Logger logger = LoggerFactory.getLogger(GrpcHeaderClientInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(GrpcAuthClientInterceptor.class);
 
     // Overrided methods
     // ------------------------------------------------------------------------
     @Override public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method,
-            CallOptions call, Channel channel) {
+            CallOptions callOptions, Channel channel) {
 
-        return new SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, call)) {
-            @Override public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
+        return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, callOptions)) {
 
-                RequestInfo requestInfo = GrpcGlobal.REQUEST_INFO.get(Context.current());
-                if (requestInfo != null) {
-                    headers.put(GrpcGlobal.REQUEST_INFO_METADATA, requestInfo);
-                }
+            @Override
+            public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
+                // Custom header
+                headers.put(GrpcGlobal.AUTH_TOKEN_METADATA, encrypt());
 
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
 
@@ -44,9 +41,14 @@ public class GrpcHeaderClientInterceptor implements ClientInterceptor {
                     @Override public void onHeaders(Metadata headers) {
                         super.onHeaders(headers);
                     }
-
                 }, headers);
             }
         };
+    }
+
+    // Overrided methods
+    // ------------------------------------------------------------------------
+    private String encrypt() {
+        return "test";
     }
 }

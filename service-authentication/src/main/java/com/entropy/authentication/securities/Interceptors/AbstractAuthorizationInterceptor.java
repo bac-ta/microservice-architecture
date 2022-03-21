@@ -1,4 +1,4 @@
-package com.entropy.authentication.security.Interceptor;
+package com.entropy.authentication.securities.Interceptors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
