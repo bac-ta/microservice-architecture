@@ -27,7 +27,7 @@ public class GrpcAuthClientInterceptor implements ClientInterceptor {
             @Override
             public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
                 // Custom header
-                headers.put(GrpcGlobals.AUTH_TOKEN_METADATA, encrypt());
+                headers.put(GrpcGlobal.AUTH_TOKEN_METADATA, encrypt());
 
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
 

@@ -1,6 +1,6 @@
 package com.entropy.authentication.mock;
 
-import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobals;
+import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobal;
 import io.grpc.Context;
 import io.grpc.Contexts;
 import io.grpc.Metadata;
@@ -26,7 +26,7 @@ public class MockHeaderServerInterceptor implements ServerInterceptor {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
             ServerCallHandler<ReqT, RespT> next) {
-        Context context = Context.current().withValue(GrpcGlobals.LOGIN_INFO, loginInfo);
+        Context context = Context.current().withValue(GrpcGlobal.LOGIN_INFO, loginInfo);
         return Contexts.interceptCall(context, call, headers, next);
     }
 }

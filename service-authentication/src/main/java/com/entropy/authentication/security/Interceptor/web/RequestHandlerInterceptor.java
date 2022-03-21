@@ -1,4 +1,4 @@
-package com.entropy.authentication.web;
+package com.entropy.authentication.security.Interceptor.web;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

@@ -30,9 +30,9 @@ public class GrpcHeaderNoLoginClientInterceptor implements ClientInterceptor {
             public void start(Listener<RespT> responseListener, Metadata headers) {
 
                 // リクエスト情報の転送
-                RequestInfo requestInfo = GrpcGlobals.REQUEST_INFO.get(Context.current());
+                RequestInfo requestInfo = GrpcGlobal.REQUEST_INFO.get(Context.current());
                 if (requestInfo != null) {
-                    headers.put(GrpcGlobals.REQUEST_INFO_METADATA, requestInfo);
+                    headers.put(GrpcGlobal.REQUEST_INFO_METADATA, requestInfo);
                 }
 
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {

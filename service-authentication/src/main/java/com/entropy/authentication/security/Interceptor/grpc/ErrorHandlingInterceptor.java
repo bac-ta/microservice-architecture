@@ -20,7 +20,7 @@ public class ErrorHandlingInterceptor implements ServerInterceptor {
             ServerCall<ReqT, RespT> call,
             Metadata headers, ServerCallHandler<ReqT, RespT> next) {
 
-        final RequestInfo requestInfo = headers.get(GrpcGlobals.REQUEST_INFO_METADATA);
+        final RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
 
         return new SimpleForwardingServerCallListener<ReqT>(next.startCall(call, headers)) {
             @Override public void onHalfClose() {

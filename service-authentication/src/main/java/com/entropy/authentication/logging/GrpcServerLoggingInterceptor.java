@@ -1,6 +1,6 @@
 package com.entropy.authentication.logging;
 
-import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobals;
+import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobal;
 import com.entropy.authentication.models.RequestInfo;
 import io.grpc.ForwardingServerCallListener.SimpleForwardingServerCallListener;
 import io.grpc.Metadata;
@@ -27,7 +27,7 @@ public class GrpcServerLoggingInterceptor implements ServerInterceptor {
             return next.startCall(call, headers);
         }
         final String method = call.getMethodDescriptor().getFullMethodName();
-        final RequestInfo requestInfo = headers.get(GrpcGlobals.REQUEST_INFO_METADATA);
+        final RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
         final String requestId = requestInfo == null ? "empty" : requestInfo.getRequestId();
 
 //        ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT> wrapper =
@@ -56,7 +56,7 @@ public class GrpcServerLoggingInterceptor implements ServerInterceptor {
 
         return new SimpleForwardingServerCallListener<ReqT>(next.startCall(call, headers)) {
             @Override public void onMessage(ReqT message) {
-                final RequestInfo requestInfo = headers.get(GrpcGlobals.REQUEST_INFO_METADATA);
+                final RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
                 LOGGER.info("[{}] RPC called. method: {}",
                         requestInfo != null ? requestInfo.getRequestId() : "empty",
                         method);

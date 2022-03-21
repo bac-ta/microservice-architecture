@@ -1,8 +1,8 @@
 package com.entropy.authentication.models;
 
-import com.entropy.authentication.AuthenticationConfiguration;
-import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobals;
-import com.entropy.authentication.utils.Dates;
+import com.entropy.authentication.ServiceAuthenticationConfiguration;
+import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobal;
+import com.entropy.authentication.utils.DateUtil;
 import io.grpc.Context;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.Calendar;
 
 @Configuration
-@AutoConfigureAfter(AuthenticationConfiguration.class)
+@AutoConfigureAfter(ServiceAuthenticationConfiguration.class)
 @ConditionalOnClass(MongoTemplate.class)
 @NoArgsConstructor
 public class AuditingAutoConfiguration {
@@ -35,7 +35,7 @@ public class AuditingAutoConfiguration {
         return () -> {
             final String defaultUser = getDefaultUser(context);
             try {
-                String loginInfo = GrpcGlobals.LOGIN_INFO.get(Context.current());
+                String loginInfo = GrpcGlobal.LOGIN_INFO.get(Context.current());
                 if (loginInfo == null || StringUtils.isBlank(loginInfo)) {
                     return defaultUser;
                 }
@@ -50,7 +50,7 @@ public class AuditingAutoConfiguration {
     public DateTimeProvider dateTimeProvider() {
         return () -> {
             Calendar now = Calendar.getInstance();
-            now.setTime(Dates.now());
+            now.setTime(DateUtil.now());
             return now;
         };
     }

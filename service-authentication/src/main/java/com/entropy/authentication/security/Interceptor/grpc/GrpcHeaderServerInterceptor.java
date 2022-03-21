@@ -23,13 +23,13 @@ public class GrpcHeaderServerInterceptor implements ServerInterceptor {
                                                                  ServerCallHandler<ReqT, RespT> next) {
 
         // Request info
-        RequestInfo requestInfo = headers.get(GrpcGlobals.REQUEST_INFO_METADATA);
+        RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
         Context context = Context.current();
         if (requestInfo != null) {
-            context = context.withValue(GrpcGlobals.REQUEST_INFO, requestInfo);
+            context = context.withValue(GrpcGlobal.REQUEST_INFO, requestInfo);
         }
         String loginInfo = "user";
-        context = context.withValue(GrpcGlobals.LOGIN_INFO, loginInfo);
+        context = context.withValue(GrpcGlobal.LOGIN_INFO, loginInfo);
 
         if (requestInfo != null) {
             return Contexts.interceptCall(context, call, headers, next);

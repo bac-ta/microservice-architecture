@@ -1,4 +1,4 @@
-package com.entropy.authentication.utils.concurrent;
+package com.entropy.authentication.utils;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
-public class CurrentThreadExceutor implements ExecutorService {
+public class CurrentThreadExecutor implements ExecutorService {
 
     @Override
     public void execute(@Nullable Runnable command) {

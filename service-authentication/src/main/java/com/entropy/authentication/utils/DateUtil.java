@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-public final class Dates {
+public final class DateUtil {
 
     public static final String ISO_ZONED_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZ";
 
-    private Dates() {
+    private DateUtil() {
     }
 
     public static Date now() {
@@ -35,7 +35,7 @@ public final class Dates {
     }
 
     public static Date parseISO(final String source) {
-        SimpleDateFormat formatter = new SimpleDateFormat( Dates.ISO_ZONED_DATETIME_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat( DateUtil.ISO_ZONED_DATETIME_FORMAT);
         formatter.setLenient(false);
         try {
             return formatter.parse(source);
@@ -64,7 +64,7 @@ public final class Dates {
     }
 
     public static String formatUTC(final Date source) {
-        return formatUTC(source, Dates.ISO_ZONED_DATETIME_FORMAT);
+        return formatUTC(source, DateUtil.ISO_ZONED_DATETIME_FORMAT);
     }
 
     public static String formatUTC(final Date source, final String format) {

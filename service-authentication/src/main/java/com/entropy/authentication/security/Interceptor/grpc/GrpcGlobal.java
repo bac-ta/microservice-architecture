@@ -1,13 +1,13 @@
 package com.entropy.authentication.security.Interceptor.grpc;
 
 import com.entropy.authentication.models.RequestInfo;
-import com.entropy.authentication.utils.concurrent.CurrentThreadExceutor;
+import com.entropy.authentication.utils.CurrentThreadExecutor;
 import io.grpc.Context;
 import io.grpc.Metadata;
 
 import java.util.concurrent.Executor;
 
-public final class GrpcGlobals {
+public final class GrpcGlobal {
 
     // gRPC Custom Header Key
     // ------------------------------------------------------------------------
@@ -22,7 +22,7 @@ public final class GrpcGlobals {
 
     // Constructor
     // ------------------------------------------------------------------------
-    private GrpcGlobals() {}
+    private GrpcGlobal() {}
 
     private static class RequestInfoMarshaller implements Metadata.BinaryMarshaller<RequestInfo> {
         @Override public byte[] toBytes(RequestInfo value) {
@@ -37,6 +37,6 @@ public final class GrpcGlobals {
     // Executor
     // ------------------------------------------------------------------------
     public static Executor currentThreadContextExecutor() {
-        return Context.currentContextExecutor(new CurrentThreadExceutor());
+        return Context.currentContextExecutor(new CurrentThreadExecutor());
     }
 }

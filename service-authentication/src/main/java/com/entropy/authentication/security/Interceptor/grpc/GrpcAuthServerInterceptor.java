@@ -28,7 +28,7 @@ public class GrpcAuthServerInterceptor implements ServerInterceptor {
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
             ServerCallHandler<ReqT, RespT> next) {
 
-        String token = headers.get(GrpcGlobals.AUTH_TOKEN_METADATA);
+        String token = headers.get(GrpcGlobal.AUTH_TOKEN_METADATA);
 
         return Contexts.interceptCall(Context.current(), call, headers, next);
     }

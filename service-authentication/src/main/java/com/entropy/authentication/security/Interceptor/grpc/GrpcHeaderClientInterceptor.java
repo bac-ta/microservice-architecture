@@ -27,15 +27,15 @@ public class GrpcHeaderClientInterceptor implements ClientInterceptor {
         return new SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, call)) {
             @Override public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
 
-                String loginInfo = GrpcGlobals.LOGIN_INFO.get(Context.current());
+                String loginInfo = GrpcGlobal.LOGIN_INFO.get(Context.current());
 
                 if (loginInfo == null) {
                     loginInfo = "user";
                 }
 
-                RequestInfo requestInfo = GrpcGlobals.REQUEST_INFO.get(Context.current());
+                RequestInfo requestInfo = GrpcGlobal.REQUEST_INFO.get(Context.current());
                 if (requestInfo != null) {
-                    headers.put(GrpcGlobals.REQUEST_INFO_METADATA, requestInfo);
+                    headers.put(GrpcGlobal.REQUEST_INFO_METADATA, requestInfo);
                 }
 
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
