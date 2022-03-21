@@ -1,4 +1,4 @@
-package com.entropy.department.rpc;
+package com.entropy.user.rpc;
 
 import com.entropy.authentication.security.Interceptor.grpc.ErrorHandlingInterceptor;
 import com.entropy.authentication.logging.GrpcServerLoggingInterceptor;

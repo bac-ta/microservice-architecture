@@ -11,10 +11,18 @@
         <option value="$PROJECT_DIR$/../grpc-server-starter/pom.xml" />
         <option value="$PROJECT_DIR$/../grpc-client-starter/pom.xml" />
         <option value="$PROJECT_DIR$/../department-service/pom.xml" />
+        <option value="$PROJECT_DIR$/../grpc-server/pom.xml" />
+        <option value="$PROJECT_DIR$/../grpc-client/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-authentication/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-department/pom.xml" />
+        <option value="$PROJECT_DIR$/../service-gateway/pom.xml" />
       </list>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="jpab" />
   </component>
 </project>

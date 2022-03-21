@@ -1,12 +1,12 @@
-package com.entropy.department.service;
+package com.entropy.user.service;
 
 import com.entropy.core.autogen.grpc.user.DepartmentIdRequest;
 import com.entropy.core.autogen.grpc.user.User;
 import com.entropy.core.autogen.grpc.user.UserIdRequest;
 import com.entropy.core.autogen.grpc.user.UserResponses;
 import com.entropy.core.autogen.grpc.user.UserSaving;
-import com.entropy.department.entity.UserEntity;
-import com.entropy.department.repository.UserRepository;
+import com.entropy.user.entity.UserEntity;
+import com.entropy.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

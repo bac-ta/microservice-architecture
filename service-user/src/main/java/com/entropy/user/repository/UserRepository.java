@@ -1,6 +1,6 @@
-package com.entropy.department.repository;
+package com.entropy.user.repository;
 
-import com.entropy.department.entity.UserEntity;
+import com.entropy.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

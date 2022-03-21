@@ -1,9 +1,9 @@
-package com.entropy.department.entity;
+package com.entropy.user.entity;
 
 import com.entropy.core.autogen.grpc.user.Gender;
 import com.entropy.core.autogen.grpc.user.User;
 import com.entropy.core.autogen.grpc.user.UserSaving;
-import com.entropy.department.enumeration.GenderEnum;
+import com.entropy.user.enumeration.GenderEnum;
 import lombok.Data;
 
 import javax.persistence.Column;

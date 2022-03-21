@@ -1,143 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="bb275937-3160-4219-a52b-d6e3925b3450" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../master-service/src/main/java/com/dimageshare/master/service/user/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../master-service/src/main/java/com/dimageshare/master/service/user/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/Department.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentIdRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentIdRequestOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentOuterClass.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentResponses.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentResponsesOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentSaving.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentSavingOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/department/DepartmentServiceGrpc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/DepartmentIdRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/DepartmentIdRequestOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/Gender.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserIdRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserIdRequestOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserOuterClass.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserResponses.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserResponsesOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserSaving.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserSavingOrBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/src/main/java/com/dimageshare/core/autogen/grpc/user/UserServiceGrpc.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.jpb/persistence-units.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grpc-client/grpc-client.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../grpc-client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../grpc-client/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../protobuf/protobuf.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-authentication/service-authentication.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/service-department.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-gateway/service-gateway.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-user.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/ServiceUserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/ServiceUserApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/entity/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/enumeration/GenderEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/enumeration/GenderEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/rpc/UserGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/rpc/UserGrpcServerConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServerConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/service/UserService.java" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/target/" />
-    <ignored path="$PROJECT_DIR$/../service-framework/target/" />
-    <ignored path="$PROJECT_DIR$/../master-service/target/" />
-    <ignored path="$PROJECT_DIR$/../department-service/target/" />
-    <ignored path="$PROJECT_DIR$/../grpc-client-starter/target/" />
-    <ignored path="$PROJECT_DIR$/../protobuf/target/" />
-    <ignored path="$PROJECT_DIR$/../grpc-server-starter/target/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/dimageshare/department/rpc/UserGrpcServerConfiguration.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../master-service/src/main/java/com/dimageshare/master/controller/UserController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="52" selection-start-line="52" selection-end-line="52" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../master-service/src/main/java/com/dimageshare/master/service/user/UserService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../master-service/src/main/java/com/dimageshare/master/MasterServiceApplication.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../protobuf/proto/department.proto">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../protobuf/proto/user.proto">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="48">
-              <caret line="3" column="41" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/dimageshare/department/rpc/UserGrpcServer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="297">
-              <caret line="52" column="83" selection-start-line="52" selection-start-column="67" selection-end-line="52" selection-end-column="83" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/dimageshare/department/entity/UserEntity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36">
-              <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="53" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1301#1302#0" expanded="true" />
-                <element signature="e#1324#1325#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/dimageshare/department/service/UserService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="53" column="49" selection-start-line="53" selection-start-column="49" selection-end-line="53" selection-end-column="49" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/dimageshare/department/enumeration/GenderEnum.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -157,11 +48,35 @@
       </list>
     </option>
   </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="KubernetesApiPersistence">
+    <option name="context" value="arn:aws:eks:ap-northeast-2:598087260317:cluster/FF-WMS-kdlc-cluster" />
+    <option name="namespace" value="default" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
     </option>
   </component>
   <component name="MavenProjectNavigator">
@@ -240,6 +155,7 @@
     <option name="width" value="1402" />
     <option name="height" value="1022" />
   </component>
+  <component name="ProjectId" id="26hWWbnlftyFXWLHRJzYZZnZqIx" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -407,6 +323,10 @@
       <pane id="Scope" />
     </panes>
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
@@ -421,12 +341,15 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569483192928" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../department-service/pom.xml" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../service-gateway/pom.xml" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -439,19 +362,19 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-    <option name="contentProportion" value="0.25210556" />
   </component>
   <component name="RunManager" selected="Spring Boot.UserServiceApplication">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="DepartmentServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="department-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.dimageshare.department.DepartmentServiceApplication" />
@@ -466,6 +389,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ServiceUserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="service-user" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.entropy.user.ServiceUserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="user-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.dimageshare.department.UserServiceApplication" />
@@ -474,6 +404,7 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -490,6 +421,7 @@
       <workItem from="1569403188413" duration="1780000" />
       <workItem from="1569463068484" duration="7907000" />
       <workItem from="1569478013259" duration="5194000" />
+      <workItem from="1647876333200" duration="1491000" />
     </task>
     <servers />
   </component>
@@ -537,7 +469,7 @@
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/../department-service/mvnw">

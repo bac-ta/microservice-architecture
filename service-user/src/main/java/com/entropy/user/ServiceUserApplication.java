@@ -1,4 +1,4 @@
-package com.entropy.department;
+package com.entropy.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -11,7 +11,7 @@
     <groupId>com.entropy</groupId>
     <artifactId>grpc-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>grpc-server</name>
+    <name>grpc-client</name>
     <description>grpc-server</description>
     <properties>
         <java.version>1.8</java.version>
