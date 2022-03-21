@@ -27,12 +27,6 @@ public class GrpcHeaderClientInterceptor implements ClientInterceptor {
         return new SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, call)) {
             @Override public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
 
-                String loginInfo = GrpcGlobal.LOGIN_INFO.get(Context.current());
-
-                if (loginInfo == null) {
-                    loginInfo = "user";
-                }
-
                 RequestInfo requestInfo = GrpcGlobal.REQUEST_INFO.get(Context.current());
                 if (requestInfo != null) {
                     headers.put(GrpcGlobal.REQUEST_INFO_METADATA, requestInfo);
