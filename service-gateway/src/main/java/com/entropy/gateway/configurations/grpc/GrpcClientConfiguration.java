@@ -1,6 +1,6 @@
 package com.entropy.gateway.configurations.grpc;
 
-import com.entropy.authentication.grpc.GrpcHeaderClientInterceptor;
+import com.entropy.authentication.security.Interceptor.grpc.GrpcHeaderClientInterceptor;
 import com.entropy.grpc.client.services.GrpcClientInterceptorInitializerService;
 import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
 package com.entropy.authentication.mock;
 
-import com.entropy.authentication.grpc.GrpcGlobals;
+import com.entropy.authentication.security.Interceptor.grpc.GrpcGlobals;
 import io.grpc.Context;
 import io.grpc.Contexts;
 import io.grpc.Metadata;

@@ -1,10 +1,12 @@
-package com.entropy.authentication.grpc;
+package com.entropy.authentication.security.Interceptor.grpc;
 
+import com.entropy.authentication.models.RequestInfo;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.ClientInterceptor;
-import io.grpc.ForwardingClientCall;
+import io.grpc.Context;
+import io.grpc.ForwardingClientCall.SimpleForwardingClientCall;
 import io.grpc.ForwardingClientCallListener;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
@@ -12,22 +14,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("Duplicates")
-public class GrpcAuthClientInterceptor implements ClientInterceptor {
+public class GrpcHeaderClientInterceptor implements ClientInterceptor {
 
     // Logger
-    private static final Logger logger = LoggerFactory.getLogger(GrpcAuthClientInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(GrpcHeaderClientInterceptor.class);
 
     // Overrided methods
     // ------------------------------------------------------------------------
     @Override public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method,
-            CallOptions callOptions, Channel channel) {
+            CallOptions call, Channel channel) {
 
-        return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, callOptions)) {
+        return new SimpleForwardingClientCall<ReqT, RespT>(channel.newCall(method, call)) {
+            @Override public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
 
-            @Override
-            public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
-                // Custom header
-                headers.put(GrpcGlobals.AUTH_TOKEN_METADATA, encrypt());
+                String loginInfo = GrpcGlobals.LOGIN_INFO.get(Context.current());
+
+                if (loginInfo == null) {
+                    loginInfo = "user";
+                }
+
+                RequestInfo requestInfo = GrpcGlobals.REQUEST_INFO.get(Context.current());
+                if (requestInfo != null) {
+                    headers.put(GrpcGlobals.REQUEST_INFO_METADATA, requestInfo);
+                }
 
                 super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
 
@@ -41,14 +50,9 @@ public class GrpcAuthClientInterceptor implements ClientInterceptor {
                     @Override public void onHeaders(Metadata headers) {
                         super.onHeaders(headers);
                     }
+
                 }, headers);
             }
         };
-    }
-
-    // Overrided methods
-    // ------------------------------------------------------------------------
-    private String encrypt() {
-        return "test";
     }
 }

@@ -1,4 +1,4 @@
-package com.entropy.authentication.grpc;
+package com.entropy.authentication.security.Interceptor.grpc;
 
 import com.entropy.authentication.models.RequestInfo;
 import com.entropy.authentication.utils.concurrent.CurrentThreadExceutor;
