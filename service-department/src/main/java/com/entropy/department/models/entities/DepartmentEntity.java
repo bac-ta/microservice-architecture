@@ -1,4 +1,4 @@
-package com.entropy.department.entity;
+package com.entropy.department.models.entities;
 
 import com.entropy.core.autogen.grpc.department.Department;
 import com.entropy.core.autogen.grpc.department.DepartmentSaving;

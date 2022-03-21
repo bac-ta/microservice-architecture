@@ -1,4 +1,4 @@
-package com.entropy.department.rpc;
+package com.entropy.user.configurations;
 
 import com.entropy.authentication.security.Interceptor.grpc.ErrorHandlingInterceptor;
 import com.entropy.authentication.logging.GrpcServerLoggingInterceptor;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DepartmentGrpcServerConfiguration {
+public class UserGrpcServerConfiguration {
 
     @Bean
     public GrpcServerInterceptorInitializerService globalServerInterceptorInitializer() {

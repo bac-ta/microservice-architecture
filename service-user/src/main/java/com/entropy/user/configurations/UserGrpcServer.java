@@ -1,4 +1,4 @@
-package com.entropy.user.rpc;
+package com.entropy.user.configurations;
 
 import com.entropy.core.autogen.grpc.user.DepartmentIdRequest;
 import com.entropy.core.autogen.grpc.user.User;
@@ -6,7 +6,7 @@ import com.entropy.core.autogen.grpc.user.UserIdRequest;
 import com.entropy.core.autogen.grpc.user.UserResponses;
 import com.entropy.core.autogen.grpc.user.UserSaving;
 import com.entropy.core.autogen.grpc.user.UserServiceGrpc;
-import com.entropy.user.service.UserService;
+import com.entropy.user.services.UserService;
 import com.entropy.grpcserver.models.annotations.GrpcServer;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;

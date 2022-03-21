@@ -5,30 +5,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb275937-3160-4219-a52b-d6e3925b3450" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.jpb/persistence-units.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../grpc-client/grpc-client.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../grpc-client/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../grpc-client/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protobuf/protobuf.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../service-authentication/service-authentication.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../service-department/service-department.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../service-gateway/service-gateway.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/services/DepartmentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/services/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/ServiceDepartmentApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/ServiceDepartmentApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/entity/DepartmentEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/models/entities/DepartmentEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/repository/DepartmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/repositories/DepartmentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/rpc/DepartmentGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/configurations/DepartmentGrpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/rpc/DepartmentGrpcServerConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/configurations/DepartmentGrpcServerConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/service/DepartmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../service-department/src/main/java/com/entropy/department/services/impls/DepartmentServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-user.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/ServiceUserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/ServiceUserApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/entity/UserEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/enumeration/GenderEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/enumeration/GenderEnum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/rpc/UserGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/rpc/UserGrpcServerConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServerConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/department/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/ServiceUserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/ServiceUserApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/entity/UserEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/models/entities/UserEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/enumeration/GenderEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/models/enumerations/GenderEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/repositories/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/configurations/UserGrpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/rpc/UserGrpcServerConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/configurations/UserGrpcServerConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/entropy/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/entropy/user/services/impls/UserServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -389,6 +393,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ServiceDepartmentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="service-department" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.entropy.department.ServiceDepartmentApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ServiceUserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="service-user" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.entropy.user.ServiceUserApplication" />
@@ -421,7 +432,7 @@
       <workItem from="1569403188413" duration="1780000" />
       <workItem from="1569463068484" duration="7907000" />
       <workItem from="1569478013259" duration="5194000" />
-      <workItem from="1647876333200" duration="1491000" />
+      <workItem from="1647876333200" duration="2994000" />
     </task>
     <servers />
   </component>

@@ -1,4 +1,4 @@
-package com.entropy.department.rpc;
+package com.entropy.department.configurations;
 
 import com.entropy.core.autogen.grpc.department.Department;
 import com.entropy.core.autogen.grpc.department.DepartmentIdRequest;
@@ -9,7 +9,7 @@ import com.entropy.grpcserver.models.annotations.GrpcServer;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 
-import com.entropy.department.service.DepartmentService;
+import com.entropy.department.services.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcServer(value = DepartmentServiceGrpc.class)

@@ -1,4 +1,4 @@
-package com.entropy.user.enumeration;
+package com.entropy.user.models.enumerations;
 
 import lombok.Getter;
 

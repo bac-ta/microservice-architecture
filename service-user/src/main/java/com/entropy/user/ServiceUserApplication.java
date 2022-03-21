@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.entropy.department", "com.entropy.department.service"})
+@ComponentScan(basePackages = {"com.entropy.user", "com.entropy.user.services"})
 public class ServiceUserApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceUserApplication.class, args);
