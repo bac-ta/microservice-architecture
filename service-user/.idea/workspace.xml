@@ -331,7 +331,7 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1569483192928" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../service-gateway/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Example-projects/grpc-java/examples/example-jwt-auth/pom.xml" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -418,6 +418,7 @@
       <workItem from="1569463068484" duration="7907000" />
       <workItem from="1569478013259" duration="5194000" />
       <workItem from="1647876333200" duration="3082000" />
+      <workItem from="1647879701542" duration="2302000" />
     </task>
     <servers />
   </component>

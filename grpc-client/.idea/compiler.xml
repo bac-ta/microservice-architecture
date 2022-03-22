@@ -10,8 +10,8 @@
         <module name="grpc-client" />
         <module name="service-authentication" />
         <module name="service-gateway" />
-        <module name="service-user" />
         <module name="grpc-server" />
+        <module name="service-user" />
         <module name="service-department" />
       </profile>
     </annotationProcessing>
