@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public final class DateUtil {
 
     public static final String ISO_ZONED_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZ";
@@ -35,7 +34,7 @@ public final class DateUtil {
     }
 
     public static Date parseISO(final String source) {
-        SimpleDateFormat formatter = new SimpleDateFormat( DateUtil.ISO_ZONED_DATETIME_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(DateUtil.ISO_ZONED_DATETIME_FORMAT);
         formatter.setLenient(false);
         try {
             return formatter.parse(source);

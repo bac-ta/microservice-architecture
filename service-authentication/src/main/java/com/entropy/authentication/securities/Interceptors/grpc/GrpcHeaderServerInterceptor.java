@@ -7,17 +7,9 @@ import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GrpcHeaderServerInterceptor implements ServerInterceptor {
 
-    // Logger
-    @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(GrpcHeaderServerInterceptor.class);
-
-    // Overrided methods
-    // ------------------------------------------------------------------------
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
                                                                  ServerCallHandler<ReqT, RespT> next) {

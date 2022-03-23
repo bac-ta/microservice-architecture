@@ -9,33 +9,28 @@ import java.util.concurrent.Executor;
 
 public final class GrpcGlobal {
 
-    // gRPC Custom Header Key
-    // ------------------------------------------------------------------------
     public static final Context.Key<String> LOGIN_INFO = Context.key("demo.authorize");
-//    public static final Metadata.Key<String> LOGIN_INFO_METADATA = Metadata.Key.of("demo.authorize-bin",
-//            new LoginInfoMarshaller());
     public static final Metadata.Key<String> AUTH_TOKEN_METADATA = Metadata.Key.of("demo.auth.token",
             Metadata.ASCII_STRING_MARSHALLER);
     public static final Context.Key<RequestInfo> REQUEST_INFO = Context.key("demo.request");
     public static final Metadata.Key<RequestInfo> REQUEST_INFO_METADATA = Metadata.Key.of("demo.request-bin",
             new RequestInfoMarshaller());
 
-    // Constructor
-    // ------------------------------------------------------------------------
-    private GrpcGlobal() {}
+    private GrpcGlobal() {
+    }
 
     private static class RequestInfoMarshaller implements Metadata.BinaryMarshaller<RequestInfo> {
-        @Override public byte[] toBytes(RequestInfo value) {
+        @Override
+        public byte[] toBytes(RequestInfo value) {
             return value.toBytes();
         }
 
-        @Override public RequestInfo parseBytes(byte[] serialized) {
+        @Override
+        public RequestInfo parseBytes(byte[] serialized) {
             return RequestInfo.newRequestInfo(serialized);
         }
     }
 
-    // Executor
-    // ------------------------------------------------------------------------
     public static Executor currentThreadContextExecutor() {
         return Context.currentContextExecutor(new CurrentThreadExecutor());
     }

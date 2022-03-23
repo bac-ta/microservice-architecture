@@ -1,7 +1,7 @@
 package com.entropy.authentication.logging;
 
-import com.entropy.authentication.securities.Interceptors.grpc.GrpcGlobal;
 import com.entropy.authentication.models.RequestInfo;
+import com.entropy.authentication.securities.Interceptors.grpc.GrpcGlobal;
 import io.grpc.ForwardingServerCallListener.SimpleForwardingServerCallListener;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -27,35 +27,11 @@ public class GrpcServerLoggingInterceptor implements ServerInterceptor {
             return next.startCall(call, headers);
         }
         final String method = call.getMethodDescriptor().getFullMethodName();
-        final RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
-        final String requestId = requestInfo == null ? "empty" : requestInfo.getRequestId();
 
-//        ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT> wrapper =
-//                new ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {
-//
-//            @Override public void request(int numMessages) {
-//                LOGGER.info("[{}] request. method: {}, message: {{}}",
-//                        requestId,
-//                        method,
-//                        Strings.inline(call.getAttributes()));
-//                super.request(numMessages);
-//            }
-//
-//            @Override public void sendMessage(RespT message) {
-//                LOGGER.info("[{}] response. method: {}, message: {{}}",
-//                        requestId,
-//                        method,
-//                        Strings.inline(message));
-//                super.sendMessage(message);
-//            }
-//
-//            @Override public void close(Status status, Metadata trailers) {
-//                super.close(status, trailers);
-//            }
-//        };
 
         return new SimpleForwardingServerCallListener<ReqT>(next.startCall(call, headers)) {
-            @Override public void onMessage(ReqT message) {
+            @Override
+            public void onMessage(ReqT message) {
                 final RequestInfo requestInfo = headers.get(GrpcGlobal.REQUEST_INFO_METADATA);
                 LOGGER.info("[{}] RPC called. method: {}",
                         requestInfo != null ? requestInfo.getRequestId() : "empty",

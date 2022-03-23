@@ -13,14 +13,11 @@ import io.grpc.MethodDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("Duplicates")
 public class GrpcHeaderNoLoginClientInterceptor implements ClientInterceptor {
 
     // Logger
     private static final Logger logger = LoggerFactory.getLogger(GrpcHeaderNoLoginClientInterceptor.class);
 
-    // Overrided methods
-    // ------------------------------------------------------------------------
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method,
                                                                CallOptions call, Channel channel) {
@@ -29,7 +26,6 @@ public class GrpcHeaderNoLoginClientInterceptor implements ClientInterceptor {
             @Override
             public void start(Listener<RespT> responseListener, Metadata headers) {
 
-                // リクエスト情報の転送
                 RequestInfo requestInfo = GrpcGlobal.REQUEST_INFO.get(Context.current());
                 if (requestInfo != null) {
                     headers.put(GrpcGlobal.REQUEST_INFO_METADATA, requestInfo);

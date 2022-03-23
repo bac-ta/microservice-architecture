@@ -11,7 +11,6 @@ import io.grpc.MethodDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("Duplicates")
 public class GrpcAuthClientInterceptor implements ClientInterceptor {
 
     // Logger

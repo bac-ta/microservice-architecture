@@ -1,5 +1,7 @@
 package com.entropy.gateway.models.enums;
 
+import com.entropy.gateway.models.exceptions.ResourceNotFoundExceptionHandler;
+import com.entropy.gateway.utils.APIMessage;
 import lombok.Getter;
 
 import java.util.Arrays;
