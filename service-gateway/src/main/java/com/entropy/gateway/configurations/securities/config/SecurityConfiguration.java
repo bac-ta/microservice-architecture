@@ -1,11 +1,11 @@
-package com.entropy.gateway.configurations.securities;
+package com.entropy.gateway.configurations.securities.config;
 
-import com.entropy.gateway.utils.AppConstant;
+import com.entropy.gateway.configurations.securities.entrypoint.JwtAuthenticationEntryPoint;
+import com.entropy.gateway.configurations.securities.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
@@ -16,18 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Collections;
 
 /**
- * Class config security
- *
  * @author bac-ta
- * @see SecurityConfiguration
- * @since 2021-05-31
  */
 @Configuration
 @EnableWebSecurity
@@ -36,23 +27,12 @@ import java.util.Collections;
         jsr250Enabled = true,
         prePostEnabled = true
 )
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsImplServiceImpl userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final OAuth2UserCustomServiceImpl oAuth2UserCustomService;
-    private final OAuth2AuthenticationSuccessHandler successHandler;
-    private final OAuth2AuthenticationFailureHandler failureHandler;
 
-    @Autowired
-    public SecurityConfiguration(UserDetailsImplServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                                 OAuth2UserCustomServiceImpl oAuth2UserCustomService, OAuth2AuthenticationSuccessHandler successHandler, OAuth2AuthenticationFailureHandler failureHandler) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.oAuth2UserCustomService = oAuth2UserCustomService;
-        this.successHandler = successHandler;
-        this.failureHandler = failureHandler;
-    }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -73,22 +53,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authentication/login", "/file/view-file/*").permitAll()
-                .antMatchers(HttpMethod.POST, "/client/user").permitAll()
-//                .antMatchers("/post/*", "/file/*", "/category/*").hasRole(AccountType.ADMINISTRATOR.getName())
+                .antMatchers("/auth/login", "/user/regist", "/file/view-file/*").permitAll()
+                .antMatchers("/post/*", "/file/*", "/category/*").hasAuthority(UserType.ADMINITRATOR.getName())
                 .anyRequest()
-                .authenticated()
-                .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*")
-                .and()
-                .userInfoEndpoint()
-                .userService(oAuth2UserCustomService)
-                .and()
-                .successHandler(successHandler).failureHandler(failureHandler);
+                .authenticated();
+//                .and()
+//                .oauth2Login()
+//                .authorizationEndpoint()
+//                .baseUri("/oauth2/authorize")
+//                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
+//                .and()
+//                .redirectionEndpoint()
+//                .baseUri("/oauth2/callback/*")
+//                .and()
+//                .userInfoEndpoint()
+//                .userService(oAuth2UserCustomService)
+//                .and()
+//                .successHandler(successHandler).failureHandler(failureHandler);
         // Add our custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
@@ -110,21 +91,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
-        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
-        configuration.setMaxAge(AppConstant.CORS_MAX_AGE);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
     }
 
 }

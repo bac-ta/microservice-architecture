@@ -1,6 +1,6 @@
 package com.entropy.gateway.configurations.securities.entrypoint;
 
-import com.entropy.gateway.utils.APIMessage;
+import com.entropy.backend.common.constant.APIMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -12,11 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Class response when authentication with JWT is invalid
- *
  * @author bac-ta
- * @see JwtAuthenticationEntryPoint
- * @since 2021-05-31
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {

@@ -1,6 +1,7 @@
-package com.entropy.gateway.configurations.securities.jwts;
+package com.entropy.gateway.configurations.securities.jwt;
 
-import com.entropy.backend.services.impls.UserDetailsImplServiceImpl;
+import com.entropy.backend.service.impl.UserDetailsImplServiceImpl;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Class checks authentication with JWT
- *
  * @author bac-ta
- * @see JwtAuthenticationFilter
- * @since 2021-05-31
  */
-
+@NoArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
@@ -35,8 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(httpServletRequest);
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            String username = tokenProvider.getUsernameFromJWT(jwt);
-            UserDetails details = authService.loadUserByUsername(username);
+            Long id = tokenProvider.getUserIdFromJWT(jwt);
+            UserDetails details = authService.loadById(id);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

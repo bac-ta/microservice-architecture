@@ -1,6 +1,6 @@
-package com.entropy.gateway.configurations.securities.auditing;
+package com.entropy.gateway.configurations.securities.config;
 
-import com.entropy.gateway.configurations.securities.jwts.AccountPrincipal;
+import com.entropy.backend.security.jwt.AccountPrincipal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -11,16 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-/**
- * Class config auditing which traces "who called login API (administrator or user or anonymous user)
- *
- * @author bac-ta
- * @see AuditingConfiguration
- * @since 2021-05-31
- */
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @Configuration
-public class AuditingConfiguration {
+public class AuditingConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
@@ -36,7 +29,7 @@ class SpringSecurityAuditAwareImpl implements AuditorAware<String> {
         if (authentication == null ||
                 !authentication.isAuthenticated() ||
                 authentication instanceof AnonymousAuthenticationToken)
-            return Optional.of("Anonymous user");
+            return Optional.of("anonymous user");
 
 
         AccountPrincipal accountPrincipal = (AccountPrincipal) authentication.getPrincipal();
