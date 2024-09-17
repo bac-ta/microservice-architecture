@@ -1,0 +1,8 @@
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/models/entities/UserEntity.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/models/enumerations/GenderEnum.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/ServiceUserApplication.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/services/impls/UserServiceImpl.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/configurations/UserGrpcServerConfiguration.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/services/UserService.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/repositories/UserRepository.java
+/home/entropy/Workspaces/Java/microservice-architecture/service-user/src/main/java/com/entropy/user/configurations/UserGrpcServer.java

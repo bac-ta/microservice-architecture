@@ -17,13 +17,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="getway-service" target="1.8" />
-      <module name="grpc-client" target="1.8" />
-      <module name="grpc-server" target="1.8" />
-      <module name="protobuf" target="1.8" />
-      <module name="service-authentication" target="1.8" />
-      <module name="service-department" target="1.8" />
-      <module name="service-gateway" target="1.8" />
-      <module name="service-user" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

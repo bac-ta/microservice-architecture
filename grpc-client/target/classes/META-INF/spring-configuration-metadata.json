@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "grpc.client",
+      "type": "com.entropy.grpc.client.configurations.GrpcChannelPropertiesComponent",
+      "sourceType": "com.entropy.grpc.client.configurations.GrpcChannelPropertiesComponent"
+    },
+    {
+      "name": "grpc.client.channels",
+      "type": "java.util.Map",
+      "sourceType": "com.entropy.grpc.client.configurations.GrpcChannelPropertiesComponent",
+      "sourceMethod": "getChannels()"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

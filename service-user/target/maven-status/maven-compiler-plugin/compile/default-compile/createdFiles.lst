@@ -1,0 +1,8 @@
+com/entropy/user/models/enumerations/GenderEnum.class
+com/entropy/user/configurations/UserGrpcServer.class
+com/entropy/user/configurations/UserGrpcServerConfiguration.class
+com/entropy/user/ServiceUserApplication.class
+com/entropy/user/services/impls/UserServiceImpl.class
+com/entropy/user/repositories/UserRepository.class
+com/entropy/user/services/UserService.class
+com/entropy/user/models/entities/UserEntity.class
