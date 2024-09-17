@@ -2,7 +2,6 @@ package com.entropy.grpc.client.services.impl;
 
 import com.entropy.grpc.client.models.annotations.GrpcClient;
 import com.entropy.grpc.client.services.GrpcChannelService;
-import io.grpc.Channel;
 import io.grpc.ClientInterceptor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeansException;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 public class GrpcClientCreatorImpl implements BeanPostProcessor {
 
-    private Map<String, ArrayList<Class>> beansToProcess = new HashMap<>();
+    private final Map<String, ArrayList<Class>> beansToProcess = new HashMap<>();
 
     @Autowired
     private DefaultListableBeanFactory beanFactory;
@@ -37,9 +35,9 @@ public class GrpcClientCreatorImpl implements BeanPostProcessor {
     public Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
 
-        Class clazz = bean.getClass();
+        var clazz = bean.getClass();
         do {
-            for (Field field : clazz.getDeclaredFields()) {
+            for (var field : clazz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(GrpcClient.class)) {
                     if (!beansToProcess.containsKey(beanName)) {
                         beansToProcess.put(beanName, new ArrayList<>());
@@ -60,14 +58,14 @@ public class GrpcClientCreatorImpl implements BeanPostProcessor {
         if (!beansToProcess.containsKey(beanName))
             return bean;
 
-        for (Class clazz : beansToProcess.get(beanName)) {
-            for (Field field : clazz.getDeclaredFields()) {
-                GrpcClient grpcClient = AnnotationUtils.getAnnotation(field, GrpcClient.class);
+        for (var clazz : beansToProcess.get(beanName)) {
+            for (var field : clazz.getDeclaredFields()) {
+                var grpcClient = AnnotationUtils.getAnnotation(field, GrpcClient.class);
 
                 if (grpcClient == null)
                     continue;
 
-                Channel channel = channelFactory.createChannel(grpcClient.value(),
+                var channel = channelFactory.createChannel(grpcClient.value(),
                         createInterceptors(grpcClient));
                 ReflectionUtils.makeAccessible(field);
                 ReflectionUtils.setField(field, bean, channel);
@@ -85,7 +83,7 @@ public class GrpcClientCreatorImpl implements BeanPostProcessor {
                         return beanFactory.getBean(aClass);
 
                     try {
-                        return aClass.newInstance();
+                        return aClass.getDeclaredConstructor().newInstance();
                     } catch (Exception e) {
                         throw new BeanCreationException("Failed to create interceptor", e);
                     }

@@ -8,31 +8,32 @@ import io.grpc.NameResolver;
 import io.grpc.Status;
 import io.grpc.internal.LogExceptionRunnable;
 import io.grpc.internal.SharedResourceHolder;
-import java.net.InetSocketAddress;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.concurrent.GuardedBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 
+import javax.annotation.concurrent.GuardedBy;
+import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 public class DiscoveryClientNameResolver extends NameResolver {
 
-    private static Logger logger = LoggerFactory.getLogger(DiscoveryClientNameResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiscoveryClientNameResolver.class);
     private final String name;
     private final DiscoveryClient client;
     private final SharedResourceHolder.Resource<ScheduledExecutorService> timerServiceResource;
-    private final SharedResourceHolder.Resource<ExecutorService> executorResource;
+    private final SharedResourceHolder.Resource<Executor> executorResource;
     @GuardedBy("this")
     private boolean shutdown;
     @GuardedBy("this")
     private ScheduledExecutorService timerService;
     @GuardedBy("this")
-    private ExecutorService executor;
+    private Executor executor;
     @GuardedBy("this")
     private ScheduledFuture<?> resolutionTask;
     @GuardedBy("this")
@@ -43,9 +44,9 @@ public class DiscoveryClientNameResolver extends NameResolver {
     private List<ServiceInstance> serviceInstanceList;
 
     public DiscoveryClientNameResolver(String name,
-            DiscoveryClient client,
-            SharedResourceHolder.Resource<ScheduledExecutorService> timerServiceResource,
-            SharedResourceHolder.Resource<ExecutorService> executorResource) {
+                                       DiscoveryClient client,
+                                       SharedResourceHolder.Resource<ScheduledExecutorService> timerServiceResource,
+                                       SharedResourceHolder.Resource<Executor> executorResource) {
         this.name = name;
         this.client = client;
         this.timerServiceResource = timerServiceResource;
@@ -100,16 +101,16 @@ public class DiscoveryClientNameResolver extends NameResolver {
                     return;
                 }
 
-                if (newServiceInstanceList != null && newServiceInstanceList.size() > 0) {
+                if (newServiceInstanceList != null && !newServiceInstanceList.isEmpty()) {
                     if (isNeedToUpdateServiceInstanceList(newServiceInstanceList)) {
                         serviceInstanceList = newServiceInstanceList;
                     } else {
                         return;
                     }
                     List<EquivalentAddressGroup> equivalentAddressGroups = Lists.newArrayList();
-                    for (ServiceInstance serviceInstance : serviceInstanceList) {
+                    for (var serviceInstance : serviceInstanceList) {
                         logger.info("Found gRPC server service:{} {}:{}", name, serviceInstance.getHost(), serviceInstance.getPort());
-                        EquivalentAddressGroup addressGroup = new EquivalentAddressGroup(new InetSocketAddress(serviceInstance.getHost(), serviceInstance.getPort()), Attributes.EMPTY);
+                        var addressGroup = new EquivalentAddressGroup(new InetSocketAddress(serviceInstance.getHost(), serviceInstance.getPort()), Attributes.EMPTY);
                         equivalentAddressGroups.add(addressGroup);
                     }
                     savedListener.onAddresses(equivalentAddressGroups, Attributes.EMPTY);
@@ -126,9 +127,9 @@ public class DiscoveryClientNameResolver extends NameResolver {
 
     private boolean isNeedToUpdateServiceInstanceList(List<ServiceInstance> newServiceInstanceList) {
         if (serviceInstanceList.size() == newServiceInstanceList.size()) {
-            for (ServiceInstance serviceInstance : serviceInstanceList) {
+            for (var serviceInstance : serviceInstanceList) {
                 boolean isSame = false;
-                for (ServiceInstance newServiceInstance : newServiceInstanceList) {
+                for (var newServiceInstance : newServiceInstanceList) {
                     if (newServiceInstance.getHost().equals(serviceInstance.getHost()) && newServiceInstance.getPort() == serviceInstance.getPort()) {
                         isSame = true;
                         break;

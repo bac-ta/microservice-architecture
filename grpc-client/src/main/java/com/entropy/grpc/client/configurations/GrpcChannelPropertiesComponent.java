@@ -1,6 +1,8 @@
 package com.entropy.grpc.client.configurations;
 
 import com.entropy.grpc.client.models.GrpcChannelProperties;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
@@ -8,8 +10,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+@Setter
+@Getter
 @Component
-@ConfigurationProperties("grpc.client")
+@ConfigurationProperties("app.grpc.client")
 public class GrpcChannelPropertiesComponent {
 
     @NestedConfigurationProperty
@@ -21,14 +25,6 @@ public class GrpcChannelPropertiesComponent {
             return GrpcChannelProperties.DEFAULT_CHANNEL;
         }
         return channel;
-    }
-
-    public Map<String, GrpcChannelProperties> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(Map<String, GrpcChannelProperties> channels) {
-        this.channels = channels;
     }
 
     @Override

@@ -4,43 +4,48 @@ import io.grpc.Attributes;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
 import io.grpc.internal.SharedResourceHolder;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import javax.annotation.concurrent.GuardedBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.GuardedBy;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+
 public class AddressChannelNameResolver extends NameResolver {
 
-    private static Logger logger = LoggerFactory.getLogger(AddressChannelNameResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddressChannelNameResolver.class);
 
     private final String name;
     private final GrpcChannelProperties properties;
-    private final Attributes attributes;
-    private final SharedResourceHolder.Resource<ExecutorService> executorResource;
+    private final SharedResourceHolder.Resource<Executor> executorResource;
 
-    @GuardedBy("this") private boolean shutdown;
-    @GuardedBy("this") private ExecutorService executor;
-    @GuardedBy("this") private boolean resolving;
-    @GuardedBy("this") private Listener listener;
+    @GuardedBy("this")
+    private boolean shutdown;
+    @GuardedBy("this")
+    private Executor executor;
+    @GuardedBy("this")
+    private boolean resolving;
+    @GuardedBy("this")
+    private Listener listener;
 
     public AddressChannelNameResolver(String name,
-            GrpcChannelProperties properties, Attributes attributes,
-            SharedResourceHolder.Resource<ExecutorService> executorResource) {
+                                      GrpcChannelProperties properties,
+                                      SharedResourceHolder.Resource<Executor> executorResource) {
         this.name = name;
         this.properties = properties;
-        this.attributes = attributes;
         this.executorResource = executorResource;
     }
 
-    @Override public String getServiceAuthority() {
+    @Override
+    public String getServiceAuthority() {
         return name;
     }
 
-    @Override public void start(Listener listener) {
-        if (listener== null) {
+    @Override
+    public void start(Listener listener) {
+        if (listener == null) {
             throw new IllegalArgumentException("listener is null");
         }
 
@@ -86,20 +91,22 @@ public class AddressChannelNameResolver extends NameResolver {
                 }
                 savedListener.onAddresses(groups, Attributes.EMPTY);
             } finally {
-                 synchronized (AddressChannelNameResolver.this) {
-                     resolving = false;
-                 }
+                synchronized (AddressChannelNameResolver.this) {
+                    resolving = false;
+                }
             }
         });
     }
 
-    @Override public void refresh() {
+    @Override
+    public void refresh() {
         if (this.listener != null) {
             resolve();
         }
     }
 
-    @Override public void shutdown() {
+    @Override
+    public void shutdown() {
         if (shutdown) {
             return;
         }

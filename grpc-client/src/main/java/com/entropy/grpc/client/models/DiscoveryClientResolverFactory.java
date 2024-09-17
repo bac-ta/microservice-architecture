@@ -1,6 +1,5 @@
 package com.entropy.grpc.client.models;
 
-import io.grpc.Attributes;
 import io.grpc.NameResolver;
 import io.grpc.internal.GrpcUtil;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -17,8 +16,8 @@ public class DiscoveryClientResolverFactory extends NameResolver.Factory {
 
     @Nullable
     @Override
-    public NameResolver newNameResolver(URI targetUri, Attributes params) {
-        return new DiscoveryClientNameResolver(targetUri.toString(),
+    public NameResolver newNameResolver(URI uri, NameResolver.Args args) {
+        return new DiscoveryClientNameResolver(uri.toString(),
                 client,
                 GrpcUtil.TIMER_SERVICE,
                 GrpcUtil.SHARED_CHANNEL_EXECUTOR);

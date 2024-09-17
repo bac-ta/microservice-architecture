@@ -7,8 +7,6 @@ import com.entropy.grpc.client.services.impl.AddressChannelFactoryImpl;
 import com.entropy.grpc.client.services.impl.DiscoveryClientChannelProviderImpl;
 import com.entropy.grpc.client.services.impl.GrpcClientCreatorImpl;
 import io.grpc.Channel;
-import io.grpc.LoadBalancer;
-import io.grpc.util.RoundRobinLoadBalancerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,16 +31,10 @@ public class GrpcClientConfiguration {
         return new ClientInterceptorContext();
     }
 
-    @ConditionalOnMissingBean
-    @Bean
-    public LoadBalancer.Factory grpcLoadBalancerFactory() {
-        return RoundRobinLoadBalancerFactory.getInstance();
-    }
-
     @ConditionalOnMissingBean(value = GrpcChannelService.class, type = "org.springframework.cloud.client.discovery.DiscoveryClient")
     @Bean
-    public GrpcChannelService addressChannelFactory(GrpcChannelPropertiesComponent properties, LoadBalancer.Factory loadBalancerFactory, ClientInterceptorContext interceptorContext) {
-        return new AddressChannelFactoryImpl(properties, loadBalancerFactory, interceptorContext);
+    public GrpcChannelService addressChannelFactory(GrpcChannelPropertiesComponent properties, ClientInterceptorContext interceptorContext) {
+        return new AddressChannelFactoryImpl(properties, interceptorContext);
     }
 
     @ConditionalOnClass(GrpcClient.class)
@@ -57,8 +49,8 @@ public class GrpcClientConfiguration {
 
         @ConditionalOnMissingBean
         @Bean
-        public GrpcChannelService discoveryClientChannelFactory(GrpcChannelPropertiesComponent properties, DiscoveryClient discoveryClient, LoadBalancer.Factory loadBalancerFactory, ClientInterceptorContext globalClientInterceptorRegistry) {
-            return new DiscoveryClientChannelProviderImpl(properties, discoveryClient, loadBalancerFactory, globalClientInterceptorRegistry);
+        public GrpcChannelService discoveryClientChannelFactory(ClientInterceptorContext globalClientInterceptorRegistry) {
+            return new DiscoveryClientChannelProviderImpl(globalClientInterceptorRegistry);
         }
     }
 

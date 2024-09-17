@@ -1,7 +1,6 @@
 package com.entropy.grpc.client.models;
 
 import com.entropy.grpc.client.configurations.GrpcChannelPropertiesComponent;
-import io.grpc.Attributes;
 import io.grpc.NameResolver;
 import io.grpc.NameResolverProvider;
 import io.grpc.internal.GrpcUtil;
@@ -29,10 +28,8 @@ public class AddressChannelResolverProvider extends NameResolverProvider {
 
     @Nullable
     @Override
-    public NameResolver newNameResolver(URI uri, Attributes attributes) {
-        return new AddressChannelNameResolver(uri.toString(), properties.getChannel(uri.toString()), attributes,
-                GrpcUtil.SHARED_CHANNEL_EXECUTOR);
-
+    public NameResolver newNameResolver(URI uri, NameResolver.Args args) {
+        return new AddressChannelNameResolver(uri.toString(), properties.getChannel(uri.toString()), GrpcUtil.SHARED_CHANNEL_EXECUTOR);
     }
 
     @Override
