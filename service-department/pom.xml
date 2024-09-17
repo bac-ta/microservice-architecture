@@ -21,11 +21,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <spring-cloud.version>Dalston.SR1</spring-cloud.version>
-        <grpc.version>1.10.1</grpc.version>
+        <grpc.version>1.64.0</grpc.version>
         <protobuf.version>0.0.1-SNAPSHOT</protobuf.version>
         <service-authentication.version>0.0.1-SNAPSHOT</service-authentication.version>
         <appName>${project.artifactId}-${project.version}</appName>
@@ -141,7 +141,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.2</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
 
@@ -183,13 +183,15 @@
 
     <build>
         <finalName>${appName}</finalName>
-        <plugins>
-            <!-- spring-boot -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- spring-boot -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
