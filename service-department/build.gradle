@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.0'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.example'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+repositories {
+    maven {
+        url "http://localhost:8091/repository/maven-public/"
+        credentials {
+            username project.repoUser
+            password project.repoPassword
+        }
+        allowInsecureProtocol true
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config:4.1.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.2.10.RELEASE'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.1.4'
+    implementation 'io.grpc:grpc-all:1.64.0'
+    testImplementation 'io.grpc:grpc-testing:1.64.0'
+    runtimeOnly 'io.grpc:grpc-services:1.64.0'
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'com.example:protobuf:1.0.0'
+    implementation 'com.example:grpc-client:1.0.0'
+    implementation 'com.example:grpc-server:1.0.0'
+    implementation 'com.example:service-authentication:1.0.0'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

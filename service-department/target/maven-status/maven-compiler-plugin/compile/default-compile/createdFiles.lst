@@ -1,7 +1,0 @@
-com/entropy/department/models/entities/DepartmentEntity.class
-com/entropy/department/services/impls/DepartmentServiceImpl.class
-com/entropy/department/ServiceDepartmentApplication.class
-com/entropy/department/configurations/DepartmentGrpcServerConfiguration.class
-com/entropy/department/services/DepartmentService.class
-com/entropy/department/configurations/DepartmentGrpcServer.class
-com/entropy/department/repositories/DepartmentRepository.class

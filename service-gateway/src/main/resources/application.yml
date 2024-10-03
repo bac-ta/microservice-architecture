@@ -20,10 +20,13 @@ grpc:
         - ${GRPC_MASTER_PORT:55593}
 
 logging:
-  level: debug, info
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} %m%n"
 
 security:
   basic:
     enabled: false
+
+spring:
+  profiles:
+    active: local

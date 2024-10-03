@@ -2,11 +2,27 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/grpc-client.iml" filepath="$PROJECT_DIR$/grpc-client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../service-authentication/service-authentication.iml" filepath="$PROJECT_DIR$/../service-authentication/service-authentication.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../service-department/service-department.iml" filepath="$PROJECT_DIR$/../service-department/service-department.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../service-gateway/service-gateway.iml" filepath="$PROJECT_DIR$/../service-gateway/service-gateway.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../service-user/service-user.iml" filepath="$PROJECT_DIR$/../service-user/service-user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-client.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-client.main.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-client.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-client.test.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-client.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-server.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/grpc-server.test.iml" filepath="$PROJECT_DIR$/.idea/modules/grpc-server.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/protobuf.iml" filepath="$PROJECT_DIR$/.idea/modules/protobuf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/protobuf.main.iml" filepath="$PROJECT_DIR$/.idea/modules/protobuf.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/protobuf.test.iml" filepath="$PROJECT_DIR$/.idea/modules/protobuf.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-authentication.iml" filepath="$PROJECT_DIR$/.idea/modules/service-authentication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-authentication.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service-authentication.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-authentication.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service-authentication.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-department.iml" filepath="$PROJECT_DIR$/.idea/modules/service-department.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-department.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service-department.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-department.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service-department.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-gateway.iml" filepath="$PROJECT_DIR$/.idea/modules/service-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service-gateway.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-gateway.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service-gateway.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-user.iml" filepath="$PROJECT_DIR$/.idea/modules/service-user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/service-user.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/service-user.test.iml" filepath="$PROJECT_DIR$/.idea/modules/service-user.test.iml" />
     </modules>
   </component>
 </project>

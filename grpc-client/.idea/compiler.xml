@@ -2,30 +2,37 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
-        <module name="protobuf" />
-        <module name="grpc-client" />
-        <module name="service-authentication" />
-        <module name="service-gateway" />
-        <module name="grpc-server" />
-        <module name="service-user" />
-        <module name="service-department" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.32/17d46b3e205515e1e8efd3ee4d57ce8018914163/lombok-1.18.32.jar" />
+        </processorPath>
+        <module name="grpc-server.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="getway-service" target="1.8" />
+      <module name="grpc-client" target="17" />
+      <module name="grpc-client.main" target="17" />
+      <module name="grpc-client.test" target="17" />
+      <module name="grpc-server" target="17" />
+      <module name="grpc-server.main" target="17" />
+      <module name="grpc-server.test" target="17" />
+      <module name="protobuf" target="17" />
+      <module name="protobuf.main" target="17" />
+      <module name="protobuf.test" target="17" />
+      <module name="service-authentication" target="17" />
+      <module name="service-authentication.main" target="17" />
+      <module name="service-authentication.test" target="17" />
+      <module name="service-department" target="17" />
+      <module name="service-department.main" target="17" />
+      <module name="service-department.test" target="17" />
+      <module name="service-gateway" target="17" />
+      <module name="service-gateway.main" target="17" />
+      <module name="service-gateway.test" target="17" />
+      <module name="service-user" target="17" />
+      <module name="service-user.main" target="17" />
+      <module name="service-user.test" target="17" />
     </bytecodeTargetLevel>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="grpc-client" options="-parameters" />
-      <module name="grpc-server" options="-parameters" />
-      <module name="service-department" options="-parameters" />
-      <module name="service-gateway" options="-parameters" />
-      <module name="service-user" options="-parameters" />
-    </option>
   </component>
 </project>

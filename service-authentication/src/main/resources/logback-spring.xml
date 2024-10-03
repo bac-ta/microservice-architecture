@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
-  <include resource="demo/service/framework/logging/config.xml"/>
-  <include resource="demo/service/framework/logging/console-appender.xml"/>
+    <property name="LOG_FILE_NAME" value="hcms-api"/>
 
-  <springProfile name="default,local,develop">
-    <include resource="demo/service/framework/logging/logger-default.xml"/>
-  </springProfile>
+    <property name="LOGS_ABSOLUTE_PATH" value="./logs"/>
 
-  <springProfile name="staging">
-    <include resource="demo/service/framework/logging/logger-staging.xml"/>
-  </springProfile>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
 
-  <springProfile name="production">
-    <include resource="demo/service/framework/logging/logger-production.xml"/>
-  </springProfile>
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_ABSOLUTE_PATH}/${LOG_FILE_NAME}.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss}:%-3relative][%th read] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_ABSOLUTE_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+                <!-- kb, mb, gb -->
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <springProfile name="dev">
+        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE-ROLLING"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="stg">
+        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE-ROLLING"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+            <appender-ref ref="FILE-ROLLING"/>
+        </logger>
+    </springProfile>
+
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
+    </root>
 
 </configuration>

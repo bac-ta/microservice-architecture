@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.entropy.grpc.client.configurations.GrpcClientConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.grpc.client.configurations.GrpcClientConfiguration

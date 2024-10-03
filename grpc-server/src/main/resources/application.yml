@@ -1,4 +1,8 @@
-grpc:
-  server:
-    port: ${GRPC-SERVER-PORT}
-    address: ${GRPC-SERVER-ADDRESS}
+spring:
+  application:
+    name: grpc-server
+app:
+  grpc:
+    server:
+      port: ${GRPC-SERVER-PORT}
+      address: ${GRPC-SERVER-ADDRESS}

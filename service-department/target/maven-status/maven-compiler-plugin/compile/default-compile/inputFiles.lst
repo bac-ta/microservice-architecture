@@ -1,7 +1,0 @@
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/repositories/DepartmentRepository.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/configurations/DepartmentGrpcServer.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/ServiceDepartmentApplication.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/models/entities/DepartmentEntity.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/services/impls/DepartmentServiceImpl.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/configurations/DepartmentGrpcServerConfiguration.java
-/home/entropy/Workspaces/Java/microservice-architecture-starter-kit/service-department/src/main/java/com/entropy/department/services/DepartmentService.java
