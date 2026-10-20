@@ -1,0 +1,39 @@
+// Common setup for every Java module: Java 21, Spring Boot + Spring Cloud BOMs, Lombok, JUnit 5.
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management'
+}
+
+def catalog = versionCatalogs.named('libs')
+
+group = 'com.example'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${catalog.findVersion('spring-boot').get()}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${catalog.findVersion('spring-cloud').get()}"
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

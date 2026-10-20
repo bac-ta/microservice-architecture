@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: gateway
+  servlet:
+    multipart:
+      max-file-size: ${UPLOAD_MAX_FILE_SIZE:50MB}
+      max-request-size: ${UPLOAD_MAX_FILE_SIZE:50MB}
+  threads:
+    virtual:
+      # requests wait on blocking gRPC calls and long exports: cheap on virtual threads
+      enabled: true
+  mvc:
+    async:
+      # report downloads are written asynchronously
+      request-timeout: ${GATEWAY_STREAM_DEADLINE:10m}
+
+server:
+  port: ${HTTP_SERVER_PORT:5555}
+  servlet:
+    context-path: /api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+epl:
+  gateway:
+    # backend name -> gRPC target. The backend of an RPC is taken from its proto package
+    # (epl.inventory.v1.StockService -> inventory). Kubernetes: dns:///inventory:9104
+    backends:
+      auth: ${GRPC_AUTH_TARGET:localhost:9101}
+      masterdata: ${GRPC_MASTERDATA_TARGET:localhost:9102}
+      inbound: ${GRPC_INBOUND_TARGET:localhost:9103}
+      inventory: ${GRPC_INVENTORY_TARGET:localhost:9104}
+      outbound: ${GRPC_OUTBOUND_TARGET:localhost:9105}
+      billing: ${GRPC_BILLING_TARGET:localhost:9106}
+      integration: ${GRPC_INTEGRATION_TARGET:localhost:9107}
+      report: ${GRPC_REPORT_TARGET:localhost:9108}
+    deadline: ${GATEWAY_DEADLINE:30s}
+    stream-deadline: ${GATEWAY_STREAM_DEADLINE:10m}
+    security:
+      # false only for local development while auth/GetJwks is not ported yet
+      enabled: ${GATEWAY_SECURITY_ENABLED:true}
+      issuer: ${JWT_ISSUER:}
+      jwks-cache-ttl: 5m
+      public-paths:
+        - /rpc/epl.auth.v1.AuthService/Login
+        - /rpc/epl.auth.v1.AuthService/Refresh
+        - /rpc/epl.auth.v1.AuthService/GetJwks
+        - /actuator/health/**
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:}

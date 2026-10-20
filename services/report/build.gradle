@@ -1,0 +1,10 @@
+// Reports, labels and KPIs (legacy GwhSrvcRpWeb, GwhSrvcRbWeb, GwhSrvcKpWeb).
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':proto')
+    implementation project(':libs:grpc-server')
+    implementation project(':libs:security')
+}

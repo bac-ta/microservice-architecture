@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+// Master data: locations, products, sub-inventories, parties and scoped configuration.
+// Schema: md. Legacy: GwhSrvcMpWeb (PC), GwhSrvcMbWeb / GwhSrvcMhWeb (HHT), GwhSrvcCpWeb (lookups).
+package epl.masterdata.v1;
+
+import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "com.example.epl.masterdata.v1";
+option java_multiple_files = true;
+
+// ---------------------------------------------------------------------------
+// Areas and locations (warehouse-scoped, shared by all customers)
+// ---------------------------------------------------------------------------
+service LocationService {
+  // legacy: gwh_mpare_010, gwh_cpcmn (area lookup)
+  rpc ListAreas(ListAreasRequest) returns (ListAreasResponse);
+  // legacy: gwh_mpare_010 register
+  rpc UpsertArea(Area) returns (Area);
+  // legacy: gwh_mploc_010, gwh_cploc_010 (location popup)
+  rpc ListLocations(ListLocationsRequest) returns (ListLocationsResponse);
+  rpc GetLocation(GetLocationRequest) returns (Location);
+  // legacy: gwh_mploc_010 register
+  rpc UpsertLocation(Location) returns (Location);
+}
+
+message Area {
+  string code = 1;
+  string name = 2;
+  string temperature_kind = 3;
+  string picking_group_code = 4;
+  bool no_allocation = 5;
+  bool no_replenishment = 6;
+  bool single_product_only = 7;
+  bool single_pick_key_only = 8;
+  bool locked = 9;
+  epl.common.v1.Audit audit = 10;
+}
+
+message ListAreasRequest {
+  epl.common.v1.PageRequest page = 1;
+}
+
+message ListAreasResponse {
+  repeated Area areas = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message Location {
+  string code = 1;  // area+rack+position+level, max 18
+  string area_code = 2;
+  string rack_code = 3;
+  string position_code = 4;
+  string level_code = 5;
+  string zone_code = 6;
+  bool no_allocation = 7;
+  bool no_replenishment = 8;
+  bool single_product_only = 9;
+  bool single_pick_key_only = 10;
+  int32 allocation_priority = 11;
+  int32 picking_sequence = 12;
+  string dedicated_product_code = 13;
+  string sub_inventory_code = 14;
+  string bond_kind = 15;
+  string temperature_control = 16;
+  string remarks = 17;
+  google.protobuf.Struct ext = 18;  // legacy LOC_CIT1..15
+  epl.common.v1.Audit audit = 19;
+}
+
+message ListLocationsRequest {
+  epl.common.v1.PageRequest page = 1;
+  string area_code = 2;
+  string code_from = 3;
+  string code_to = 4;
+  bool only_empty = 5;  // no stock (asks inventory service)
+}
+
+message ListLocationsResponse {
+  repeated Location locations = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message GetLocationRequest {
+  string code = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Products and barcodes (tenant-scoped)
+// ---------------------------------------------------------------------------
+service ProductService {
+  // legacy: gwh_mpprd_010 / gwh_mbprd (HHT) / gwh_cpprd_010 (popup)
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  // legacy: gwh_mpprd_010 register, upload via integration (lpupl FILE_KND 03)
+  rpc UpsertProduct(Product) returns (Product);
+  // legacy: gwh_cppbar (GWH_TM_PBAR) — HHT scans a barcode and needs the product
+  rpc ResolveBarcode(ResolveBarcodeRequest) returns (ResolveBarcodeResponse);
+}
+
+message Packing {
+  int32 units_per_case = 1;
+  int32 units_per_ball = 2;
+  int32 cases_per_pallet = 3;
+  string uom_piece = 4;
+  string uom_case = 5;
+  string uom_ball = 6;
+  epl.common.v1.Decimal case_weight = 7;
+  epl.common.v1.Decimal case_volume = 8;
+  epl.common.v1.Decimal piece_weight = 9;
+  epl.common.v1.Decimal piece_volume = 10;
+}
+
+message Product {
+  string code = 1;
+  repeated string names = 2;  // NAM1..NAM4
+  string product_group_code = 3;
+  repeated string hierarchy = 4;
+  Packing packing = 5;
+  string storage_kind = 6;
+  string abc_class = 7;
+  string expiry_kind = 8;
+  int32 expiry_days = 9;
+  bool not_shippable = 10;
+  bool is_kit_parent = 11;
+  string hs_code = 12;
+  string bond_kind = 13;
+  string origin_country = 14;
+  string recommended_location = 15;
+  repeated string barcodes = 16;
+  google.protobuf.Struct ext = 17;
+  epl.common.v1.Audit audit = 18;
+}
+
+message GetProductRequest {
+  string code = 1;
+}
+
+message ListProductsRequest {
+  epl.common.v1.PageRequest page = 1;
+  string query = 2;  // code or name contains
+  string product_group_code = 3;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message ResolveBarcodeRequest {
+  string barcode = 1;
+}
+
+message ResolveBarcodeResponse {
+  Product product = 1;
+  string uom_level = 2;  // PIECE / BALL / CASE / PALLET
+}
+
+// ---------------------------------------------------------------------------
+// Parties: delivery destinations, suppliers
+// ---------------------------------------------------------------------------
+service PartyService {
+  // legacy: gwh_mpdlv_010, gwh_cpdlv (GWH_TM_DLV)
+  rpc ListDeliveryDestinations(ListPartiesRequest) returns (ListPartiesResponse);
+  // legacy: gwh_mpspl_010, gwh_cpspl (GWH_TM_SPL)
+  rpc ListSuppliers(ListPartiesRequest) returns (ListPartiesResponse);
+}
+
+message ListPartiesRequest {
+  epl.common.v1.PageRequest page = 1;
+  string query = 2;
+}
+
+message ListPartiesResponse {
+  repeated epl.common.v1.Party parties = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Scoped configuration (company / warehouse / customer, most specific wins)
+// ---------------------------------------------------------------------------
+service ConfigService {
+  // legacy: gwh_mpsub_010, gwh_mbsub (GWH_TM_SBIV)
+  rpc ListSubInventories(google.protobuf.Empty) returns (ListSubInventoriesResponse);
+  // legacy: gwh_mppik_010 (GWH_TM_PIK)
+  rpc ListPickingKeyDefinitions(google.protobuf.Empty) returns (ListPickingKeyDefinitionsResponse);
+  // legacy: gwh_mptrn_010 (GWH_TM_TRN)
+  rpc ListTransactionKinds(ListTransactionKindsRequest) returns (ListTransactionKindsResponse);
+  // legacy: gwh_mpsts_010 (GWH_TM_STS) + GWH_TM_PRCC process control
+  rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
+  // legacy: gwh_mpcod_010, gwh_mprsn_010 (GWH_TM_CODE, GWH_TM_RSN)
+  rpc ListCodes(ListCodesRequest) returns (ListCodesResponse);
+  // legacy: gwh_mpcus_010 (≈249 behaviour switches of GWH_TM_CUST)
+  rpc GetEffectiveSettings(GetEffectiveSettingsRequest) returns (GetEffectiveSettingsResponse);
+}
+
+message SubInventory {
+  string code = 1;
+  string name = 2;
+  bool is_default = 3;
+}
+
+message ListSubInventoriesResponse {
+  repeated SubInventory sub_inventories = 1;
+}
+
+message PickingKeyDefinition {
+  int32 key_no = 1;  // 1..7
+  bool in_use = 2;
+  string name = 3;
+  string data_type = 4;
+  int32 max_length = 5;
+  string date_format = 6;
+  bool required_on_receipt = 7;
+  bool required_on_ship = 8;
+  bool expiry_control = 9;
+}
+
+message ListPickingKeyDefinitionsResponse {
+  repeated PickingKeyDefinition definitions = 1;
+}
+
+message TransactionKind {
+  string code = 1;
+  string name = 2;
+  repeated string usages = 3;        // RECEIPT, SHIP, ADJUST, RELOCATE …
+  repeated string charge_types = 4;  // IN, OUT, STORAGE, PROCESSING
+  bool reason_required = 5;
+  bool allow_surplus = 6;
+  bool allow_shortage = 7;
+}
+
+message ListTransactionKindsRequest {
+  string usage = 1;  // filter, e.g. ADJUST
+}
+
+message ListTransactionKindsResponse {
+  repeated TransactionKind kinds = 1;
+}
+
+message Status {
+  string business_code = 1;  // AV, SP, STK
+  string status_code = 2;
+  string label_key = 3;
+}
+
+message ProcessControl {
+  string process_code = 1;
+  string required_status = 2;
+  string processing_status = 3;
+  string finished_status = 4;
+}
+
+message ListStatusesRequest {
+  string business_code = 1;
+}
+
+message ListStatusesResponse {
+  repeated Status statuses = 1;
+  repeated ProcessControl process_controls = 2;
+}
+
+message Code {
+  string kind = 1;
+  string code = 2;
+  string label_key = 3;
+  int32 sort_order = 4;
+  google.protobuf.Struct attributes = 5;
+}
+
+message ListCodesRequest {
+  string kind = 1;  // e.g. REASON
+}
+
+message ListCodesResponse {
+  repeated Code codes = 1;
+}
+
+message GetEffectiveSettingsRequest {
+  repeated string keys = 1;  // empty = all
+}
+
+message GetEffectiveSettingsResponse {
+  google.protobuf.Struct settings = 1;
+}

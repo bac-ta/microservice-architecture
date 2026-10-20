@@ -1,0 +1,10 @@
+// Outbound: shipping orders, allocation, picking, packing, confirmation (legacy GwhSrvcSp/Sb/ShWeb).
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':proto')
+    implementation project(':libs:grpc-server')
+    implementation project(':libs:security')
+}

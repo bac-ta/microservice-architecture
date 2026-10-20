@@ -1,0 +1,10 @@
+// Billing: warehouse charge rates, statements, month-end close (legacy lpw*, mpw*).
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':proto')
+    implementation project(':libs:grpc-server')
+    implementation project(':libs:security')
+}

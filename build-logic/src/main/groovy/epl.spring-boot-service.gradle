@@ -1,0 +1,10 @@
+// Deployable Spring Boot service (services/*): builds an executable bootJar.
+plugins {
+    id 'epl.java-conventions'
+    id 'org.springframework.boot'
+}
+
+// Only the executable jar is needed for the container image.
+tasks.named('jar') {
+    enabled = false
+}

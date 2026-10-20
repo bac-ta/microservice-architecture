@@ -7,12 +7,15 @@ First slice: identity/permissions and everything behind `GwhSrvcLpWeb`
 
 **One PostgreSQL database `epl`, one schema per service, two roles per service.**
 
-| Schema | Owner service            | Migration role | Runtime role | Migration files |
-|--------|--------------------------|----------------|--------------|-----------------|
-| `app`  | shared (bootstrap)       | superuser      | —            | `bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
-| `iam`  | `service-authentication` | `iam_owner`    | `iam_app`    | `iam/V1__iam_schema.sql`, `iam/V2__authz_catalog.sql`, `iam/V3__cross_schema_grants.sql` |
-| `md`   | `service-masterdata`     | `md_owner`     | `md_app`     | `masterdata/V1__masterdata_schema.sql` |
-| `inv`  | `service-inventory`      | `inv_owner`    | `inv_app`    | `inventory/V1__inventory_schema.sql` |
+| Schema | Owner service         | Migration role | Runtime role | Migration files |
+|--------|-----------------------|----------------|--------------|-----------------|
+| `app`  | shared (bootstrap)    | superuser      | —            | `database/bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
+| `iam`  | `services/auth`       | `iam_owner`    | `iam_app`    | `services/auth/src/main/resources/db/migration/V1..V3` |
+| `md`   | `services/masterdata` | `md_owner`     | `md_app`     | `services/masterdata/src/main/resources/db/migration/V1` |
+| `inv`  | `services/inventory`  | `inv_owner`    | `inv_app`    | `services/inventory/src/main/resources/db/migration/V1` |
+
+Each service applies its own migrations with Flyway when it starts. Inbound, outbound, billing,
+integration and report have no schema yet (see section 7).
 
 `epl_admin` (BYPASSRLS) is for config maintenance, reports and data migration across tenants.
 
@@ -36,10 +39,12 @@ a replicated `tenant_ref` table; the service code doesn't change.
 
 ### Migration order and Flyway
 
-1. `bootstrap/bootstrap.sql` once per environment, as superuser (then set role passwords from the secret store).
-2. `iam` (other schemas reference its tables) → 3. `md` → 4. `inv`.
+1. `database/bootstrap/bootstrap.sql` once per environment, as superuser (then set role passwords from the secret store).
+2. Start `services/auth` first: its migrations create the `iam` tables that `md` and `inv` reference.
+3. Then `services/masterdata` and `services/inventory`.
 
-Each service runs its own Flyway on its own schema, with its own history table:
+Each service runs its own Flyway on its own schema, with its own history table
+(already configured in each service's `application.yml`, overridable with `DB_*` / `FLYWAY_*` env vars):
 
 ```yaml
 spring:

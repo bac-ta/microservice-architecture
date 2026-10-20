@@ -1,0 +1,35 @@
+pluginManagement {
+    // Convention plugins: epl.java-library, epl.proto-library, epl.spring-boot-service
+    includeBuild 'build-logic'
+}
+
+dependencyResolutionManagement {
+    // Modules depend on each other with project(...); nothing is fetched from Nexus any more.
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'microservice-architecture'
+
+// gRPC contracts (.proto) and the generated stubs
+include 'proto'
+
+// Shared libraries
+include 'libs:grpc-server'
+include 'libs:grpc-client'
+include 'libs:security'
+
+// Edge
+include 'services:gateway'
+
+// EPL warehouse services (rebuilt from legacy GWH)          http / gRPC port
+include 'services:auth'          // IAM, JWT, ABAC           8101 / 9101   schema iam
+include 'services:masterdata'    // locations, products      8102 / 9102   schema md
+include 'services:inbound'       // arrivals                 8103 / 9103
+include 'services:inventory'     // stock, stocktake         8104 / 9104   schema inv
+include 'services:outbound'      // shipments                8105 / 9105
+include 'services:billing'       // warehouse charges        8106 / 9106
+include 'services:integration'   // uploads, EDI, jobs       8107 / 9107
+include 'services:report'        // reports, labels, KPI     8108 / 9108

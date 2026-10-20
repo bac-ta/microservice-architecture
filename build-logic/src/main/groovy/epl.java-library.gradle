@@ -1,0 +1,5 @@
+// Shared library (libs/*): plain jar, consumed by other modules through project(...).
+plugins {
+    id 'epl.java-conventions'
+    id 'java-library'
+}

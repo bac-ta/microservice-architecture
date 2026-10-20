@@ -1,0 +1,158 @@
+syntax = "proto3";
+
+// Inbound: arrival plan → inspection → put-away → confirmation.
+// Legacy: GwhSrvcApWeb (PC), GwhSrvcAbWeb / GwhSrvcAhWeb (HHT); tables GWH_TJ_AV_H / AV_D / AV_R.
+// Confirmed receipts create stock in the inventory service (event inbound.arrival.confirmed).
+package epl.inbound.v1;
+
+import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "com.example.epl.inbound.v1";
+option java_multiple_files = true;
+
+service ArrivalService {
+  // legacy: gwh_apent_010 (PC), gwh_abent (HHT unplanned arrival), EDI via integration
+  rpc CreateArrival(CreateArrivalRequest) returns (Arrival);
+  // legacy: gwh_apinq_010 / gwh_abinq (HHT)
+  rpc GetArrival(GetArrivalRequest) returns (Arrival);
+  // legacy: gwh_apinq_010 search
+  rpc SearchArrivals(SearchArrivalsRequest) returns (SearchArrivalsResponse);
+  // legacy: gwh_apent_010 correction / delete
+  rpc CancelArrival(CancelArrivalRequest) returns (Arrival);
+  // legacy: gwh_apins_010 (PC), gwh_abins / gwh_ahins (HHT) — inspection results per line
+  rpc RecordInspection(RecordInspectionRequest) returns (RecordInspectionResponse);
+  // legacy: gwh_abloc / gwh_ahloc (HHT put-away: cargo ID → location)
+  rpc RecordPutaway(RecordPutawayRequest) returns (RecordPutawayResponse);
+  // legacy: gwh_apcnf_010 — confirm, creates stock lots
+  rpc ConfirmArrival(ConfirmArrivalRequest) returns (Arrival);
+  // legacy: gwh_apsrl_010 — serial numbers captured on receipt
+  rpc RegisterSerials(RegisterSerialsRequest) returns (google.protobuf.Empty);
+  // legacy: gwh_apscf_010 — send arrival result to the customer (EDI / CSV / mail)
+  rpc SendArrivalResult(SendArrivalResultRequest) returns (google.protobuf.Empty);
+}
+
+message ArrivalLine {
+  int32 line_no = 1;          // AVLN_NUM
+  string status = 2;          // AV_STS
+  bool inspected = 3;         // INSP_STS
+  string product_code = 4;
+  string product_name = 5;
+  string origin_country = 6;
+  string supplier_product_code = 7;
+  epl.common.v1.Quantity planned = 8;   // SCS / SBL / SPC / STPC
+  epl.common.v1.Quantity received = 9;  // sum of AV_R results
+  string sub_inventory_code = 10;
+  epl.common.v1.PickKeys pick_keys = 11;
+  bool on_hold = 12;                    // DMG_FLG
+  int32 customer_line_seq = 13;         // CDSQ_NUM
+  string remarks = 14;
+  google.protobuf.Struct ext = 15;      // CIT / COIL customer fields
+}
+
+message Arrival {
+  string arrival_no = 1;                  // AV_NUM
+  epl.common.v1.Date scheduled_date = 2;  // SCDL_YMD
+  string transaction_kind = 3;            // TRN_KND
+  string status = 4;                      // AV_STS
+  epl.common.v1.Date arrived_date = 5;    // ARV_YMD
+  epl.common.v1.Date confirmed_date = 6;  // CNOP_YMD
+  string invoice_no = 7;                  // IV_NUM
+  string customer_ref = 8;                // RF_NUM
+  string po_no = 9;
+  epl.common.v1.Party supplier = 10;      // SPL_*
+  bool bonded = 11;
+  string bl_no = 12;
+  string container_no = 13;
+  string transport_code = 14;
+  string return_shipment_no = 15;         // RTSP_NUM (returns)
+  string remarks = 16;
+  repeated ArrivalLine lines = 17;
+  google.protobuf.Struct ext = 18;
+  epl.common.v1.Audit audit = 19;
+}
+
+message CreateArrivalRequest {
+  Arrival arrival = 1;  // arrival_no empty = numbered by the server (GWH_TM_NUM)
+}
+
+message GetArrivalRequest {
+  string arrival_no = 1;
+}
+
+message SearchArrivalsRequest {
+  epl.common.v1.PageRequest page = 1;
+  epl.common.v1.Date scheduled_from = 2;
+  epl.common.v1.Date scheduled_to = 3;
+  repeated string statuses = 4;
+  string invoice_no = 5;
+  string customer_ref = 6;
+  string product_code = 7;
+  string supplier_code = 8;
+}
+
+message SearchArrivalsResponse {
+  repeated Arrival arrivals = 1;  // headers only (lines empty)
+  epl.common.v1.PageResponse page = 2;
+}
+
+message CancelArrivalRequest {
+  string arrival_no = 1;
+  string reason_code = 2;
+  int32 version = 3;
+}
+
+message InspectionResult {
+  int32 line_no = 1;
+  epl.common.v1.Quantity quantity = 2;
+  epl.common.v1.PickKeys pick_keys = 3;  // actual lot / expiry
+  string sub_inventory_code = 4;
+  bool on_hold = 5;
+  string cargo_id = 6;                   // pallet / cargo label scanned on HHT
+}
+
+message RecordInspectionRequest {
+  string arrival_no = 1;
+  repeated InspectionResult results = 2;
+  bool allow_surplus = 3;   // needs transaction kind TRN_SPPA_FLG
+  bool allow_shortage = 4;  // needs TRN_SHPA_FLG
+}
+
+message RecordInspectionResponse {
+  Arrival arrival = 1;
+  repeated epl.common.v1.RowError errors = 2;
+}
+
+message Putaway {
+  string cargo_id = 1;
+  int32 line_no = 2;
+  string location_code = 3;
+  epl.common.v1.Quantity quantity = 4;
+}
+
+message RecordPutawayRequest {
+  string arrival_no = 1;
+  repeated Putaway putaways = 2;
+}
+
+message RecordPutawayResponse {
+  repeated epl.common.v1.RowError errors = 1;
+}
+
+message ConfirmArrivalRequest {
+  string arrival_no = 1;
+  epl.common.v1.Date arrived_date = 2;
+  int32 version = 3;
+}
+
+message RegisterSerialsRequest {
+  string arrival_no = 1;
+  int32 line_no = 2;
+  repeated string serial_numbers = 3;
+}
+
+message SendArrivalResultRequest {
+  repeated string arrival_nos = 1;
+  string channel = 2;  // EDI / CSV / MAIL
+}

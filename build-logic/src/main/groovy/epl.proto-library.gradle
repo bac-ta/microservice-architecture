@@ -1,0 +1,31 @@
+// gRPC contract module: compiles src/main/proto into Java messages + gRPC stubs.
+plugins {
+    id 'epl.java-library'
+    id 'com.google.protobuf'
+}
+
+def catalog = versionCatalogs.named('libs')
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${catalog.findVersion('protobuf').get()}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${catalog.findVersion('grpc').get()}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+dependencies {
+    // generated code exposes these types, so consumers need them on their compile classpath
+    api catalog.findLibrary('protobuf-java').get()
+    api catalog.findLibrary('grpc-stub').get()
+    api catalog.findLibrary('grpc-protobuf').get()
+    compileOnly catalog.findLibrary('javax-annotation-api').get()
+}

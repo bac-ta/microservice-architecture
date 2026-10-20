@@ -1,0 +1,12 @@
+// gRPC server bootstrap: @GrpcServer discovery, interceptor registry, server lifecycle.
+plugins {
+    id 'epl.java-library'
+}
+
+dependencies {
+    api libs.spring.boot.starter
+    implementation libs.spring.boot.autoconfigure
+    api libs.grpc.stub
+    api libs.grpc.protobuf
+    api libs.grpc.netty
+}

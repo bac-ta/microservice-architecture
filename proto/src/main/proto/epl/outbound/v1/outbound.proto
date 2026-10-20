@@ -1,0 +1,247 @@
+syntax = "proto3";
+
+// Outbound: shipping order → allocation → picking → packing → confirmation → result sending.
+// Legacy: GwhSrvcSpWeb (PC), GwhSrvcSbWeb / GwhSrvcShWeb (HHT); tables GWH_TJ_SP_H / SP_D / SP_R,
+// picking SPK_H/D, packing SP_PH/PD. Allocation reserves stock in the inventory service.
+package epl.outbound.v1;
+
+import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "com.example.epl.outbound.v1";
+option java_multiple_files = true;
+
+// ---------------------------------------------------------------------------
+// Shipping orders
+// ---------------------------------------------------------------------------
+service ShipmentService {
+  // legacy: gwh_spent_010, EDI / upload via integration
+  rpc CreateShipment(CreateShipmentRequest) returns (Shipment);
+  // legacy: gwh_spinq_010 / gwh_sbinq (HHT)
+  rpc GetShipment(GetShipmentRequest) returns (Shipment);
+  // legacy: gwh_spinq_010 search, gwh_sbiqb / gwh_sbiqc (HHT inquiry by batch / carton)
+  rpc SearchShipments(SearchShipmentsRequest) returns (SearchShipmentsResponse);
+  // legacy: gwh_spcnc_010 (cancel shipping order)
+  rpc CancelShipment(CancelShipmentRequest) returns (Shipment);
+  // legacy: gwh_spcnf_010 (shipping confirmation: stock leaves the warehouse)
+  rpc ConfirmShipment(ConfirmShipmentRequest) returns (ConfirmShipmentResponse);
+  // legacy: gwh_spscf_010 (send result: EDI / CSV / mail)
+  rpc SendShipmentResult(SendShipmentResultRequest) returns (google.protobuf.Empty);
+}
+
+message ShipmentLine {
+  int32 line_no = 1;  // SPLN_NUM
+  string status = 2;
+  string product_code = 3;
+  string product_name = 4;
+  string origin_country = 5;
+  epl.common.v1.Quantity ordered = 6;    // SCS / SBL / SPC / STPC
+  epl.common.v1.Quantity allocated = 7;
+  epl.common.v1.Quantity shipped = 8;
+  string sub_inventory_code = 9;
+  epl.common.v1.PickKeys pick_keys = 10;  // requested lot / expiry, empty = any
+  string allocation_kind = 11;            // ALCT_KBN (FIFO, FEFO, lot …)
+  bool not_shippable = 12;
+  int32 customer_line_seq = 13;
+  string warehouse_instructions = 14;
+  string delivery_note_remarks = 15;
+  google.protobuf.Struct ext = 16;
+}
+
+message Shipment {
+  string shipment_no = 1;                 // SP_NUM
+  epl.common.v1.Date scheduled_date = 2;
+  string transaction_kind = 3;
+  string status = 4;                      // SP_STS
+  epl.common.v1.Date shipped_date = 5;
+  epl.common.v1.Date confirmed_date = 6;
+  string batch_no = 7;                    // BT_NUM
+  string total_picking_no = 8;            // TP_NUM
+  string invoice_no = 9;
+  string customer_ref = 10;
+  string po_no = 11;
+  epl.common.v1.Party ship_to = 12;       // DLV_*
+  epl.common.v1.Party final_ship_to = 13; // FNL_DLV_*
+  epl.common.v1.Party shipper = 14;       // SP_* (consignor)
+  epl.common.v1.Party bill_to = 15;       // BIL_*
+  string carrier_code = 16;
+  string warehouse_instructions = 17;
+  string delivery_note_remarks = 18;
+  string waybill_remarks = 19;
+  epl.common.v1.Decimal total_weight = 20;
+  epl.common.v1.Decimal total_volume = 21;
+  repeated ShipmentLine lines = 22;
+  google.protobuf.Struct ext = 23;
+  epl.common.v1.Audit audit = 24;
+}
+
+message CreateShipmentRequest {
+  Shipment shipment = 1;
+}
+
+message GetShipmentRequest {
+  string shipment_no = 1;
+}
+
+message SearchShipmentsRequest {
+  epl.common.v1.PageRequest page = 1;
+  epl.common.v1.Date scheduled_from = 2;
+  epl.common.v1.Date scheduled_to = 3;
+  repeated string statuses = 4;
+  string invoice_no = 5;
+  string customer_ref = 6;
+  string ship_to_code = 7;
+  string batch_no = 8;
+  string product_code = 9;
+}
+
+message SearchShipmentsResponse {
+  repeated Shipment shipments = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message CancelShipmentRequest {
+  string shipment_no = 1;
+  string reason_code = 2;
+  int32 version = 3;
+}
+
+message ConfirmShipmentRequest {
+  repeated string shipment_nos = 1;
+  epl.common.v1.Date shipped_date = 2;
+}
+
+message ConfirmShipmentResponse {
+  repeated Shipment shipments = 1;
+  repeated epl.common.v1.RowError errors = 2;
+}
+
+message SendShipmentResultRequest {
+  repeated string shipment_nos = 1;
+  string channel = 2;  // EDI / CSV / MAIL
+}
+
+// ---------------------------------------------------------------------------
+// Allocation (stock reservation)
+// ---------------------------------------------------------------------------
+service AllocationService {
+  // legacy: gwh_spalc_010 search / register (allocate available stock to order lines)
+  rpc Allocate(AllocateRequest) returns (AllocateResponse);
+  // legacy: gwh_spalc_010 cancel / back
+  rpc CancelAllocation(CancelAllocationRequest) returns (google.protobuf.Empty);
+}
+
+message AllocatedLot {
+  int32 line_no = 1;
+  string stock_id = 2;
+  string location_code = 3;
+  epl.common.v1.PickKeys pick_keys = 4;
+  epl.common.v1.Decimal qty = 5;
+}
+
+message AllocateRequest {
+  repeated string shipment_nos = 1;
+  bool allow_partial = 2;
+}
+
+message AllocateResponse {
+  repeated AllocatedLot lots = 1;
+  repeated epl.common.v1.RowError shortages = 2;
+}
+
+message CancelAllocationRequest {
+  repeated string shipment_nos = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Picking
+// ---------------------------------------------------------------------------
+service PickingService {
+  // legacy: gwh_spbtg_010 / hpbtg (batch & total-picking grouping), gwh_spplt
+  rpc CreatePickingBatch(CreatePickingBatchRequest) returns (PickingBatch);
+  // legacy: gwh_sbpic / gwh_shpic (HHT picking by case / SKU), gwh_sbpip / gwh_shpip
+  rpc RecordPick(RecordPickRequest) returns (RecordPickResponse);
+}
+
+message PickTask {
+  string shipment_no = 1;
+  int32 line_no = 2;
+  string stock_id = 3;
+  string location_code = 4;
+  string product_code = 5;
+  epl.common.v1.PickKeys pick_keys = 6;
+  epl.common.v1.Decimal qty = 7;
+  int32 picking_sequence = 8;
+}
+
+message PickingBatch {
+  string batch_no = 1;
+  string total_picking_no = 2;
+  repeated string shipment_nos = 3;
+  repeated PickTask tasks = 4;  // ordered by location picking sequence
+}
+
+message CreatePickingBatchRequest {
+  repeated string shipment_nos = 1;
+  bool total_picking = 2;  // one pick list for many orders
+}
+
+message RecordPickRequest {
+  message Pick {
+    string shipment_no = 1;
+    int32 line_no = 2;
+    string stock_id = 3;
+    string scanned_location = 4;
+    string scanned_cargo_id = 5;
+    epl.common.v1.Decimal qty = 6;
+  }
+  repeated Pick picks = 1;
+}
+
+message RecordPickResponse {
+  repeated epl.common.v1.RowError errors = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Packing
+// ---------------------------------------------------------------------------
+service PackingService {
+  // legacy: gwh_sppcc_010 (PC), gwh_sbpcc / gwh_shpcc (HHT carton entry incl. weight / volume)
+  rpc RecordPacking(RecordPackingRequest) returns (RecordPackingResponse);
+  // legacy: gwh_sppcb / gwh_sbpcb / gwh_shpcb (packing inquiry by carton)
+  rpc ListCartons(ListCartonsRequest) returns (ListCartonsResponse);
+}
+
+message Carton {
+  string carton_id = 1;
+  string shipment_no = 2;
+  string packing_material_code = 3;
+  epl.common.v1.Decimal weight = 4;
+  epl.common.v1.Decimal volume = 5;
+  message Item {
+    int32 line_no = 1;
+    string product_code = 2;
+    epl.common.v1.PickKeys pick_keys = 3;
+    epl.common.v1.Decimal qty = 4;
+    repeated string serial_numbers = 5;
+  }
+  repeated Item items = 6;
+}
+
+message RecordPackingRequest {
+  repeated Carton cartons = 1;
+}
+
+message RecordPackingResponse {
+  repeated Carton cartons = 1;  // with generated carton ids
+  repeated epl.common.v1.RowError errors = 2;
+}
+
+message ListCartonsRequest {
+  string shipment_no = 1;
+}
+
+message ListCartonsResponse {
+  repeated Carton cartons = 1;
+}

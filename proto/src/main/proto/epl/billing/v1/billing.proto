@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+// Billing: warehouse charge rates, charge statements, month-end balance.
+// Legacy: gwh_lpwpe / lpwmc / lpwbf (GwhSrvcLpWeb), gwh_mpwch / mpwcn / mpwcs / mpwrc / mpwrt / mpbil
+// (GwhSrvcMpWeb), report gwh_rpwcs; tables WSSP / WSPR, WMBF / WMBS / WEMB / WEMS, WCS / WCH / WRC / WRT.
+// Inputs come from inventory / inbound / outbound events (charge flags of the transaction kind).
+package epl.billing.v1;
+
+import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "com.example.epl.billing.v1";
+option java_multiple_files = true;
+
+// ---------------------------------------------------------------------------
+// Charge statements (shipping parameter file)
+// ---------------------------------------------------------------------------
+service ChargeService {
+  // legacy: gwh_lpwpe_010..050 / *Get, *Inq (WSSP / WSPR)
+  rpc Get(GetChargeStatementRequest) returns (ChargeStatement);
+  // legacy: gwh_lpwpe_* / *Reg, *Mod, *Del
+  rpc Update(UpdateChargeStatementRequest) returns (ChargeStatement);
+}
+
+message ChargeLine {
+  string charge_type = 1;  // IN, OUT, STORAGE, PROCESSING, OTHER
+  string rate_code = 2;
+  string description = 3;
+  epl.common.v1.Decimal quantity = 4;
+  string unit = 5;         // CS, PC, M3, KG, PALLET …
+  epl.common.v1.Decimal unit_price = 6;
+  epl.common.v1.Decimal amount = 7;
+  string currency = 8;
+  string source_doc_no = 9;  // shipment / arrival number
+}
+
+message ChargeStatement {
+  string period = 1;  // YYYY-MM
+  string status = 2;  // OPEN, CLOSED
+  string bill_to_code = 3;
+  repeated ChargeLine lines = 4;
+  epl.common.v1.Decimal total_amount = 5;
+  string currency = 6;
+  epl.common.v1.Audit audit = 7;
+}
+
+message GetChargeStatementRequest {
+  string period = 1;
+  string bill_to_code = 2;
+}
+
+message UpdateChargeStatementRequest {
+  ChargeStatement statement = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Month-end close
+// ---------------------------------------------------------------------------
+service MonthEndService {
+  // legacy: gwh_lpwmc_010 / 110 / 130 *Run, gwh_lpwbf_010 / 110 *Run (WMBF / WEMB creation)
+  rpc Run(RunMonthEndRequest) returns (MonthEndStatus);
+  // legacy: gwh_lpwbf_110 / gwhLpwbf110Get (WMBS / WEMS status)
+  rpc GetStatus(GetMonthEndStatusRequest) returns (MonthEndStatus);
+}
+
+message RunMonthEndRequest {
+  string period = 1;  // YYYY-MM
+  bool rerun = 2;     // recreate an already closed month
+}
+
+message GetMonthEndStatusRequest {
+  string period = 1;
+}
+
+message MonthEndStatus {
+  string period = 1;
+  string status = 2;  // NOT_STARTED, RUNNING, DONE, FAILED
+  google.protobuf.Timestamp started_at = 3;
+  google.protobuf.Timestamp finished_at = 4;
+  string message = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Rate master
+// ---------------------------------------------------------------------------
+service RateService {
+  // legacy: gwh_mpwch / mpwrc / mpwrt (charge heads, rate conditions, rate tables)
+  rpc ListRates(ListRatesRequest) returns (ListRatesResponse);
+  rpc UpsertRate(Rate) returns (Rate);
+  rpc DeleteRate(DeleteRateRequest) returns (google.protobuf.Empty);
+}
+
+message Rate {
+  string code = 1;
+  string charge_type = 2;
+  string name = 3;
+  string unit = 4;
+  epl.common.v1.Decimal unit_price = 5;
+  string currency = 6;
+  epl.common.v1.Date valid_from = 7;
+  epl.common.v1.Date valid_to = 8;
+  epl.common.v1.Audit audit = 9;
+}
+
+message ListRatesRequest {
+  string charge_type = 1;
+  epl.common.v1.Date valid_on = 2;
+}
+
+message ListRatesResponse {
+  repeated Rate rates = 1;
+}
+
+message DeleteRateRequest {
+  string code = 1;
+}

@@ -1,0 +1,360 @@
+syntax = "proto3";
+
+// Inventory: stock lots, movements, stocktake, serials, kitting.
+// Schema: inv. Legacy: GwhSrvcLpWeb (PC), GwhSrvcLbWeb / GwhSrvcLhWeb (HHT).
+// RPC names match iam.action.grpc_method, so each call maps to one ABAC action.
+package epl.inventory.v1;
+
+import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+option java_package = "com.example.epl.inventory.v1";
+option java_multiple_files = true;
+
+// ---------------------------------------------------------------------------
+// Stock
+// ---------------------------------------------------------------------------
+service StockService {
+  // legacy: gwh_lpadj_010 / getGwhTjST, HHT stock inquiry (gwh_lb*)
+  rpc Search(SearchStockRequest) returns (SearchStockResponse);
+  // legacy: gwh_lpadj_010 / gwhLpadj010Reg (writes GWH_TJ_UJ_R)
+  rpc Adjust(AdjustStockRequest) returns (MovementResult);
+  // legacy: gwh_lprls_* / gwh_lprla_* (PC), gwh_lbrls / gwh_lhrls (HHT); writes GWH_TJ_TR
+  rpc Relocate(RelocateStockRequest) returns (MovementResult);
+  // legacy: gwh_lprlc_010, gwh_lbrlc / gwh_lhrlc (cargo ID / pick key change, lock/unlock)
+  rpc ChangePickKey(ChangePickKeyRequest) returns (MovementResult);
+  // legacy: gwh_lpsbc_010 (sub-inventory change, transaction kind I1)
+  rpc ChangeSubInventory(ChangeSubInventoryRequest) returns (MovementResult);
+  // legacy: gwh_lpdiv_010 (divide cargo ID)
+  rpc Divide(DivideStockRequest) returns (MovementResult);
+  // legacy: gwh_lpski_* / *DwlBigData — streamed instead of building a file in memory
+  rpc Export(SearchStockRequest) returns (stream StockLot);
+}
+
+message StockLot {
+  string id = 1;
+  epl.common.v1.ReceiptRef receipt = 2;
+  string stock_kind = 3;
+  epl.common.v1.Date received_on = 4;
+  string product_code = 5;
+  string origin_country = 6;
+  epl.common.v1.PickKeys pick_keys = 7;
+  string location_code = 8;
+  string area_code = 9;
+  string sub_inventory_code = 10;
+  epl.common.v1.Decimal physical_qty = 11;   // = available + allocated
+  epl.common.v1.Decimal available_qty = 12;
+  epl.common.v1.Decimal allocated_qty = 13;
+  int32 units_per_case = 14;
+  int32 units_per_ball = 15;
+  bool bonded = 16;
+  bool on_hold = 17;
+  bool locked = 18;
+  google.protobuf.Struct ext = 19;
+  int32 version = 20;
+}
+
+message SearchStockRequest {
+  epl.common.v1.PageRequest page = 1;
+  string product_code = 2;
+  string location_code_from = 3;
+  string location_code_to = 4;
+  string area_code = 5;
+  string sub_inventory_code = 6;
+  epl.common.v1.PickKeys pick_keys = 7;  // non-empty keys are filters
+  epl.common.v1.ReceiptRef receipt = 8;
+  bool only_available = 9;
+  bool include_zero = 10;
+}
+
+message SearchStockResponse {
+  repeated StockLot lots = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+// Result of any stock-changing call: the ledger rows written (legacy TR / UJ_R).
+message MovementResult {
+  string operation_no = 1;
+  repeated Movement movements = 2;
+  repeated epl.common.v1.RowError errors = 3;
+}
+
+message AdjustStockRequest {
+  message Line {
+    string stock_id = 1;
+    int32 stock_version = 2;
+    epl.common.v1.Decimal delta_qty = 3;  // + increase / - decrease, in pieces
+  }
+  string transaction_kind = 1;  // usage ADJUST
+  string reason_code = 2;       // required when TRN_RSNR_FLG
+  string remarks = 3;
+  repeated Line lines = 4;
+}
+
+message RelocateStockRequest {
+  message Line {
+    string stock_id = 1;
+    int32 stock_version = 2;
+    epl.common.v1.Decimal qty = 3;  // empty = whole lot
+    string to_location_code = 4;
+  }
+  string transaction_kind = 1;  // usage RELOCATE
+  string reason_code = 2;
+  string remarks = 3;
+  repeated Line lines = 4;
+}
+
+message ChangePickKeyRequest {
+  string stock_id = 1;
+  int32 stock_version = 2;
+  epl.common.v1.Decimal qty = 3;
+  epl.common.v1.PickKeys new_pick_keys = 4;
+  optional bool lock = 5;  // HHT lock / unlock cargo ID
+  string transaction_kind = 6;
+  string reason_code = 7;
+}
+
+message ChangeSubInventoryRequest {
+  string stock_id = 1;
+  int32 stock_version = 2;
+  epl.common.v1.Decimal qty = 3;
+  string to_sub_inventory_code = 4;
+  optional bool on_hold = 5;
+  string reason_code = 6;
+}
+
+message DivideStockRequest {
+  string stock_id = 1;
+  int32 stock_version = 2;
+  repeated epl.common.v1.Decimal split_qty = 3;  // one new lot (cargo ID) per entry
+}
+
+// ---------------------------------------------------------------------------
+// Movement ledger / in-out history
+// ---------------------------------------------------------------------------
+service MovementService {
+  // legacy: gwh_lpioh (by invoice / IO no), gwh_lpioc / gwh_lpios (by product),
+  //         gwh_lpiop, gwh_lpiol (by location)
+  rpc Search(SearchMovementsRequest) returns (SearchMovementsResponse);
+  // legacy: gwh_lpioh / lpioc / lpiop *DwlBigData
+  rpc Export(SearchMovementsRequest) returns (stream Movement);
+}
+
+message Movement {
+  string id = 1;
+  string operation_no = 2;
+  int32 operation_line = 3;
+  int32 operation_seq = 4;
+  string movement_type = 5;  // ADJUST, RELOCATE, PICK_KEY_CHANGE, SUB_INVENTORY_CHANGE, DIVIDE, STOCKTAKE, RECEIPT, SHIPMENT
+  string leg = 6;            // FROM / TO / SINGLE
+  string transaction_kind = 7;
+  epl.common.v1.Date operation_date = 8;
+  string stock_id = 9;
+  epl.common.v1.ReceiptRef receipt = 10;
+  string product_code = 11;
+  epl.common.v1.PickKeys pick_keys = 12;
+  string location_code = 13;
+  string sub_inventory_code = 14;
+  epl.common.v1.Quantity quantity = 15;  // total_pieces signed: + in, - out
+  string reason_code = 16;
+  string remarks = 17;
+  string source_ref = 18;
+  google.protobuf.Timestamp created_at = 19;
+  string created_by = 20;
+}
+
+message SearchMovementsRequest {
+  epl.common.v1.PageRequest page = 1;
+  epl.common.v1.Date date_from = 2;
+  epl.common.v1.Date date_to = 3;
+  repeated string movement_types = 4;
+  string product_code = 5;
+  string location_code = 6;
+  string operation_no = 7;
+  epl.common.v1.ReceiptRef receipt = 8;
+}
+
+message SearchMovementsResponse {
+  repeated Movement movements = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Stocktake
+// ---------------------------------------------------------------------------
+service StocktakeService {
+  // legacy: gwh_lptki_040 / gwhLptki040Ini (instruction)
+  rpc Create(CreateStocktakeRequest) returns (Stocktake);
+  // legacy: gwh_lptki_010..050 inquiry
+  rpc Get(GetStocktakeRequest) returns (Stocktake);
+  rpc List(ListStocktakesRequest) returns (ListStocktakesResponse);
+  // legacy: gwh_lptki_060..080, gwh_lptks_010, HHT gwh_lbtki / gwh_lbski
+  rpc RecordCount(RecordCountRequest) returns (RecordCountResponse);
+  // legacy: gwh_lptki_010 / gwhLptki010Cnf + gwh_lptku_010 (update stock)
+  rpc Confirm(ConfirmStocktakeRequest) returns (Stocktake);
+  // legacy: gwh_lptki_010 / gwhLptki010Cnc
+  rpc Cancel(CancelStocktakeRequest) returns (Stocktake);
+}
+
+enum StocktakeStatus {
+  STOCKTAKE_STATUS_UNSPECIFIED = 0;
+  STOCKTAKE_STATUS_INSTRUCTED = 1;
+  STOCKTAKE_STATUS_COUNTING = 2;
+  STOCKTAKE_STATUS_COUNTED = 3;
+  STOCKTAKE_STATUS_CONFIRMED = 4;
+  STOCKTAKE_STATUS_CANCELLED = 5;
+}
+
+message StocktakeLine {
+  string id = 1;
+  int32 count_no = 2;
+  string stock_id = 3;  // empty = found stock / empty location
+  epl.common.v1.ReceiptRef receipt = 4;
+  string product_code = 5;
+  epl.common.v1.PickKeys pick_keys = 6;
+  string location_code = 7;
+  string sub_inventory_code = 8;
+  epl.common.v1.Quantity book = 9;
+  epl.common.v1.Quantity counted = 10;
+  epl.common.v1.Decimal diff_total_qty = 11;
+  string remarks = 12;
+  int32 version = 13;
+}
+
+message Stocktake {
+  string id = 1;
+  string stocktake_no = 2;
+  epl.common.v1.Date stocktake_date = 3;
+  epl.common.v1.Date confirmed_date = 4;
+  StocktakeStatus status = 5;
+  string kind = 6;
+  string target_kind = 7;
+  bool include_empty_locations = 8;
+  bool update_stock_on_confirm = 9;
+  google.protobuf.Struct criteria = 10;  // location ranges, product, ABC …
+  epl.common.v1.Decimal planned_qty = 11;
+  epl.common.v1.Decimal counted_qty = 12;
+  repeated StocktakeLine lines = 13;     // filled by Get only
+  epl.common.v1.Audit audit = 14;
+}
+
+message CreateStocktakeRequest {
+  Stocktake stocktake = 1;  // stocktake_no empty = numbered by the server
+}
+
+message GetStocktakeRequest {
+  string stocktake_no = 1;
+  bool only_differences = 2;
+}
+
+message ListStocktakesRequest {
+  epl.common.v1.PageRequest page = 1;
+  repeated StocktakeStatus statuses = 2;
+  epl.common.v1.Date date_from = 3;
+  epl.common.v1.Date date_to = 4;
+}
+
+message ListStocktakesResponse {
+  repeated Stocktake stocktakes = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message RecordCountRequest {
+  string stocktake_no = 1;
+  repeated StocktakeLine lines = 2;  // counted quantities; new lines for found stock
+  string entry_kind = 3;             // PC / HHT / UPLOAD
+}
+
+message RecordCountResponse {
+  repeated epl.common.v1.RowError errors = 1;
+}
+
+message ConfirmStocktakeRequest {
+  string stocktake_no = 1;
+  int32 version = 2;
+}
+
+message CancelStocktakeRequest {
+  string stocktake_no = 1;
+  int32 version = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Serial numbers
+// ---------------------------------------------------------------------------
+service SerialService {
+  // legacy: gwh_lpsri_010
+  rpc Search(SearchSerialsRequest) returns (SearchSerialsResponse);
+  // legacy: gwh_lpsre_010 / gwhLpsre010Reg, HHT gwh_lbsrl
+  rpc Register(RegisterSerialsRequest) returns (RegisterSerialsResponse);
+}
+
+message Serial {
+  string serial_no = 1;
+  string product_code = 2;
+  epl.common.v1.ReceiptRef receipt = 3;
+  string status = 4;
+  string doc_kind = 5;  // AV / SP
+  string doc_no = 6;
+  string carton_id = 7;
+}
+
+message SearchSerialsRequest {
+  epl.common.v1.PageRequest page = 1;
+  string serial_no = 2;
+  string product_code = 3;
+  string doc_no = 4;
+}
+
+message SearchSerialsResponse {
+  repeated Serial serials = 1;
+  epl.common.v1.PageResponse page = 2;
+}
+
+message RegisterSerialsRequest {
+  repeated Serial serials = 1;
+}
+
+message RegisterSerialsResponse {
+  repeated epl.common.v1.RowError errors = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Kitting (set assembly)
+// ---------------------------------------------------------------------------
+service KittingService {
+  // legacy: gwh_lpkte_010 (kitting order = component shipment)
+  rpc CreateOrder(CreateKittingOrderRequest) returns (KittingOrder);
+  // legacy: gwh_lpkta_020 (kit arrival = finished set receipt)
+  rpc Receive(ReceiveKittingRequest) returns (KittingOrder);
+  // legacy: gwh_lpkts_010 (send kitting confirmation)
+  rpc SendConfirmation(SendKittingConfirmationRequest) returns (google.protobuf.Empty);
+}
+
+message KittingOrder {
+  string order_no = 1;
+  string kit_product_code = 2;
+  epl.common.v1.Decimal kit_qty = 3;
+  string status = 4;
+  string component_shipment_no = 5;  // outbound document for the components
+  string kit_arrival_no = 6;         // inbound document for the finished kits
+  epl.common.v1.Audit audit = 7;
+}
+
+message CreateKittingOrderRequest {
+  string kit_product_code = 1;
+  epl.common.v1.Decimal kit_qty = 2;
+  epl.common.v1.Date scheduled_date = 3;
+}
+
+message ReceiveKittingRequest {
+  string order_no = 1;
+  epl.common.v1.Decimal received_qty = 2;
+  string location_code = 3;
+}
+
+message SendKittingConfirmationRequest {
+  repeated string order_nos = 1;
+}

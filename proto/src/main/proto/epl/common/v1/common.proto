@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+// Types shared by every EPL service.
+//
+// Tenant context (company / warehouse / customer) is NOT part of any message:
+// it travels in gRPC metadata (authorization: Bearer <JWT>, x-company, x-warehouse,
+// x-customer) and is checked by the server interceptor in libs/security.
+package epl.common.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "com.example.epl.common.v1";
+option java_multiple_files = true;
+
+// Cursor pagination for list / search RPCs.
+message PageRequest {
+  int32 page_size = 1;    // 0 = server default
+  string page_token = 2;  // empty = first page
+}
+
+message PageResponse {
+  string next_page_token = 1;  // empty = last page
+  int64 total_size = 2;        // -1 when not computed
+}
+
+// Calendar date in the warehouse's time zone (legacy *_YMD columns).
+message Date {
+  int32 year = 1;
+  int32 month = 2;
+  int32 day = 3;
+}
+
+// Decimal value as a string, e.g. "12.500" (legacy NUMBER(12,3) quantities).
+message Decimal {
+  string value = 1;
+}
+
+// Quantity in the three packing levels used everywhere in GWH:
+// cases (CS), balls (BL) and pieces (PC). total_pieces is authoritative.
+message Quantity {
+  int32 cases = 1;
+  int32 balls = 2;
+  Decimal pieces = 3;
+  Decimal total_pieces = 4;
+  int32 units_per_case = 5;  // PPCS_QTY
+  int32 units_per_ball = 6;  // PPB_QTY
+}
+
+// Picking keys 1..7 (lot no, expiry date, …). Their meaning is configured per tenant
+// in masterdata (PickingKeyDefinition, legacy GWH_TM_PIK).
+message PickKeys {
+  string key1 = 1;
+  string key2 = 2;
+  string key3 = 3;
+  string key4 = 4;
+  string key5 = 5;
+  string key6 = 6;
+  string key7 = 7;
+}
+
+// Stock lot identity = originating receipt line (legacy AV_NUM / AVLN_NUM / AVSQ_NUM).
+message ReceiptRef {
+  string receipt_no = 1;
+  int32 line_no = 2;
+  int32 seq_no = 3;
+}
+
+message Address {
+  repeated string lines = 1;  // ADR1..ADR5
+  string postal_code = 2;
+  string city = 3;
+  string state_code = 4;
+  string country_code = 5;    // ISO 3166-1 alpha-2
+  string phone = 6;
+}
+
+// Business party on a document (supplier, ship-to, shipper, bill-to).
+message Party {
+  string code = 1;
+  repeated string names = 2;  // NAM1, NAM2
+  Address address = 3;
+}
+
+message Audit {
+  google.protobuf.Timestamp created_at = 1;
+  string created_by = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string updated_by = 4;
+  int32 version = 5;  // optimistic lock: send back on update
+}
+
+// Result of a bulk operation where some rows may fail validation
+// (legacy GwhMessageList / ERRB… message ids).
+message RowError {
+  int32 row = 1;
+  string field = 2;
+  string message_code = 3;   // e.g. ERRB013
+  repeated string message_args = 4;
+}

@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: masterdata
+
+  # Runtime connection: DML only, subject to Row-Level Security (see database/README.md)
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:epl}
+    username: ${DB_USERNAME:md_app}
+    password: ${DB_PASSWORD:}
+
+  # Migrations run as the schema owner; schema and roles come from database/bootstrap/bootstrap.sql
+  flyway:
+    user: ${FLYWAY_USERNAME:md_owner}
+    password: ${FLYWAY_PASSWORD:}
+    schemas: md
+    default-schema: md
+    create-schemas: false
+    locations: classpath:db/migration
+
+server:
+  port: ${HTTP_SERVER_PORT:8102}
+
+# read by libs/grpc-server (GrpcServerProperties)
+app:
+  grpc:
+    server:
+      address: ${GRPC_SERVER_ADDRESS:0.0.0.0}
+      port: ${GRPC_SERVER_PORT:9102}

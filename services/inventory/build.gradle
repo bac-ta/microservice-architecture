@@ -1,0 +1,15 @@
+// Inventory: stock, movements, stocktake, serials, kitting (legacy GwhSrvcLp/Lb/LhWeb).
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':proto')
+    implementation project(':libs:grpc-server')
+    implementation project(':libs:security')
+
+    implementation libs.spring.boot.starter.jdbc
+    implementation libs.flyway.core
+    runtimeOnly libs.flyway.database.postgresql
+    runtimeOnly libs.postgresql
+}

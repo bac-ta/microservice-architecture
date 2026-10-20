@@ -1,0 +1,20 @@
+// Edge service: REST/JSON API for clients, verifies the JWT and forwards calls to the backend services over gRPC.
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':proto')
+
+    implementation libs.spring.boot.starter.web
+    implementation libs.spring.boot.starter.security
+    implementation libs.spring.boot.starter.oauth2.resource.server
+    implementation libs.spring.boot.starter.validation
+    implementation libs.spring.boot.starter.actuator
+    implementation libs.grpc.netty
+    implementation libs.protobuf.java.util
+    annotationProcessor libs.spring.boot.configuration.processor
+
+    testImplementation libs.grpc.inprocess
+    testImplementation libs.spring.security.test
+}
