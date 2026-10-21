@@ -9,24 +9,18 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.billing.v1.MonthEndService (contract: proto/src/main/proto/epl/billing/v1/billing.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(MonthEndServiceGrpc.class)
 public class MonthEndGrpcServer extends MonthEndServiceGrpc.MonthEndServiceImplBase {
 
-    /**
-     * Legacy: gwh_lpwmc_010 / 110 / 130 *Run, gwh_lpwbf_010 / 110 *Run (WMBF / WEMB creation)
-     */
     @Override
     public void run(RunMonthEndRequest request, StreamObserver<MonthEndStatus> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.billing.v1.MonthEndService/Run", "gwh_lpwmc_010 / 110 / 130 *Run, gwh_lpwbf_010 / 110 *Run (WMBF / WEMB creation)"));
+        responseObserver.onError(NotPorted.error("epl.billing.v1.MonthEndService/Run", "EPL-BL-310W"));
     }
 
-    /**
-     * Legacy: gwh_lpwbf_110 / gwhLpwbf110Get (WMBS / WEMS status)
-     */
     @Override
     public void getStatus(GetMonthEndStatusRequest request, StreamObserver<MonthEndStatus> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.billing.v1.MonthEndService/GetStatus", "gwh_lpwbf_110 / gwhLpwbf110Get (WMBS / WEMS status)"));
+        responseObserver.onError(NotPorted.error("epl.billing.v1.MonthEndService/GetStatus", "EPL-BL-310W"));
     }
 }

@@ -1,4 +1,4 @@
-// Integration: file uploads, EDI, batch jobs, data purge (legacy lpupl/lpedi, GwhSrvcUpWeb, GwhSrvcDpWeb).
+// Integration: file uploads, EDI, batch jobs, data purge.
 plugins {
     id 'epl.spring-boot-service'
 }

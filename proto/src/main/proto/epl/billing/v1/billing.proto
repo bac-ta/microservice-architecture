@@ -1,8 +1,6 @@
 syntax = "proto3";
 
 // Billing: warehouse charge rates, charge statements, month-end balance.
-// Legacy: gwh_lpwpe / lpwmc / lpwbf (GwhSrvcLpWeb), gwh_mpwch / mpwcn / mpwcs / mpwrc / mpwrt / mpbil
-// (GwhSrvcMpWeb), report gwh_rpwcs; tables WSSP / WSPR, WMBF / WMBS / WEMB / WEMS, WCS / WCH / WRC / WRT.
 // Inputs come from inventory / inbound / outbound events (charge flags of the transaction kind).
 package epl.billing.v1;
 
@@ -17,9 +15,9 @@ option java_multiple_files = true;
 // Charge statements (shipping parameter file)
 // ---------------------------------------------------------------------------
 service ChargeService {
-  // legacy: gwh_lpwpe_010..050 / *Get, *Inq (WSSP / WSPR)
+  // screens: EPL-BL-210W
   rpc Get(GetChargeStatementRequest) returns (ChargeStatement);
-  // legacy: gwh_lpwpe_* / *Reg, *Mod, *Del
+  // screens: EPL-BL-210W
   rpc Update(UpdateChargeStatementRequest) returns (ChargeStatement);
 }
 
@@ -58,9 +56,9 @@ message UpdateChargeStatementRequest {
 // Month-end close
 // ---------------------------------------------------------------------------
 service MonthEndService {
-  // legacy: gwh_lpwmc_010 / 110 / 130 *Run, gwh_lpwbf_010 / 110 *Run (WMBF / WEMB creation)
+  // screens: EPL-BL-310W
   rpc Run(RunMonthEndRequest) returns (MonthEndStatus);
-  // legacy: gwh_lpwbf_110 / gwhLpwbf110Get (WMBS / WEMS status)
+  // screens: EPL-BL-310W
   rpc GetStatus(GetMonthEndStatusRequest) returns (MonthEndStatus);
 }
 
@@ -85,9 +83,11 @@ message MonthEndStatus {
 // Rate master
 // ---------------------------------------------------------------------------
 service RateService {
-  // legacy: gwh_mpwch / mpwrc / mpwrt (charge heads, rate conditions, rate tables)
+  // screens: EPL-BL-110W
   rpc ListRates(ListRatesRequest) returns (ListRatesResponse);
+  // screens: EPL-BL-110W
   rpc UpsertRate(Rate) returns (Rate);
+  // screens: EPL-BL-110W
   rpc DeleteRate(DeleteRateRequest) returns (google.protobuf.Empty);
 }
 

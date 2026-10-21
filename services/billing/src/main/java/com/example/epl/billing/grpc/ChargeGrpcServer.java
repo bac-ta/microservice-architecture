@@ -9,24 +9,18 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.billing.v1.ChargeService (contract: proto/src/main/proto/epl/billing/v1/billing.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(ChargeServiceGrpc.class)
 public class ChargeGrpcServer extends ChargeServiceGrpc.ChargeServiceImplBase {
 
-    /**
-     * Legacy: gwh_lpwpe_010..050 / *Get, *Inq (WSSP / WSPR)
-     */
     @Override
     public void get(GetChargeStatementRequest request, StreamObserver<ChargeStatement> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.billing.v1.ChargeService/Get", "gwh_lpwpe_010..050 / *Get, *Inq (WSSP / WSPR)"));
+        responseObserver.onError(NotPorted.error("epl.billing.v1.ChargeService/Get", "EPL-BL-210W"));
     }
 
-    /**
-     * Legacy: gwh_lpwpe_* / *Reg, *Mod, *Del
-     */
     @Override
     public void update(UpdateChargeStatementRequest request, StreamObserver<ChargeStatement> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.billing.v1.ChargeService/Update", "gwh_lpwpe_* / *Reg, *Mod, *Del"));
+        responseObserver.onError(NotPorted.error("epl.billing.v1.ChargeService/Update", "EPL-BL-210W"));
     }
 }

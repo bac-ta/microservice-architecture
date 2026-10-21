@@ -37,9 +37,9 @@ class RpcGatewayTests {
     void unaryCallIsTranscodedAndForwardsTenantHeaders() throws Exception {
         mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/GetProduct")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Company", "530014")
-                        .header("X-Warehouse", "BOND")
-                        .header("X-Customer", "BOND01")
+                        .header("X-Company", "C001")
+                        .header("X-Warehouse", "WH01")
+                        .header("X-Customer", "CUST01")
                         .header("X-Request-Id", "req-42")
                         .content("{\"code\":\"P001\"}"))
                 .andExpect(status().isOk())
@@ -50,9 +50,9 @@ class RpcGatewayTests {
                 .andExpect(jsonPath("$.storageKind").value(""));
 
         var headers = backends.lastHeaders.get();
-        assertThat(headers.get(key("x-company"))).isEqualTo("530014");
-        assertThat(headers.get(key("x-warehouse"))).isEqualTo("BOND");
-        assertThat(headers.get(key("x-customer"))).isEqualTo("BOND01");
+        assertThat(headers.get(key("x-company"))).isEqualTo("C001");
+        assertThat(headers.get(key("x-warehouse"))).isEqualTo("WH01");
+        assertThat(headers.get(key("x-customer"))).isEqualTo("CUST01");
         assertThat(headers.get(key("x-request-id"))).isEqualTo("req-42");
     }
 
@@ -119,9 +119,9 @@ class RpcGatewayTests {
     void uploadStreamsTheFile() throws Exception {
         var file = new MockMultipartFile("file", "arrivals.csv", "text/csv", new byte[200_000]);
 
-        mvc.perform(multipart("/files/upload").file(file).param("fileKind", "01"))
+        mvc.perform(multipart("/files/upload").file(file).param("fileKind", "ARRIVAL"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uploadId").value("01"))
+                .andExpect(jsonPath("$.uploadId").value("ARRIVAL"))
                 .andExpect(jsonPath("$.acceptedRows").value(200_000));
     }
 

@@ -11,32 +11,23 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.inventory.v1.KittingService (contract: proto/src/main/proto/epl/inventory/v1/inventory.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(KittingServiceGrpc.class)
 public class KittingGrpcServer extends KittingServiceGrpc.KittingServiceImplBase {
 
-    /**
-     * Legacy: gwh_lpkte_010 (kitting order = component shipment)
-     */
     @Override
     public void createOrder(CreateKittingOrderRequest request, StreamObserver<KittingOrder> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/CreateOrder", "gwh_lpkte_010 (kitting order = component shipment)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/CreateOrder", "EPL-IV-510W"));
     }
 
-    /**
-     * Legacy: gwh_lpkta_020 (kit arrival = finished set receipt)
-     */
     @Override
     public void receive(ReceiveKittingRequest request, StreamObserver<KittingOrder> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/Receive", "gwh_lpkta_020 (kit arrival = finished set receipt)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/Receive", "EPL-IV-520W"));
     }
 
-    /**
-     * Legacy: gwh_lpkts_010 (send kitting confirmation)
-     */
     @Override
     public void sendConfirmation(SendKittingConfirmationRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/SendConfirmation", "gwh_lpkts_010 (send kitting confirmation)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.KittingService/SendConfirmation", "EPL-IV-530W"));
     }
 }

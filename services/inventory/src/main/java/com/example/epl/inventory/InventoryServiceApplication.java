@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Inventory: stock, movements, stocktake, serials, kitting (legacy GwhSrvcLp/Lb/LhWeb).
+ * Inventory: stock, movements, stocktake, serials, kitting.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

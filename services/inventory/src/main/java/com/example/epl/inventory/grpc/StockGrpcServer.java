@@ -15,64 +15,43 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.inventory.v1.StockService (contract: proto/src/main/proto/epl/inventory/v1/inventory.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(StockServiceGrpc.class)
 public class StockGrpcServer extends StockServiceGrpc.StockServiceImplBase {
 
-    /**
-     * Legacy: gwh_lpadj_010 / getGwhTjST, HHT stock inquiry (gwh_lb*)
-     */
     @Override
     public void search(SearchStockRequest request, StreamObserver<SearchStockResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Search", "gwh_lpadj_010 / getGwhTjST, HHT stock inquiry (gwh_lb*)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Search", "EPL-IV-110W", "EPL-IV-110H"));
     }
 
-    /**
-     * Legacy: gwh_lpadj_010 / gwhLpadj010Reg (writes GWH_TJ_UJ_R)
-     */
     @Override
     public void adjust(AdjustStockRequest request, StreamObserver<MovementResult> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Adjust", "gwh_lpadj_010 / gwhLpadj010Reg (writes GWH_TJ_UJ_R)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Adjust", "EPL-IV-120W"));
     }
 
-    /**
-     * Legacy: gwh_lprls_* / gwh_lprla_* (PC), gwh_lbrls / gwh_lhrls (HHT); writes GWH_TJ_TR
-     */
     @Override
     public void relocate(RelocateStockRequest request, StreamObserver<MovementResult> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Relocate", "gwh_lprls_* / gwh_lprla_* (PC), gwh_lbrls / gwh_lhrls (HHT); writes GWH_TJ_TR"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Relocate", "EPL-IV-130W", "EPL-IV-130H"));
     }
 
-    /**
-     * Legacy: gwh_lprlc_010, gwh_lbrlc / gwh_lhrlc (cargo ID / pick key change, lock/unlock)
-     */
     @Override
     public void changePickKey(ChangePickKeyRequest request, StreamObserver<MovementResult> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/ChangePickKey", "gwh_lprlc_010, gwh_lbrlc / gwh_lhrlc (cargo ID / pick key change, lock/unlock)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/ChangePickKey", "EPL-IV-140W", "EPL-IV-140H"));
     }
 
-    /**
-     * Legacy: gwh_lpsbc_010 (sub-inventory change, transaction kind I1)
-     */
     @Override
     public void changeSubInventory(ChangeSubInventoryRequest request, StreamObserver<MovementResult> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/ChangeSubInventory", "gwh_lpsbc_010 (sub-inventory change, transaction kind I1)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/ChangeSubInventory", "EPL-IV-150W"));
     }
 
-    /**
-     * Legacy: gwh_lpdiv_010 (divide cargo ID)
-     */
     @Override
     public void divide(DivideStockRequest request, StreamObserver<MovementResult> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Divide", "gwh_lpdiv_010 (divide cargo ID)"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Divide", "EPL-IV-160W"));
     }
 
-    /**
-     * Legacy: gwh_lpski_* / *DwlBigData — streamed instead of building a file in memory
-     */
     @Override
     public void export(SearchStockRequest request, StreamObserver<StockLot> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Export", "gwh_lpski_* / *DwlBigData — streamed instead of building a file in memory"));
+        responseObserver.onError(NotPorted.error("epl.inventory.v1.StockService/Export", "EPL-IV-110W"));
     }
 }

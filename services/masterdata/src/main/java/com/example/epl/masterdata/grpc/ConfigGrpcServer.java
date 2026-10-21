@@ -17,56 +17,38 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.masterdata.v1.ConfigService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(ConfigServiceGrpc.class)
 public class ConfigGrpcServer extends ConfigServiceGrpc.ConfigServiceImplBase {
 
-    /**
-     * Legacy: gwh_mpsub_010, gwh_mbsub (GWH_TM_SBIV)
-     */
     @Override
     public void listSubInventories(Empty request, StreamObserver<ListSubInventoriesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListSubInventories", "gwh_mpsub_010, gwh_mbsub (GWH_TM_SBIV)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListSubInventories", "EPL-MD-410W"));
     }
 
-    /**
-     * Legacy: gwh_mppik_010 (GWH_TM_PIK)
-     */
     @Override
     public void listPickingKeyDefinitions(Empty request, StreamObserver<ListPickingKeyDefinitionsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListPickingKeyDefinitions", "gwh_mppik_010 (GWH_TM_PIK)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListPickingKeyDefinitions", "EPL-MD-420W"));
     }
 
-    /**
-     * Legacy: gwh_mptrn_010 (GWH_TM_TRN)
-     */
     @Override
     public void listTransactionKinds(ListTransactionKindsRequest request, StreamObserver<ListTransactionKindsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListTransactionKinds", "gwh_mptrn_010 (GWH_TM_TRN)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListTransactionKinds", "EPL-MD-430W"));
     }
 
-    /**
-     * Legacy: gwh_mpsts_010 (GWH_TM_STS) + GWH_TM_PRCC process control
-     */
     @Override
     public void listStatuses(ListStatusesRequest request, StreamObserver<ListStatusesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListStatuses", "gwh_mpsts_010 (GWH_TM_STS) + GWH_TM_PRCC process control"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListStatuses", "EPL-MD-440W"));
     }
 
-    /**
-     * Legacy: gwh_mpcod_010, gwh_mprsn_010 (GWH_TM_CODE, GWH_TM_RSN)
-     */
     @Override
     public void listCodes(ListCodesRequest request, StreamObserver<ListCodesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListCodes", "gwh_mpcod_010, gwh_mprsn_010 (GWH_TM_CODE, GWH_TM_RSN)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/ListCodes", "EPL-MD-450W"));
     }
 
-    /**
-     * Legacy: gwh_mpcus_010 (≈249 behaviour switches of GWH_TM_CUST)
-     */
     @Override
     public void getEffectiveSettings(GetEffectiveSettingsRequest request, StreamObserver<GetEffectiveSettingsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/GetEffectiveSettings", "gwh_mpcus_010 (≈249 behaviour switches of GWH_TM_CUST)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ConfigService/GetEffectiveSettings", "EPL-MD-460W"));
     }
 }

@@ -24,7 +24,7 @@ include 'libs:security'
 // Edge
 include 'services:gateway'
 
-// EPL warehouse services (rebuilt from legacy GWH)          http / gRPC port
+// EPL warehouse services                                    http / gRPC port
 include 'services:auth'          // IAM, JWT, ABAC           8101 / 9101   schema iam
 include 'services:masterdata'    // locations, products      8102 / 9102   schema md
 include 'services:inbound'       // arrivals                 8103 / 9103

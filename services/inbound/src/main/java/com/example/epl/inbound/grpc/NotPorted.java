@@ -5,17 +5,20 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 /**
- * Answer for RPCs whose legacy GWH logic has not been ported yet.
+ * Answer for RPCs that are not implemented yet.
  */
 final class NotPorted {
 
     private NotPorted() {
     }
 
-    static StatusRuntimeException error(String fullMethodName, String legacy) {
-        return Status.UNIMPLEMENTED
-                .withDescription(fullMethodName + " is not implemented yet (legacy: " + legacy + ")")
-                .asRuntimeException();
+    /** @param screens screen codes that call the RPC (docs/screen-codes.md); none = shared by every screen */
+    static StatusRuntimeException error(String fullMethodName, String... screens) {
+        var description = fullMethodName + " is not implemented yet";
+        if (screens.length > 0) {
+            description += " (screens: " + String.join(", ", screens) + ")";
+        }
+        return Status.UNIMPLEMENTED.withDescription(description).asRuntimeException();
     }
 
     /** Request stream of a client-streaming RPC that already failed: drop whatever the client sends. */

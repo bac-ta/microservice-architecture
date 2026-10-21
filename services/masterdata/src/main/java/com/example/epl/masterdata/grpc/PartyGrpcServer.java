@@ -8,24 +8,18 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.masterdata.v1.PartyService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(PartyServiceGrpc.class)
 public class PartyGrpcServer extends PartyServiceGrpc.PartyServiceImplBase {
 
-    /**
-     * Legacy: gwh_mpdlv_010, gwh_cpdlv (GWH_TM_DLV)
-     */
     @Override
     public void listDeliveryDestinations(ListPartiesRequest request, StreamObserver<ListPartiesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.PartyService/ListDeliveryDestinations", "gwh_mpdlv_010, gwh_cpdlv (GWH_TM_DLV)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.PartyService/ListDeliveryDestinations", "EPL-MD-310W"));
     }
 
-    /**
-     * Legacy: gwh_mpspl_010, gwh_cpspl (GWH_TM_SPL)
-     */
     @Override
     public void listSuppliers(ListPartiesRequest request, StreamObserver<ListPartiesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.PartyService/ListSuppliers", "gwh_mpspl_010, gwh_cpspl (GWH_TM_SPL)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.PartyService/ListSuppliers", "EPL-MD-320W"));
     }
 }

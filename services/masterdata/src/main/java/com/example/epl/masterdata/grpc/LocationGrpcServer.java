@@ -13,48 +13,33 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.masterdata.v1.LocationService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(LocationServiceGrpc.class)
 public class LocationGrpcServer extends LocationServiceGrpc.LocationServiceImplBase {
 
-    /**
-     * Legacy: gwh_mpare_010, gwh_cpcmn (area lookup)
-     */
     @Override
     public void listAreas(ListAreasRequest request, StreamObserver<ListAreasResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/ListAreas", "gwh_mpare_010, gwh_cpcmn (area lookup)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/ListAreas", "EPL-MD-110W"));
     }
 
-    /**
-     * Legacy: gwh_mpare_010 register
-     */
     @Override
     public void upsertArea(Area request, StreamObserver<Area> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/UpsertArea", "gwh_mpare_010 register"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/UpsertArea", "EPL-MD-110W"));
     }
 
-    /**
-     * Legacy: gwh_mploc_010, gwh_cploc_010 (location popup)
-     */
     @Override
     public void listLocations(ListLocationsRequest request, StreamObserver<ListLocationsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/ListLocations", "gwh_mploc_010, gwh_cploc_010 (location popup)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/ListLocations", "EPL-MD-120W"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void getLocation(GetLocationRequest request, StreamObserver<Location> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/GetLocation", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/GetLocation", "EPL-MD-120W"));
     }
 
-    /**
-     * Legacy: gwh_mploc_010 register
-     */
     @Override
     public void upsertLocation(Location request, StreamObserver<Location> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/UpsertLocation", "gwh_mploc_010 register"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.LocationService/UpsertLocation", "EPL-MD-120W"));
     }
 }

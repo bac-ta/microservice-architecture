@@ -10,26 +10,21 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.report.v1.ReportService (contract: proto/src/main/proto/epl/report/v1/report.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(ReportServiceGrpc.class)
 public class ReportGrpcServer extends ReportServiceGrpc.ReportServiceImplBase {
 
-    /**
-     * Legacy: report list per process (GWH_TM_RPT / RPTP / RPTC)
-     */
     @Override
     public void listReports(ListReportsRequest request, StreamObserver<ListReportsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.report.v1.ReportService/ListReports", "report list per process (GWH_TM_RPT / RPTP / RPTC)"));
+        responseObserver.onError(NotPorted.error("epl.report.v1.ReportService/ListReports", "EPL-RP-110W"));
     }
 
     /**
-     * Legacy: gwh_rp*_010 screens, e.g. rpain (arrival inspection list), rpinv (inventory), rppks (picking
-     * list), rpdvn (delivery note), rpstk (stocktake sheet), rpwcs (charge statement) Streams the rendered
-     * file in chunks.
+     * Streams the rendered file in chunks.
      */
     @Override
     public void render(RenderRequest request, StreamObserver<FileChunk> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.report.v1.ReportService/Render", "gwh_rp*_010 screens, e.g. rpain (arrival inspection list), rpinv (inventory), rppks (picking list), rpdvn (delivery note), rpstk (stocktake sheet), rpwcs (charge statement) Streams the rendered file in chunks."));
+        responseObserver.onError(NotPorted.error("epl.report.v1.ReportService/Render", "EPL-RP-110W"));
     }
 }

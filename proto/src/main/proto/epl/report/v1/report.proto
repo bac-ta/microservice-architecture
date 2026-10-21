@@ -1,8 +1,6 @@
 syntax = "proto3";
 
 // Reports, document printing, labels and KPIs.
-// Legacy: GwhSrvcRpWeb (≈60 rp* report screens), GwhSrvcRbWeb (rbcid cargo-ID labels on HHT),
-// GwhEasWeb, GwhSrvcKpWeb (kpstr inventory turnover); NCU print forms TMNCUPRT*.
 // Reads data from the other services; owns only report definitions and print history.
 package epl.report.v1;
 
@@ -16,16 +14,15 @@ option java_multiple_files = true;
 // Reports and documents
 // ---------------------------------------------------------------------------
 service ReportService {
-  // legacy: report list per process (GWH_TM_RPT / RPTP / RPTC)
+  // screens: EPL-RP-110W
   rpc ListReports(ListReportsRequest) returns (ListReportsResponse);
-  // legacy: gwh_rp*_010 screens, e.g. rpain (arrival inspection list), rpinv (inventory),
-  //         rppks (picking list), rpdvn (delivery note), rpstk (stocktake sheet), rpwcs (charge statement)
   // Streams the rendered file in chunks.
+  // screens: EPL-RP-110W
   rpc Render(RenderRequest) returns (stream FileChunk);
 }
 
 message ReportDefinition {
-  string code = 1;          // e.g. RPPKS
+  string code = 1;          // e.g. PICKING_LIST
   string name = 2;
   string process_code = 3;  // which business step offers it
   repeated string formats = 4;  // PDF, XLSX, CSV
@@ -57,7 +54,7 @@ message FileChunk {
 // Labels (cargo ID, product, carton) on label printers
 // ---------------------------------------------------------------------------
 service LabelService {
-  // legacy: gwh_rbcid (HHT cargo-ID label), gwh_rpcid / rplbp (PC labels), TMNCUPRTPRTPAIRMST
+  // screens: EPL-RP-210W, EPL-RP-210H
   rpc PrintLabels(PrintLabelsRequest) returns (PrintLabelsResponse);
 }
 
@@ -77,7 +74,7 @@ message PrintLabelsResponse {
 // KPIs
 // ---------------------------------------------------------------------------
 service KpiService {
-  // legacy: gwh_kpstr_010 / gwhKpstr010Get (inventory turnover rate)
+  // screens: EPL-RP-310W
   rpc GetInventoryTurnover(GetInventoryTurnoverRequest) returns (GetInventoryTurnoverResponse);
 }
 

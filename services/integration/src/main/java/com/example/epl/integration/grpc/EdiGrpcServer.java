@@ -10,24 +10,18 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.integration.v1.EdiService (contract: proto/src/main/proto/epl/integration/v1/integration.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(EdiServiceGrpc.class)
 public class EdiGrpcServer extends EdiServiceGrpc.EdiServiceImplBase {
 
-    /**
-     * Legacy: gwh_lpedi_010 / gwhLpedi010Get, GetEdidDat (GWH_TJ_EDI_H / EDI_D, GWH_TJ_ER)
-     */
     @Override
     public void search(SearchEdiRequest request, StreamObserver<SearchEdiResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.integration.v1.EdiService/Search", "gwh_lpedi_010 / gwhLpedi010Get, GetEdidDat (GWH_TJ_EDI_H / EDI_D, GWH_TJ_ER)"));
+        responseObserver.onError(NotPorted.error("epl.integration.v1.EdiService/Search", "EPL-IT-210W"));
     }
 
-    /**
-     * Legacy: gwh_lpedi_010 / *Snd, *Rec, *Rer; gwh_lpwes_010 / gwhLpwes010Snd (GWES_HIS re-send)
-     */
     @Override
     public void resend(ResendEdiRequest request, StreamObserver<EdiMessage> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.integration.v1.EdiService/Resend", "gwh_lpedi_010 / *Snd, *Rec, *Rer; gwh_lpwes_010 / gwhLpwes010Snd (GWES_HIS re-send)"));
+        responseObserver.onError(NotPorted.error("epl.integration.v1.EdiService/Resend", "EPL-IT-210W"));
     }
 }

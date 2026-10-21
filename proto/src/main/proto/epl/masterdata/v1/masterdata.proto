@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 // Master data: locations, products, sub-inventories, parties and scoped configuration.
-// Schema: md. Legacy: GwhSrvcMpWeb (PC), GwhSrvcMbWeb / GwhSrvcMhWeb (HHT), GwhSrvcCpWeb (lookups).
+// Schema: md.
 package epl.masterdata.v1;
 
 import "epl/common/v1/common.proto";
@@ -15,14 +15,15 @@ option java_multiple_files = true;
 // Areas and locations (warehouse-scoped, shared by all customers)
 // ---------------------------------------------------------------------------
 service LocationService {
-  // legacy: gwh_mpare_010, gwh_cpcmn (area lookup)
+  // screens: EPL-MD-110W
   rpc ListAreas(ListAreasRequest) returns (ListAreasResponse);
-  // legacy: gwh_mpare_010 register
+  // screens: EPL-MD-110W
   rpc UpsertArea(Area) returns (Area);
-  // legacy: gwh_mploc_010, gwh_cploc_010 (location popup)
+  // screens: EPL-MD-120W
   rpc ListLocations(ListLocationsRequest) returns (ListLocationsResponse);
+  // screens: EPL-MD-120W
   rpc GetLocation(GetLocationRequest) returns (Location);
-  // legacy: gwh_mploc_010 register
+  // screens: EPL-MD-120W
   rpc UpsertLocation(Location) returns (Location);
 }
 
@@ -66,7 +67,7 @@ message Location {
   string bond_kind = 15;
   string temperature_control = 16;
   string remarks = 17;
-  google.protobuf.Struct ext = 18;  // legacy LOC_CIT1..15
+  google.protobuf.Struct ext = 18;
   epl.common.v1.Audit audit = 19;
 }
 
@@ -91,12 +92,12 @@ message GetLocationRequest {
 // Products and barcodes (tenant-scoped)
 // ---------------------------------------------------------------------------
 service ProductService {
-  // legacy: gwh_mpprd_010 / gwh_mbprd (HHT) / gwh_cpprd_010 (popup)
+  // screens: EPL-MD-210W, EPL-MD-210H
   rpc GetProduct(GetProductRequest) returns (Product);
+  // screens: EPL-MD-210W
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
-  // legacy: gwh_mpprd_010 register, upload via integration (lpupl FILE_KND 03)
+  // screens: EPL-MD-210W
   rpc UpsertProduct(Product) returns (Product);
-  // legacy: gwh_cppbar (GWH_TM_PBAR) — HHT scans a barcode and needs the product
   rpc ResolveBarcode(ResolveBarcodeRequest) returns (ResolveBarcodeResponse);
 }
 
@@ -162,9 +163,9 @@ message ResolveBarcodeResponse {
 // Parties: delivery destinations, suppliers
 // ---------------------------------------------------------------------------
 service PartyService {
-  // legacy: gwh_mpdlv_010, gwh_cpdlv (GWH_TM_DLV)
+  // screens: EPL-MD-310W
   rpc ListDeliveryDestinations(ListPartiesRequest) returns (ListPartiesResponse);
-  // legacy: gwh_mpspl_010, gwh_cpspl (GWH_TM_SPL)
+  // screens: EPL-MD-320W
   rpc ListSuppliers(ListPartiesRequest) returns (ListPartiesResponse);
 }
 
@@ -182,17 +183,17 @@ message ListPartiesResponse {
 // Scoped configuration (company / warehouse / customer, most specific wins)
 // ---------------------------------------------------------------------------
 service ConfigService {
-  // legacy: gwh_mpsub_010, gwh_mbsub (GWH_TM_SBIV)
+  // screens: EPL-MD-410W
   rpc ListSubInventories(google.protobuf.Empty) returns (ListSubInventoriesResponse);
-  // legacy: gwh_mppik_010 (GWH_TM_PIK)
+  // screens: EPL-MD-420W
   rpc ListPickingKeyDefinitions(google.protobuf.Empty) returns (ListPickingKeyDefinitionsResponse);
-  // legacy: gwh_mptrn_010 (GWH_TM_TRN)
+  // screens: EPL-MD-430W
   rpc ListTransactionKinds(ListTransactionKindsRequest) returns (ListTransactionKindsResponse);
-  // legacy: gwh_mpsts_010 (GWH_TM_STS) + GWH_TM_PRCC process control
+  // screens: EPL-MD-440W
   rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
-  // legacy: gwh_mpcod_010, gwh_mprsn_010 (GWH_TM_CODE, GWH_TM_RSN)
+  // screens: EPL-MD-450W
   rpc ListCodes(ListCodesRequest) returns (ListCodesResponse);
-  // legacy: gwh_mpcus_010 (≈249 behaviour switches of GWH_TM_CUST)
+  // screens: EPL-MD-460W
   rpc GetEffectiveSettings(GetEffectiveSettingsRequest) returns (GetEffectiveSettingsResponse);
 }
 

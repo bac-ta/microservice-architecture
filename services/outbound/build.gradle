@@ -1,4 +1,4 @@
-// Outbound: shipping orders, allocation, picking, packing, confirmation (legacy GwhSrvcSp/Sb/ShWeb).
+// Outbound: shipping orders, allocation, picking, packing, confirmation.
 plugins {
     id 'epl.spring-boot-service'
 }

@@ -16,56 +16,38 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.outbound.v1.ShipmentService (contract: proto/src/main/proto/epl/outbound/v1/outbound.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(ShipmentServiceGrpc.class)
 public class ShipmentGrpcServer extends ShipmentServiceGrpc.ShipmentServiceImplBase {
 
-    /**
-     * Legacy: gwh_spent_010, EDI / upload via integration
-     */
     @Override
     public void createShipment(CreateShipmentRequest request, StreamObserver<Shipment> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/CreateShipment", "gwh_spent_010, EDI / upload via integration"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/CreateShipment", "EPL-OB-110W"));
     }
 
-    /**
-     * Legacy: gwh_spinq_010 / gwh_sbinq (HHT)
-     */
     @Override
     public void getShipment(GetShipmentRequest request, StreamObserver<Shipment> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/GetShipment", "gwh_spinq_010 / gwh_sbinq (HHT)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/GetShipment", "EPL-OB-120W", "EPL-OB-120H"));
     }
 
-    /**
-     * Legacy: gwh_spinq_010 search, gwh_sbiqb / gwh_sbiqc (HHT inquiry by batch / carton)
-     */
     @Override
     public void searchShipments(SearchShipmentsRequest request, StreamObserver<SearchShipmentsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/SearchShipments", "gwh_spinq_010 search, gwh_sbiqb / gwh_sbiqc (HHT inquiry by batch / carton)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/SearchShipments", "EPL-OB-120W", "EPL-OB-120H"));
     }
 
-    /**
-     * Legacy: gwh_spcnc_010 (cancel shipping order)
-     */
     @Override
     public void cancelShipment(CancelShipmentRequest request, StreamObserver<Shipment> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/CancelShipment", "gwh_spcnc_010 (cancel shipping order)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/CancelShipment", "EPL-OB-110W"));
     }
 
-    /**
-     * Legacy: gwh_spcnf_010 (shipping confirmation: stock leaves the warehouse)
-     */
     @Override
     public void confirmShipment(ConfirmShipmentRequest request, StreamObserver<ConfirmShipmentResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/ConfirmShipment", "gwh_spcnf_010 (shipping confirmation: stock leaves the warehouse)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/ConfirmShipment", "EPL-OB-510W"));
     }
 
-    /**
-     * Legacy: gwh_spscf_010 (send result: EDI / CSV / mail)
-     */
     @Override
     public void sendShipmentResult(SendShipmentResultRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/SendShipmentResult", "gwh_spscf_010 (send result: EDI / CSV / mail)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.ShipmentService/SendShipmentResult", "EPL-OB-520W"));
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Integration: file uploads, EDI, batch jobs, data purge (legacy lpupl/lpedi, GwhSrvcUpWeb, GwhSrvcDpWeb).
+ * Integration: file uploads, EDI, batch jobs, data purge.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

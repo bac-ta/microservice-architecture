@@ -1,4 +1,4 @@
-// Inbound: arrival plan, inspection, put-away, confirmation (legacy GwhSrvcAp/Ab/AhWeb).
+// Inbound: arrival plan, inspection, put-away, confirmation.
 plugins {
     id 'epl.spring-boot-service'
 }

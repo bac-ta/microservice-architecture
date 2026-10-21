@@ -1,8 +1,7 @@
-# GWH database design (rebuild of the legacy GWH WMS)
+# EPL database design
 
-New PostgreSQL 16 schemas for rebuilding the legacy GWH warehouse system
-(`logicstic-domain/GWH`, Oracle `SGWH0001` + `SNCU0001`) as gRPC microservices.
-First slice: identity/permissions and everything behind `GwhSrvcLpWeb`
+PostgreSQL 16 schemas for the EPL warehouse management system (gRPC microservices).
+First slice: identity/permissions, master data and inventory
 (stock, relocation, adjustment, stocktake, serials).
 
 **One PostgreSQL database `epl`, one schema per service, two roles per service.**
@@ -15,7 +14,7 @@ First slice: identity/permissions and everything behind `GwhSrvcLpWeb`
 | `inv`  | `services/inventory`  | `inv_owner`    | `inv_app`    | `services/inventory/src/main/resources/db/migration/V1` |
 
 Each service applies its own migrations with Flyway when it starts. Inbound, outbound, billing,
-integration and report have no schema yet (see section 7).
+integration and report have no schema yet (see section 5).
 
 `epl_admin` (BYPASSRLS) is for config maintenance, reports and data migration across tenants.
 
@@ -58,27 +57,7 @@ spring:
     locations: classpath:db/migration
 ```
 
-## 1. What changed compared to the legacy DB
-
-| Legacy                                                                  | New                                                                                      |
-|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| One Oracle schema shared by every module                                | One database, one schema + role pair per service; only tenant-registry FKs cross schemas |
-| Tenant = `CPNY_COD‖WHS_COD‖CUST_COD`, repeated in every key             | `tenant` row (company + warehouse + customer) with a UUID; tables store `tenant_id`      |
-| Tenant check in PL/SQL (`GWH_PR_PRTTN_010`) with an AES token (hardcoded key) | Signed JWT (ES256, keys in KMS) + gRPC interceptor + PostgreSQL Row-Level Security |
-| List partition per tenant (isolation depended on every query's WHERE)   | RLS policies on every tenant table: missing context = zero rows                          |
-| `GWH_TM_PEVT` (screen + function key + role group → Y/N)                | ABAC policies: resource + action + CEL condition on subject/resource/environment         |
-| `'*'` rows + `ROW_NUMBER() … ORDER BY LENGTH(cpny‖whs‖cust)`            | Nullable scope columns + generated `specificity` + `DISTINCT ON … ORDER BY specificity DESC` |
-| `DEL_FLG` + `VGWH_*` views                                               | `deleted_at` on masters only; transactions are never deleted (ledger)                    |
-| 8 audit columns (local + UTC time, TZ, terminal, program)                | `created_at/by`, `updated_at/by` (timestamptz) + `version` for optimistic locking         |
-| `CIT1..15`, `CFG1..15`, `CNI*` customisation columns                    | `ext jsonb`                                                                              |
-| 91 flag columns in `GWH_TM_TRN`, ≈249 in `GWH_TM_CUST`                  | `usages text[]`, `charge_types text[]`, `options jsonb`; `tenant_setting` key/value       |
-| `GWH_TJ_TR` + `GWH_TJ_UJ_R` (separate result tables)                    | One append-only `stock_movement` ledger with `movement_type` and FROM/TO legs            |
-
-Kept on purpose: the tenant triple and its codes (`530014 / BOND / BOND01`), the receipt-lot
-identity of stock (`AV_NUM / AVLN / AVSQ`), the seven picking keys as real columns (they are
-filtered and allocated on constantly), and the business codes (transaction kind, status, reason).
-
-## 2. Tenancy model
+## 1. Tenancy model
 
 ```mermaid
 erDiagram
@@ -88,9 +67,9 @@ erDiagram
     customer  ||--o{ tenant    : "stored in"
     tenant {
         uuid id PK
-        varchar company_code "530014"
-        varchar warehouse_code "BOND"
-        varchar customer_code "BOND01"
+        varchar company_code "C001"
+        varchar warehouse_code "WH01"
+        varchar customer_code "CUST01"
     }
 ```
 
@@ -139,7 +118,7 @@ ORDER BY setting_key, specificity DESC;          -- = md.effective_tenant_settin
 
 The Java `TenantConfigResolver` uses the same rule and caches the result per tenant.
 
-## 3. Authentication: JWT
+## 2. Authentication: JWT
 
 * `service-authentication` issues a **15-minute access token** (ES256 JWT) and a
   **refresh token** (random 256-bit, only its SHA-256 is stored in `refresh_token`, rotated
@@ -162,13 +141,13 @@ Access token claims:
   "tv": 3,
   "attrs": { "auth_level": 3, "dept": "OPS", "max_adjust_qty": 500 },
   "grants": [
-    { "c": "530014", "w": "BOND", "u": "*",      "r": ["WMS_OPERATOR"] },
-    { "c": "530014", "w": "BOND", "u": "BOND01", "r": ["WMS_SUPERVISOR"] }
+    { "c": "C001", "w": "WH01", "u": "*",      "r": ["WMS_OPERATOR"] },
+    { "c": "C001", "w": "WH01", "u": "CUST01", "r": ["WMS_SUPERVISOR"] }
   ]
 }
 ```
 
-* `grants` comes from `user_tenant_grant` (legacy `GWH_TM_USAH`); `"*"` = NULL scope column.
+* `grants` comes from `user_tenant_grant`; `"*"` = NULL scope column.
 * `attrs` = `user_attribute` rows with `in_token = true`.
 * The client picks the **active tenant** per call with gRPC metadata
   `x-company`, `x-warehouse`, `x-customer`. The interceptor rejects the call unless one grant
@@ -176,7 +155,7 @@ Access token claims:
 * Users with hundreds of grants: put `"grants_ref": true` in the token and let the interceptor
   fetch and cache the grants from IAM over gRPC.
 
-## 4. Authorization: ABAC
+## 3. Authorization: ABAC
 
 ```
 gRPC call ─► AuthInterceptor ─► PEP (per method) ─► PDP (library inside each service) ─► allow / deny
@@ -205,21 +184,22 @@ gRPC call ─► AuthInterceptor ─► PEP (per method) ─► PDP (library ins
 Policies are cached in each service and reloaded when `policy_revision` changes
 (announced on Kafka by `policy.changed`).
 
-**Example policies** (legacy `GWH_TM_PEVT` / `AUTH_LEVEL` rules rewritten):
+**Example policies**:
 
 | code                         | effect | scope              | resource / actions                        | condition (CEL) |
 |------------------------------|--------|--------------------|-------------------------------------------|-----------------|
 | `operator-stock-ops`         | PERMIT | `*`                | `inventory.stock` / read, relocate, change_pick_key, change_sub_inventory, divide | `'WMS_OPERATOR' in subject.roles \|\| 'WMS_SUPERVISOR' in subject.roles` |
 | `adjust-within-limit`        | PERMIT | `*`                | `inventory.stock` / adjust                | `'WMS_SUPERVISOR' in subject.roles && resource.qty <= subject.attrs.max_adjust_qty` |
-| `no-touch-bonded-from-hht`   | DENY   | `530014/BOND/*`    | `inventory.stock` / adjust, relocate, divide | `resource.bonded && env.channel == 'HHT'` |
+| `no-touch-bonded-from-hht`   | DENY   | `C001/WH01/*`      | `inventory.stock` / adjust, relocate, divide | `resource.bonded && env.channel == 'HHT'` |
 | `customer-read-own`          | PERMIT | `*`                | `inventory.stock`, `inventory.movement` / read, export | `subject.type == 'CUSTOMER'` (grant already limits the tenant) |
 | `stocktake-confirm`          | PERMIT | `*`                | `inventory.stocktake` / confirm, cancel   | `'WMS_SUPERVISOR' in subject.roles && resource.status == 'COUNTED'` |
 | `month-end-office-hours`     | PERMIT | `*`                | `billing.charge` / close_month            | `'WMS_BILLING' in subject.roles && env.warehouse_local_time.getHours() < 20` |
 
-UI button visibility (legacy `BTNAUTHMST`) uses the same engine: the client asks
-`AuthorizationService/BatchCheck` for the actions on a screen and hides what is denied.
+UI button visibility uses the same engine. Every screen has a code `EPL-<domain>-<nnn><channel>`
+(`iam.screen`, see `docs/screen-codes.md`); `iam.screen_action` lists the actions it calls.
+The client asks `AuthorizationService/BatchCheck` for those actions and hides what is denied.
 
-## 5. Service data models
+## 4. Service data models
 
 ### IAM
 
@@ -233,6 +213,8 @@ erDiagram
     company ||--o{ user_tenant_grant : scope
     resource_type ||--o{ action : defines
     resource_type ||--o{ policy : "protected by"
+    screen ||--o{ screen_action : calls
+    action ||--o{ screen_action : "called by"
 ```
 
 ### Inventory
@@ -244,15 +226,15 @@ erDiagram
     stock ||--o{ stocktake_line : "counted as"
     stock {
         uuid tenant_id
-        varchar receipt_no "AV_NUM"
-        int receipt_line "AVLN"
-        int receipt_seq "AVSQ"
+        varchar receipt_no
+        int receipt_line
+        int receipt_seq
         numeric physical_qty "= available + allocated"
     }
 ```
 
 * `stock` keeps the invariant `physical_qty = available_qty + allocated_qty` as a CHECK
-  (the legacy adjust code changes PYST and AVST by the same delta).
+  (an adjustment changes physical and available by the same delta).
 * `stock_movement` is range-partitioned by `operation_date` (add a partition per month/year).
   A relocation writes a `FROM` leg and a `TO` leg with the same `operation_no`.
 * Every stock change = update `stock` + insert `stock_movement` + insert `outbox_event`,
@@ -260,36 +242,9 @@ erDiagram
 * Numbering: `number_sequence` row per tenant and code, taken with
   `UPDATE … RETURNING` in the same transaction (the row lock serialises callers).
 
-## 6. Legacy → new table map
+## 5. Not designed yet
 
-| Legacy (SGWH0001 / SNCU0001)                       | New                                          |
-|----------------------------------------------------|----------------------------------------------|
-| TMNCUCMNCPNYMST, GWH_TM_WHS, GWH_TM_CUST (key)     | `iam.company`, `iam.warehouse`, `iam.customer`, `iam.tenant` |
-| TMNCUCMNUSERMST, TMNCUEXTUSERMST                   | `iam.app_user` (`user_type`)                 |
-| TMNCUEXTPWDMST                                     | `iam.user_credential`, `iam.password_history` |
-| GWH_TM_USAH                                        | `iam.user_tenant_grant`                      |
-| GWH_TM_PGRP, ROLEGRPMST                            | `iam.role`                                   |
-| GWH_TM_PEVT, ROLEAUTHMST, BTNAUTHMST, ACCESSCNTLMST | `iam.resource_type`, `iam.action`, `iam.policy` |
-| AGS_PR_TOKEN_010, ENCRYPTDECRYPT                   | JWT + `iam.signing_key`, `iam.refresh_token` |
-| GWH_TM_WHS (address, location format)             | `md.warehouse_profile`                       |
-| GWH_TM_AREA, GWH_TM_LOC                            | `md.area`, `md.location`                     |
-| GWH_TM_PROD, GWH_TM_PBAR                           | `md.product`, `md.product_barcode`           |
-| GWH_TM_SBIV                                        | `md.sub_inventory`                           |
-| GWH_TM_PIK                                         | `md.picking_key_def`                         |
-| GWH_TM_TRN, GWH_TM_STS, GWH_TM_PRCC                | `md.transaction_kind`, `md.status_def`, `md.process_control` |
-| GWH_TM_CODE, GWH_TM_RSN                            | `md.code_list` (reasons = kind `REASON`)     |
-| GWH_TM_CUST (behaviour flags)                      | `md.tenant_setting`                          |
-| GWH_TJ_ST                                          | `inv.stock`                                  |
-| GWH_TJ_TR, GWH_TJ_UJ_R                             | `inv.stock_movement`                         |
-| GWH_TJ_STK_H, GWH_TJ_STK_D                         | `inv.stocktake`, `inv.stocktake_line`        |
-| GWH_TJ_SRL                                         | `inv.serial_number`                          |
-| GWH_TM_NUM                                         | `inv.number_sequence` (each service keeps its own) |
-
-## 7. Not designed yet
-
-* **Inbound / outbound** (`AV_H/D/R`, `SP_H/D/R`, picking, packing, delivery), which kitting
-  (`lpkte/lpkta/lpkts`) depends on.
-* **Billing** (`WSSP/WSPR`, `WMBF/WMBS/WEMB/WEMS`).
-* **Integration** (uploads `lpupl`, EDI, GWES re-send), plus i18n labels/messages and printing.
-* Data migration from Oracle: map codes → UUIDs through `iam.tenant` (`company_code`,
-  `warehouse_code`, `customer_code`) and load per tenant.
+* **Inbound / outbound** (arrivals, shipping orders, picking, packing, delivery), which kitting
+  depends on.
+* **Billing** (charge statements, month-end balances).
+* **Integration** (uploads, EDI, event re-send), plus i18n labels/messages and printing.

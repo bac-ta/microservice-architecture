@@ -1,5 +1,5 @@
 -- =============================================================================
--- One-time bootstrap of the single GWH database.
+-- One-time bootstrap of the single EPL database.
 -- Run as a superuser / rds_superuser BEFORE any service migration (not Flyway):
 --   psql -d epl -f database/bootstrap/bootstrap.sql
 --

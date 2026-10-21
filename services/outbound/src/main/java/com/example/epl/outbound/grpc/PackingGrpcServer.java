@@ -10,24 +10,18 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.outbound.v1.PackingService (contract: proto/src/main/proto/epl/outbound/v1/outbound.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(PackingServiceGrpc.class)
 public class PackingGrpcServer extends PackingServiceGrpc.PackingServiceImplBase {
 
-    /**
-     * Legacy: gwh_sppcc_010 (PC), gwh_sbpcc / gwh_shpcc (HHT carton entry incl. weight / volume)
-     */
     @Override
     public void recordPacking(RecordPackingRequest request, StreamObserver<RecordPackingResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.PackingService/RecordPacking", "gwh_sppcc_010 (PC), gwh_sbpcc / gwh_shpcc (HHT carton entry incl. weight / volume)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.PackingService/RecordPacking", "EPL-OB-410W", "EPL-OB-410H"));
     }
 
-    /**
-     * Legacy: gwh_sppcb / gwh_sbpcb / gwh_shpcb (packing inquiry by carton)
-     */
     @Override
     public void listCartons(ListCartonsRequest request, StreamObserver<ListCartonsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.outbound.v1.PackingService/ListCartons", "gwh_sppcb / gwh_sbpcb / gwh_shpcb (packing inquiry by carton)"));
+        responseObserver.onError(NotPorted.error("epl.outbound.v1.PackingService/ListCartons", "EPL-OB-420W", "EPL-OB-420H"));
     }
 }

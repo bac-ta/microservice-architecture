@@ -2,15 +2,6 @@
 -- Inventory database — owned by service-inventory
 -- PostgreSQL 16
 --
--- Replaces (legacy SGWH0001), i.e. the data behind GwhSrvcLpWeb:
---   GWH_TJ_ST     stock                       -> stock
---   GWH_TJ_TR     transfer result             -> stock_movement (RELOCATE, PICK_KEY_CHANGE,
---   GWH_TJ_UJ_R   stock adjust result         ->   SUB_INVENTORY_CHANGE, DIVIDE, ADJUST, STOCKTAKE)
---   GWH_TJ_STK_H  stocktake header            -> stocktake
---   GWH_TJ_STK_D  stocktake detail            -> stocktake_line
---   GWH_TJ_SRL    serial                      -> serial_number
---   GWH_TM_NUM    numbering (inventory codes) -> number_sequence
---
 -- tenant_id / warehouse_id are real foreign keys to the iam registry.
 -- No foreign keys into md: product_code, location_code, sub_inventory_code and
 -- transaction_kind are validated by the service against service-masterdata
@@ -29,17 +20,17 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA inv GRANT USAGE, SELECT ON SEQUENCES TO inv_a
 ALTER DEFAULT PRIVILEGES IN SCHEMA inv GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO epl_admin;
 
 -- -----------------------------------------------------------------------------
--- Stock: one row per receipt lot (legacy AV_NUM/AVLN/AVSQ) at one location.
+-- Stock: one row per receipt lot at one location.
 -- A partial relocation splits the row and allocates a new receipt_seq.
 -- -----------------------------------------------------------------------------
 CREATE TABLE stock (
     id                  uuid           PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id           uuid           NOT NULL,
     warehouse_id        uuid           NOT NULL,
-    receipt_no          varchar(20)    NOT NULL,     -- legacy ST_AV_NUM (6 chars)
+    receipt_no          varchar(20)    NOT NULL,
     receipt_line        integer        NOT NULL,
     receipt_seq         integer        NOT NULL,
-    stock_kind          varchar(1)     NOT NULL,     -- ST_ST_KND
+    stock_kind          varchar(1)     NOT NULL,
     received_on         date           NOT NULL,
     product_code        varchar(50)    NOT NULL,
     origin_country      char(2),
@@ -53,7 +44,7 @@ CREATE TABLE stock (
     location_code       varchar(18)    NOT NULL,
     area_code           varchar(3)     NOT NULL,     -- denormalised from location for range queries
     sub_inventory_code  varchar(20)    NOT NULL,
-    -- quantities in pieces; physical = available + allocated (legacy PYST / AVST / ALST)
+    -- quantities in pieces; physical = available + allocated
     physical_qty        numeric(12,3)  NOT NULL,
     available_qty       numeric(12,3)  NOT NULL,
     allocated_qty       numeric(12,3)  NOT NULL DEFAULT 0,
@@ -64,14 +55,14 @@ CREATE TABLE stock (
     uom_case            varchar(3),
     uom_ball            varchar(3),
     bonded              boolean        NOT NULL DEFAULT false,
-    on_hold             boolean        NOT NULL DEFAULT false,    -- legacy DMG_FLG
+    on_hold             boolean        NOT NULL DEFAULT false,
     locked              boolean        NOT NULL DEFAULT false,
     ext                 jsonb          NOT NULL DEFAULT '{}',     -- PSSA fields, CIT1..15, CFG*
     created_at          timestamptz    NOT NULL DEFAULT now(),
     created_by          varchar(50)    NOT NULL,
     updated_at          timestamptz    NOT NULL DEFAULT now(),
     updated_by          varchar(50)    NOT NULL,
-    version             integer        NOT NULL DEFAULT 0,        -- optimistic lock (legacy UPD_YMDHMS)
+    version             integer        NOT NULL DEFAULT 0,        -- optimistic lock
     FOREIGN KEY (tenant_id, warehouse_id) REFERENCES iam.tenant (id, warehouse_id),
     UNIQUE (tenant_id, receipt_no, receipt_line, receipt_seq),
     CONSTRAINT ck_stock_qty_non_negative CHECK (physical_qty >= 0 AND available_qty >= 0 AND allocated_qty >= 0),
@@ -80,19 +71,19 @@ CREATE TABLE stock (
 CREATE INDEX ix_stock_product  ON stock (tenant_id, product_code);
 CREATE INDEX ix_stock_location ON stock (warehouse_id, location_code);
 CREATE INDEX ix_stock_area     ON stock (tenant_id, area_code, location_code);
--- legacy deletes zero stock rows in some flows; keep them out of hot indexes instead
+-- zero stock rows are kept; keep them out of hot indexes instead
 CREATE INDEX ix_stock_available ON stock (tenant_id, product_code, received_on)
     WHERE available_qty > 0 AND NOT on_hold AND NOT locked;
 
 -- -----------------------------------------------------------------------------
 -- Movement ledger (append-only). One business operation = operation_no;
--- a transfer writes a FROM leg and a TO leg (legacy TR_FROM_TO).
+-- a transfer writes a FROM leg and a TO leg.
 -- -----------------------------------------------------------------------------
 CREATE TABLE stock_movement (
     id                  uuid           NOT NULL DEFAULT gen_random_uuid(),
     tenant_id           uuid           NOT NULL,
     warehouse_id        uuid           NOT NULL,
-    operation_no        varchar(20)    NOT NULL,     -- legacy TR_OP_NUM / UJR_AS_NUM
+    operation_no        varchar(20)    NOT NULL,
     operation_line      integer        NOT NULL,
     operation_seq       integer        NOT NULL,
     movement_type       varchar(30)    NOT NULL CHECK (movement_type IN
@@ -120,10 +111,10 @@ CREATE TABLE stock_movement (
     on_hold             boolean        NOT NULL DEFAULT false,
     units_per_case      integer,
     units_per_ball      integer,
-    case_qty            integer,                     -- RCS
-    ball_qty            integer,                     -- RBL
-    piece_qty           numeric(12,3),               -- RPC
-    total_qty           numeric(12,3)  NOT NULL,     -- RTPC, signed: + in, - out
+    case_qty            integer,
+    ball_qty            integer,
+    piece_qty           numeric(12,3),
+    total_qty           numeric(12,3)  NOT NULL,     -- signed: + in, - out
     reason_code         varchar(3),
     remarks             varchar(500),
     source_ref          varchar(100),                -- stocktake no, upload id, gRPC request id …
@@ -153,9 +144,9 @@ CREATE TABLE stocktake (
     confirmed_date           date,
     status                   varchar(16)    NOT NULL DEFAULT 'INSTRUCTED' CHECK (status IN
                              ('INSTRUCTED', 'COUNTING', 'COUNTED', 'CONFIRMED', 'CANCELLED')),
-    kind                     varchar(2)     NOT NULL,     -- STKH_STK_KND (full / cycle / ABC …)
-    target_kind              varchar(2)     NOT NULL,     -- STKH_STTG_KND
-    zero_stock_check_kind    varchar(2),                  -- STKH_CKST_KND
+    kind                     varchar(2)     NOT NULL,     -- full / cycle / ABC …
+    target_kind              varchar(2)     NOT NULL,
+    zero_stock_check_kind    varchar(2),
     include_empty_locations  boolean        NOT NULL DEFAULT false,
     print_finish_label       boolean        NOT NULL DEFAULT false,
     show_counted_qty         boolean        NOT NULL DEFAULT false,
@@ -184,8 +175,8 @@ CREATE TABLE stocktake_line (
     tenant_id           uuid           NOT NULL REFERENCES iam.tenant (id),
     stocktake_id        uuid           NOT NULL,
     count_no            integer        NOT NULL DEFAULT 1,
-    entry_kind          varchar(2)     NOT NULL,     -- STKD_RSTE_KND (PC / HHT / upload)
-    data_kind           varchar(2)     NOT NULL,     -- STKD_DATA_KND (from stock / found / empty loc)
+    entry_kind          varchar(2)     NOT NULL,     -- PC / HHT / upload
+    data_kind           varchar(2)     NOT NULL,     -- from stock / found / empty loc
     stock_id            uuid,                        -- NULL for found stock or empty location
     receipt_no          varchar(20),
     receipt_line        integer,
@@ -235,7 +226,7 @@ CREATE INDEX ix_stocktake_line_header   ON stocktake_line (stocktake_id, locatio
 CREATE INDEX ix_stocktake_line_diff     ON stocktake_line (stocktake_id) WHERE diff_total_qty <> 0;
 
 -- -----------------------------------------------------------------------------
--- Serial numbers (legacy GWH_TJ_SRL)
+-- Serial numbers
 -- -----------------------------------------------------------------------------
 CREATE TABLE serial_number (
     id                  uuid           PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -246,8 +237,8 @@ CREATE TABLE serial_number (
     receipt_no          varchar(20),
     receipt_line        integer,
     receipt_seq         integer,
-    status              varchar(1)     NOT NULL,     -- SRL_SRST_COD (in stock / shipped …)
-    capture_kind        varchar(1),                  -- SRL_GET_KND
+    status              varchar(1)     NOT NULL,     -- in stock / shipped …
+    capture_kind        varchar(1),
     qty                 numeric(12,3)  NOT NULL DEFAULT 1,
     -- last in/out document that touched the serial
     doc_no              varchar(20),
@@ -274,7 +265,7 @@ CREATE INDEX ix_serial_receipt ON serial_number (tenant_id, receipt_no, receipt_
 CREATE INDEX ix_serial_doc     ON serial_number (tenant_id, doc_kind, doc_no);
 
 -- -----------------------------------------------------------------------------
--- Document numbering (legacy GWH_TM_NUM, inventory codes only).
+-- Document numbering (inventory codes only).
 -- Take a number with:
 --   UPDATE number_sequence SET current_value = <wrap logic> ... RETURNING ...
 -- inside the business transaction (row lock serialises concurrent callers).
@@ -287,7 +278,7 @@ CREATE TABLE number_sequence (
     end_value      bigint       NOT NULL,
     current_value  bigint       NOT NULL,
     pad_length     smallint     NOT NULL DEFAULT 6,
-    allow_wrap     boolean      NOT NULL DEFAULT true,  -- legacy NUM_NLOP_FLG inverted
+    allow_wrap     boolean      NOT NULL DEFAULT true,
     updated_at     timestamptz  NOT NULL DEFAULT now(),
     PRIMARY KEY (tenant_id, code),
     CHECK (start_value <= current_value AND current_value <= end_value)

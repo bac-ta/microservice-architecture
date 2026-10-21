@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Inbound: arrival plan, inspection, put-away, confirmation (legacy GwhSrvcAp/Ab/AhWeb).
+ * Inbound: arrival plan, inspection, put-away, confirmation.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

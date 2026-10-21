@@ -1,8 +1,6 @@
 syntax = "proto3";
 
 // Integration: CSV / file uploads, EDI send & receive, outbound event re-send, data lifecycle jobs.
-// Legacy: gwh_lpupl / lpflb / lpedi / lpwes / lpbtj / lpddh (GwhSrvcLpWeb), GwhSrvcUpWeb (upupl, upeml, upsbc),
-// gwh_mpedi / mpedm / mpeds (EDI masters), GwhSrvcDpWeb (dpmgr data purge).
 package epl.integration.v1;
 
 import "epl/common/v1/common.proto";
@@ -16,15 +14,15 @@ option java_multiple_files = true;
 // ---------------------------------------------------------------------------
 service UploadService {
   // Client streams the file: first message carries the header, the rest carry bytes.
-  // legacy: gwh_lpupl_010..110 / *Upd (FILE_KND 01..57), gwh_lpflb_010, gwh_upupl
+  // screens: EPL-IT-110W
   rpc Upload(stream UploadChunk) returns (UploadResult);
-  // legacy: gwh_lpupl_020 / GWH_TJ_EE (upload error list)
+  // screens: EPL-IT-110W
   rpc GetUploadErrors(GetUploadErrorsRequest) returns (GetUploadErrorsResponse);
 }
 
 message UploadChunk {
   message Header {
-    string file_kind = 1;  // legacy FILE_KND: 01 arrival, 02 shipment, 03 product …
+    string file_kind = 1;  // ARRIVAL, SHIPMENT, PRODUCT …
     string file_name = 2;
     string content_type = 3;
     bool validate_only = 4;
@@ -56,16 +54,16 @@ message GetUploadErrorsResponse {
 // EDI
 // ---------------------------------------------------------------------------
 service EdiService {
-  // legacy: gwh_lpedi_010 / gwhLpedi010Get, GetEdidDat (GWH_TJ_EDI_H / EDI_D, GWH_TJ_ER)
+  // screens: EPL-IT-210W
   rpc Search(SearchEdiRequest) returns (SearchEdiResponse);
-  // legacy: gwh_lpedi_010 / *Snd, *Rec, *Rer; gwh_lpwes_010 / gwhLpwes010Snd (GWES_HIS re-send)
+  // screens: EPL-IT-210W
   rpc Resend(ResendEdiRequest) returns (EdiMessage);
 }
 
 message EdiMessage {
   string id = 1;
   string direction = 2;  // SEND / RECEIVE
-  string edi_code = 3;   // GWH_TM_EDIC
+  string edi_code = 3;
   string partner = 4;
   string status = 5;     // OK, ERROR, PENDING
   string batch_no = 6;
@@ -97,11 +95,11 @@ message ResendEdiRequest {
 // Batch jobs and data lifecycle
 // ---------------------------------------------------------------------------
 service JobService {
-  // legacy: gwh_lpbtj_010 (GWH_TJ_BJST batch job status)
+  // screens: EPL-IT-310W
   rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
-  // legacy: gwh_dpmgr_010 / gwhDpmgr010Exe (data purge)
+  // screens: EPL-IT-320W
   rpc RunPurge(RunPurgeRequest) returns (Job);
-  // legacy: gwh_lpddh_010, gwh_dpmgr_020 (GWH_TJ_DDH purge history)
+  // screens: EPL-IT-320W
   rpc ListPurgeHistory(ListPurgeHistoryRequest) returns (ListPurgeHistoryResponse);
 }
 

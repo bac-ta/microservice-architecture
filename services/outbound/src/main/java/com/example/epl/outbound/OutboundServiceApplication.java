@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Outbound: shipping orders, allocation, picking, packing, confirmation (legacy GwhSrvcSp/Sb/ShWeb).
+ * Outbound: shipping orders, allocation, picking, packing, confirmation.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

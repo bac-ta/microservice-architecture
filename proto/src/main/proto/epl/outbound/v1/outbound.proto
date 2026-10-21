@@ -1,8 +1,7 @@
 syntax = "proto3";
 
 // Outbound: shipping order → allocation → picking → packing → confirmation → result sending.
-// Legacy: GwhSrvcSpWeb (PC), GwhSrvcSbWeb / GwhSrvcShWeb (HHT); tables GWH_TJ_SP_H / SP_D / SP_R,
-// picking SPK_H/D, packing SP_PH/PD. Allocation reserves stock in the inventory service.
+// Allocation reserves stock in the inventory service.
 package epl.outbound.v1;
 
 import "epl/common/v1/common.proto";
@@ -16,32 +15,32 @@ option java_multiple_files = true;
 // Shipping orders
 // ---------------------------------------------------------------------------
 service ShipmentService {
-  // legacy: gwh_spent_010, EDI / upload via integration
+  // screens: EPL-OB-110W
   rpc CreateShipment(CreateShipmentRequest) returns (Shipment);
-  // legacy: gwh_spinq_010 / gwh_sbinq (HHT)
+  // screens: EPL-OB-120W, EPL-OB-120H
   rpc GetShipment(GetShipmentRequest) returns (Shipment);
-  // legacy: gwh_spinq_010 search, gwh_sbiqb / gwh_sbiqc (HHT inquiry by batch / carton)
+  // screens: EPL-OB-120W, EPL-OB-120H
   rpc SearchShipments(SearchShipmentsRequest) returns (SearchShipmentsResponse);
-  // legacy: gwh_spcnc_010 (cancel shipping order)
+  // screens: EPL-OB-110W
   rpc CancelShipment(CancelShipmentRequest) returns (Shipment);
-  // legacy: gwh_spcnf_010 (shipping confirmation: stock leaves the warehouse)
+  // screens: EPL-OB-510W
   rpc ConfirmShipment(ConfirmShipmentRequest) returns (ConfirmShipmentResponse);
-  // legacy: gwh_spscf_010 (send result: EDI / CSV / mail)
+  // screens: EPL-OB-520W
   rpc SendShipmentResult(SendShipmentResultRequest) returns (google.protobuf.Empty);
 }
 
 message ShipmentLine {
-  int32 line_no = 1;  // SPLN_NUM
+  int32 line_no = 1;
   string status = 2;
   string product_code = 3;
   string product_name = 4;
   string origin_country = 5;
-  epl.common.v1.Quantity ordered = 6;    // SCS / SBL / SPC / STPC
+  epl.common.v1.Quantity ordered = 6;
   epl.common.v1.Quantity allocated = 7;
   epl.common.v1.Quantity shipped = 8;
   string sub_inventory_code = 9;
   epl.common.v1.PickKeys pick_keys = 10;  // requested lot / expiry, empty = any
-  string allocation_kind = 11;            // ALCT_KBN (FIFO, FEFO, lot …)
+  string allocation_kind = 11;            // FIFO, FEFO, lot …
   bool not_shippable = 12;
   int32 customer_line_seq = 13;
   string warehouse_instructions = 14;
@@ -50,21 +49,21 @@ message ShipmentLine {
 }
 
 message Shipment {
-  string shipment_no = 1;                 // SP_NUM
+  string shipment_no = 1;
   epl.common.v1.Date scheduled_date = 2;
   string transaction_kind = 3;
-  string status = 4;                      // SP_STS
+  string status = 4;
   epl.common.v1.Date shipped_date = 5;
   epl.common.v1.Date confirmed_date = 6;
-  string batch_no = 7;                    // BT_NUM
-  string total_picking_no = 8;            // TP_NUM
+  string batch_no = 7;
+  string total_picking_no = 8;
   string invoice_no = 9;
   string customer_ref = 10;
   string po_no = 11;
-  epl.common.v1.Party ship_to = 12;       // DLV_*
-  epl.common.v1.Party final_ship_to = 13; // FNL_DLV_*
+  epl.common.v1.Party ship_to = 12;
+  epl.common.v1.Party final_ship_to = 13;
   epl.common.v1.Party shipper = 14;       // SP_* (consignor)
-  epl.common.v1.Party bill_to = 15;       // BIL_*
+  epl.common.v1.Party bill_to = 15;
   string carrier_code = 16;
   string warehouse_instructions = 17;
   string delivery_note_remarks = 18;
@@ -126,9 +125,9 @@ message SendShipmentResultRequest {
 // Allocation (stock reservation)
 // ---------------------------------------------------------------------------
 service AllocationService {
-  // legacy: gwh_spalc_010 search / register (allocate available stock to order lines)
+  // screens: EPL-OB-210W
   rpc Allocate(AllocateRequest) returns (AllocateResponse);
-  // legacy: gwh_spalc_010 cancel / back
+  // screens: EPL-OB-210W
   rpc CancelAllocation(CancelAllocationRequest) returns (google.protobuf.Empty);
 }
 
@@ -158,9 +157,9 @@ message CancelAllocationRequest {
 // Picking
 // ---------------------------------------------------------------------------
 service PickingService {
-  // legacy: gwh_spbtg_010 / hpbtg (batch & total-picking grouping), gwh_spplt
+  // screens: EPL-OB-310W
   rpc CreatePickingBatch(CreatePickingBatchRequest) returns (PickingBatch);
-  // legacy: gwh_sbpic / gwh_shpic (HHT picking by case / SKU), gwh_sbpip / gwh_shpip
+  // screens: EPL-OB-320H
   rpc RecordPick(RecordPickRequest) returns (RecordPickResponse);
 }
 
@@ -207,9 +206,9 @@ message RecordPickResponse {
 // Packing
 // ---------------------------------------------------------------------------
 service PackingService {
-  // legacy: gwh_sppcc_010 (PC), gwh_sbpcc / gwh_shpcc (HHT carton entry incl. weight / volume)
+  // screens: EPL-OB-410W, EPL-OB-410H
   rpc RecordPacking(RecordPackingRequest) returns (RecordPackingResponse);
-  // legacy: gwh_sppcb / gwh_sbpcb / gwh_shpcb (packing inquiry by carton)
+  // screens: EPL-OB-420W, EPL-OB-420H
   rpc ListCartons(ListCartonsRequest) returns (ListCartonsResponse);
 }
 

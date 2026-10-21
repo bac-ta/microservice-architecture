@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 // Inbound: arrival plan → inspection → put-away → confirmation.
-// Legacy: GwhSrvcApWeb (PC), GwhSrvcAbWeb / GwhSrvcAhWeb (HHT); tables GWH_TJ_AV_H / AV_D / AV_R.
 // Confirmed receipts create stock in the inventory service (event inbound.arrival.confirmed).
 package epl.inbound.v1;
 
@@ -13,60 +12,60 @@ option java_package = "com.example.epl.inbound.v1";
 option java_multiple_files = true;
 
 service ArrivalService {
-  // legacy: gwh_apent_010 (PC), gwh_abent (HHT unplanned arrival), EDI via integration
+  // screens: EPL-IB-110W, EPL-IB-110H
   rpc CreateArrival(CreateArrivalRequest) returns (Arrival);
-  // legacy: gwh_apinq_010 / gwh_abinq (HHT)
+  // screens: EPL-IB-120W, EPL-IB-120H
   rpc GetArrival(GetArrivalRequest) returns (Arrival);
-  // legacy: gwh_apinq_010 search
+  // screens: EPL-IB-120W, EPL-IB-120H
   rpc SearchArrivals(SearchArrivalsRequest) returns (SearchArrivalsResponse);
-  // legacy: gwh_apent_010 correction / delete
+  // screens: EPL-IB-110W
   rpc CancelArrival(CancelArrivalRequest) returns (Arrival);
-  // legacy: gwh_apins_010 (PC), gwh_abins / gwh_ahins (HHT) — inspection results per line
+  // screens: EPL-IB-210W, EPL-IB-210H
   rpc RecordInspection(RecordInspectionRequest) returns (RecordInspectionResponse);
-  // legacy: gwh_abloc / gwh_ahloc (HHT put-away: cargo ID → location)
+  // screens: EPL-IB-220H
   rpc RecordPutaway(RecordPutawayRequest) returns (RecordPutawayResponse);
-  // legacy: gwh_apcnf_010 — confirm, creates stock lots
+  // screens: EPL-IB-310W
   rpc ConfirmArrival(ConfirmArrivalRequest) returns (Arrival);
-  // legacy: gwh_apsrl_010 — serial numbers captured on receipt
+  // screens: EPL-IB-230W
   rpc RegisterSerials(RegisterSerialsRequest) returns (google.protobuf.Empty);
-  // legacy: gwh_apscf_010 — send arrival result to the customer (EDI / CSV / mail)
+  // screens: EPL-IB-320W
   rpc SendArrivalResult(SendArrivalResultRequest) returns (google.protobuf.Empty);
 }
 
 message ArrivalLine {
-  int32 line_no = 1;          // AVLN_NUM
-  string status = 2;          // AV_STS
-  bool inspected = 3;         // INSP_STS
+  int32 line_no = 1;
+  string status = 2;
+  bool inspected = 3;
   string product_code = 4;
   string product_name = 5;
   string origin_country = 6;
   string supplier_product_code = 7;
-  epl.common.v1.Quantity planned = 8;   // SCS / SBL / SPC / STPC
-  epl.common.v1.Quantity received = 9;  // sum of AV_R results
+  epl.common.v1.Quantity planned = 8;
+  epl.common.v1.Quantity received = 9;  // sum of recorded results
   string sub_inventory_code = 10;
   epl.common.v1.PickKeys pick_keys = 11;
-  bool on_hold = 12;                    // DMG_FLG
-  int32 customer_line_seq = 13;         // CDSQ_NUM
+  bool on_hold = 12;
+  int32 customer_line_seq = 13;
   string remarks = 14;
   google.protobuf.Struct ext = 15;      // CIT / COIL customer fields
 }
 
 message Arrival {
-  string arrival_no = 1;                  // AV_NUM
-  epl.common.v1.Date scheduled_date = 2;  // SCDL_YMD
-  string transaction_kind = 3;            // TRN_KND
-  string status = 4;                      // AV_STS
-  epl.common.v1.Date arrived_date = 5;    // ARV_YMD
-  epl.common.v1.Date confirmed_date = 6;  // CNOP_YMD
-  string invoice_no = 7;                  // IV_NUM
-  string customer_ref = 8;                // RF_NUM
+  string arrival_no = 1;
+  epl.common.v1.Date scheduled_date = 2;
+  string transaction_kind = 3;
+  string status = 4;
+  epl.common.v1.Date arrived_date = 5;
+  epl.common.v1.Date confirmed_date = 6;
+  string invoice_no = 7;
+  string customer_ref = 8;
   string po_no = 9;
-  epl.common.v1.Party supplier = 10;      // SPL_*
+  epl.common.v1.Party supplier = 10;
   bool bonded = 11;
   string bl_no = 12;
   string container_no = 13;
   string transport_code = 14;
-  string return_shipment_no = 15;         // RTSP_NUM (returns)
+  string return_shipment_no = 15;         // returns
   string remarks = 16;
   repeated ArrivalLine lines = 17;
   google.protobuf.Struct ext = 18;
@@ -74,7 +73,7 @@ message Arrival {
 }
 
 message CreateArrivalRequest {
-  Arrival arrival = 1;  // arrival_no empty = numbered by the server (GWH_TM_NUM)
+  Arrival arrival = 1;  // arrival_no empty = numbered by the server
 }
 
 message GetArrivalRequest {
@@ -115,8 +114,8 @@ message InspectionResult {
 message RecordInspectionRequest {
   string arrival_no = 1;
   repeated InspectionResult results = 2;
-  bool allow_surplus = 3;   // needs transaction kind TRN_SPPA_FLG
-  bool allow_shortage = 4;  // needs TRN_SHPA_FLG
+  bool allow_surplus = 3;   // needs a transaction kind that allows surplus
+  bool allow_shortage = 4;  // needs a transaction kind that allows shortage
 }
 
 message RecordInspectionResponse {

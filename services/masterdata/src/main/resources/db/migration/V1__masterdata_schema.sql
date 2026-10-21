@@ -2,16 +2,11 @@
 -- Master data database — owned by service-masterdata
 -- PostgreSQL 16
 --
--- Replaces (legacy SGWH0001):
---   GWH_TM_WHS (operational part), GWH_TM_AREA, GWH_TM_LOC, GWH_TM_PROD, GWH_TM_PBAR,
---   GWH_TM_SBIV, GWH_TM_PIK, GWH_TM_TRN, GWH_TM_STS, GWH_TM_PRCC, GWH_TM_CODE,
---   GWH_TM_RSN, GWH_TM_CUST (≈249 behaviour switches -> tenant_setting)
---
 -- Three kinds of tables:
 --   1. warehouse-scoped  (warehouse_id)  — locations are shared by all customers in a warehouse
 --   2. tenant-scoped     (tenant_id)     — products, sub-inventories
 --   3. config with scope (company_id / warehouse_id / customer_id, NULL = '*')
---      resolved "most specific wins", like the legacy '*' rows.
+--      resolved "most specific wins".
 --
 -- Warehouse / tenant / scope columns are real foreign keys to the iam registry.
 -- Runs as md_owner after bootstrap.sql and the iam migrations.
@@ -29,19 +24,19 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA md GRANT SELECT, INSERT, UPDATE, DELETE ON TA
 -- Warehouse-scoped
 -- -----------------------------------------------------------------------------
 
--- Operational warehouse data (legacy GWH_TM_WHS minus identity)
+-- Operational warehouse data (identity lives in iam.warehouse)
 CREATE TABLE warehouse_profile (
     warehouse_id     uuid          PRIMARY KEY REFERENCES iam.warehouse (id),
     physical_code    varchar(4),
     postal_code      varchar(10),
-    address_lines    text[]        NOT NULL DEFAULT '{}',   -- WHS_ADR1..5
+    address_lines    text[]        NOT NULL DEFAULT '{}',
     city_name        varchar(50),
     state_code       varchar(2),
     country_code     char(2),
     phone            varchar(20),
     latitude         numeric(8,5),
     longitude        numeric(8,5),
-    -- how a location code splits into area/rack/position/level (WHS_ABYT, WHS_RBP1..4)
+    -- how a location code splits into area/rack/position/level
     location_format  jsonb         NOT NULL DEFAULT '{}',
     updated_at       timestamptz   NOT NULL DEFAULT now(),
     updated_by       varchar(50)   NOT NULL,
@@ -115,7 +110,7 @@ CREATE INDEX ix_location_picking ON location (warehouse_id, picking_sequence);
 CREATE TABLE product (
     tenant_id                uuid           NOT NULL REFERENCES iam.tenant (id),
     code                     varchar(50)    NOT NULL,
-    names                    text[]         NOT NULL,                -- PROD_NAM1..4
+    names                    text[]         NOT NULL,
     product_group_code       varchar(15),
     hierarchy                text[]         NOT NULL DEFAULT '{}',   -- PROD_HRC1..3
     -- packing
@@ -172,7 +167,7 @@ CREATE TABLE product (
     replenish_location       varchar(18),
     replenish_max_qty        integer,
     replenish_base_qty       integer,
-    ext                      jsonb          NOT NULL DEFAULT '{}',   -- the long tail of 191 legacy columns
+    ext                      jsonb          NOT NULL DEFAULT '{}',   -- customer-specific extra attributes
     created_at               timestamptz    NOT NULL DEFAULT now(),
     created_by               varchar(50)    NOT NULL,
     updated_at               timestamptz    NOT NULL DEFAULT now(),
@@ -184,7 +179,7 @@ CREATE TABLE product (
 );
 CREATE INDEX ix_product_group ON product (tenant_id, product_group_code);
 
--- legacy GWH_TM_PBAR
+-- Product barcodes
 CREATE TABLE product_barcode (
     tenant_id     uuid         NOT NULL,
     barcode       varchar(50)  NOT NULL,
@@ -196,7 +191,7 @@ CREATE TABLE product_barcode (
     FOREIGN KEY (tenant_id, product_code) REFERENCES product (tenant_id, code)
 );
 
--- legacy GWH_TM_SBIV (grade / sub-inventory)
+-- Sub-inventories (grade)
 CREATE TABLE sub_inventory (
     tenant_id   uuid         NOT NULL REFERENCES iam.tenant (id),
     code        varchar(20)  NOT NULL,
@@ -217,7 +212,7 @@ CREATE UNIQUE INDEX ux_sub_inventory_default ON sub_inventory (tenant_id) WHERE 
 -- specificity: customer(4) > warehouse(2) > company(1); highest wins.
 -- -----------------------------------------------------------------------------
 
--- Behaviour switches per customer/warehouse/company (legacy GWH_TM_CUST flags, CFG1-15 …)
+-- Behaviour switches per customer/warehouse/company
 CREATE TABLE tenant_setting (
     id            uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id    uuid,
@@ -241,7 +236,7 @@ CREATE TABLE tenant_setting (
     UNIQUE NULLS NOT DISTINCT (setting_key, company_id, warehouse_id, customer_id)
 );
 
--- legacy GWH_TM_PIK: definition of picking keys 1..7 (lot no, expiry, …)
+-- Definition of picking keys 1..7 (lot no, expiry, …)
 CREATE TABLE picking_key_def (
     id                    uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id            uuid,
@@ -254,7 +249,7 @@ CREATE TABLE picking_key_def (
     key_no                smallint     NOT NULL CHECK (key_no BETWEEN 1 AND 7),
     in_use                boolean      NOT NULL DEFAULT false,
     name                  varchar(50),
-    data_type             varchar(2),             -- PIK_TYPE_KND
+    data_type             varchar(2),
     max_length            smallint,
     date_format           varchar(2),
     allocation_pattern    varchar(2),
@@ -263,7 +258,7 @@ CREATE TABLE picking_key_def (
     auto_receipt_date     boolean      NOT NULL DEFAULT false,
     expiry_control        boolean      NOT NULL DEFAULT false,
     best_by_kind          varchar(1),
-    scan_rules            jsonb        NOT NULL DEFAULT '{}',   -- AVSC/PISC/PASC/LOSC/LCSC/RLSC kinds
+    scan_rules            jsonb        NOT NULL DEFAULT '{}',   -- which scan is required per step (arrival, picking, packing, location …)
     barcode_parse         jsonb        NOT NULL DEFAULT '{}',   -- fixed (start,len) / variable (sep,pos)
     updated_at            timestamptz  NOT NULL DEFAULT now(),
     updated_by            varchar(50)  NOT NULL,
@@ -275,7 +270,7 @@ CREATE TABLE picking_key_def (
     UNIQUE NULLS NOT DISTINCT (key_no, company_id, warehouse_id, customer_id)
 );
 
--- legacy GWH_TM_TRN (91 columns of flags -> usage / charge arrays)
+-- Transaction kinds: where they may be used and what they charge
 CREATE TABLE transaction_kind (
     id                  uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id          uuid,
@@ -307,7 +302,7 @@ CREATE TABLE transaction_kind (
     UNIQUE NULLS NOT DISTINCT (code, company_id, warehouse_id, customer_id)
 );
 
--- legacy GWH_TM_STS
+-- Statuses
 CREATE TABLE status_def (
     id             uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id     uuid,
@@ -332,7 +327,7 @@ CREATE TABLE status_def (
     UNIQUE NULLS NOT DISTINCT (business_code, status_code, company_id, warehouse_id, customer_id)
 );
 
--- legacy GWH_TM_PRCC: a process may start only from required_status
+-- Process control: a process may start only from required_status
 CREATE TABLE process_control (
     id                 uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id         uuid,
@@ -356,7 +351,7 @@ CREATE TABLE process_control (
     UNIQUE NULLS NOT DISTINCT (process_code, company_id, warehouse_id, customer_id)
 );
 
--- legacy GWH_TM_CODE (+ GWH_TM_RSN as kind 'REASON')
+-- Code lists (reasons are kind 'REASON')
 CREATE TABLE code_list (
     id            uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id    uuid,
@@ -432,7 +427,7 @@ CREATE POLICY p_scope_read  ON process_control  FOR SELECT USING (app.in_scope(c
 CREATE POLICY p_scope_read  ON code_list        FOR SELECT USING (app.in_scope(company_id, warehouse_id, customer_id));
 
 -- -----------------------------------------------------------------------------
--- Most-specific-wins resolution (replaces ROW_NUMBER() OVER … ORDER BY LENGTH(cpny||whs||cust))
+-- Most-specific-wins resolution
 -- Example for tenant_setting; the Java resolver uses the same ORDER BY and caches the result.
 -- -----------------------------------------------------------------------------
 CREATE VIEW effective_tenant_setting WITH (security_invoker = true) AS

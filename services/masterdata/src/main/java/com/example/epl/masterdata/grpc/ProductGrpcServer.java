@@ -12,40 +12,28 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.masterdata.v1.ProductService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(ProductServiceGrpc.class)
 public class ProductGrpcServer extends ProductServiceGrpc.ProductServiceImplBase {
 
-    /**
-     * Legacy: gwh_mpprd_010 / gwh_mbprd (HHT) / gwh_cpprd_010 (popup)
-     */
     @Override
     public void getProduct(GetProductRequest request, StreamObserver<Product> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/GetProduct", "gwh_mpprd_010 / gwh_mbprd (HHT) / gwh_cpprd_010 (popup)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/GetProduct", "EPL-MD-210W", "EPL-MD-210H"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void listProducts(ListProductsRequest request, StreamObserver<ListProductsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ListProducts", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ListProducts", "EPL-MD-210W"));
     }
 
-    /**
-     * Legacy: gwh_mpprd_010 register, upload via integration (lpupl FILE_KND 03)
-     */
     @Override
     public void upsertProduct(Product request, StreamObserver<Product> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/UpsertProduct", "gwh_mpprd_010 register, upload via integration (lpupl FILE_KND 03)"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/UpsertProduct", "EPL-MD-210W"));
     }
 
-    /**
-     * Legacy: gwh_cppbar (GWH_TM_PBAR) — HHT scans a barcode and needs the product
-     */
     @Override
     public void resolveBarcode(ResolveBarcodeRequest request, StreamObserver<ResolveBarcodeResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ResolveBarcode", "gwh_cppbar (GWH_TM_PBAR) — HHT scans a barcode and needs the product"));
+        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ResolveBarcode"));
     }
 }

@@ -35,7 +35,7 @@ public class UploadController {
     }
 
     /**
-     * @param fileKind     legacy FILE_KND: 01 arrival, 02 shipment, 03 product …
+     * @param fileKind     ARRIVAL, SHIPMENT, PRODUCT …
      * @param validateOnly true = check the rows without registering them
      * @return UploadResult as JSON
      */

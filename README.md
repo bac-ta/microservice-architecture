@@ -21,22 +21,23 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 
 ## Services
 
-| Service | HTTP / gRPC | Schema | Rebuilt from legacy GWH | gRPC contract |
+| Service | HTTP / gRPC | Schema | Screens | gRPC contract |
 |---|---|---|---|---|
 | `gateway` | 5555 / — | — | — | REST/JSON edge for every contract (see below) |
-| `auth` | 8101 / 9101 | `iam` | NCU users / roles, AGS_PR_TOKEN_010, GWH_PR_PRTTN_010, mpuah | `epl/auth/v1` |
-| `masterdata` | 8102 / 9102 | `md` | GwhSrvcMpWeb, MbWeb, MhWeb, CpWeb | `epl/masterdata/v1` |
-| `inbound` | 8103 / 9103 | — | GwhSrvcApWeb, AbWeb, AhWeb | `epl/inbound/v1` |
-| `inventory` | 8104 / 9104 | `inv` | GwhSrvcLpWeb, LbWeb, LhWeb | `epl/inventory/v1` |
-| `outbound` | 8105 / 9105 | — | GwhSrvcSpWeb, SbWeb, ShWeb | `epl/outbound/v1` |
-| `billing` | 8106 / 9106 | — | lpw*, mpw*, rpwcs | `epl/billing/v1` |
-| `integration` | 8107 / 9107 | — | lpupl / lpedi / lpwes, GwhSrvcUpWeb, GwhSrvcDpWeb | `epl/integration/v1` |
-| `report` | 8108 / 9108 | — | GwhSrvcRpWeb, RbWeb, KpWeb, GwhEasWeb | `epl/report/v1` |
+| `auth` | 8101 / 9101 | `iam` | `EPL-SY-*` | `epl/auth/v1` |
+| `masterdata` | 8102 / 9102 | `md` | `EPL-MD-*` | `epl/masterdata/v1` |
+| `inbound` | 8103 / 9103 | — | `EPL-IB-*` | `epl/inbound/v1` |
+| `inventory` | 8104 / 9104 | `inv` | `EPL-IV-*` | `epl/inventory/v1` |
+| `outbound` | 8105 / 9105 | — | `EPL-OB-*` | `epl/outbound/v1` |
+| `billing` | 8106 / 9106 | — | `EPL-BL-*` | `epl/billing/v1` |
+| `integration` | 8107 / 9107 | — | `EPL-IT-*` | `epl/integration/v1` |
+| `report` | 8108 / 9108 | — | `EPL-RP-*` | `epl/report/v1` |
 
-Contracts live in `proto/src/main/proto/epl/<service>/v1/`. The EPL services expose every RPC
-already; each one answers `UNIMPLEMENTED` with the legacy screen / procedure to port
-(see the Javadoc in `services/<service>/src/main/java/.../grpc/*GrpcServer.java`).
-The legacy AGS low-code screen engine (`GwhSrvcStWeb`) is not rebuilt as a service.
+Contracts live in `proto/src/main/proto/epl/<service>/v1/`; each RPC is commented with the
+screens that call it. Screen codes (`EPL-<domain>-<nnn><channel>`) are listed in
+[`docs/screen-codes.md`](docs/screen-codes.md); naming rules for code, proto, DB and events are in
+[`docs/naming-conventions.md`](docs/naming-conventions.md). The services expose every RPC already; one that
+is not implemented yet answers `UNIMPLEMENTED` naming its screens.
 
 Services with a schema need PostgreSQL prepared by `database/bootstrap/bootstrap.sql`; start
 `auth` before `masterdata` / `inventory` on an empty database (their tables reference `iam`).
@@ -63,7 +64,7 @@ service or RPC in `proto/` needs no gateway code. The backend of an RPC comes fr
 
 ```bash
 curl -X POST localhost:5555/api/rpc/epl.masterdata.v1.ProductService/GetProduct \
-  -H "Authorization: Bearer $TOKEN" -H "X-Company: 530014" -H "X-Warehouse: BOND" -H "X-Customer: BOND01" \
+  -H "Authorization: Bearer $TOKEN" -H "X-Company: C001" -H "X-Warehouse: WH01" -H "X-Customer: CUST01" \
   -H "Content-Type: application/json" -d '{"code":"P001"}'
 ```
 

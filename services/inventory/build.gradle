@@ -1,4 +1,4 @@
-// Inventory: stock, movements, stocktake, serials, kitting (legacy GwhSrvcLp/Lb/LhWeb).
+// Inventory: stock, movements, stocktake, serials, kitting.
 plugins {
     id 'epl.spring-boot-service'
 }

@@ -2,13 +2,6 @@
 -- IAM database — owned by service-authentication
 -- PostgreSQL 16
 --
--- Replaces (legacy):
---   SNCU0001  TMNCUCMNCPNYMST, TMNCUCMNUSERMST, TMNCUEXTUSERMST, TMNCUEXTPWDMST,
---             TMNCUCMNROLE*, ROLEAUTHMST, BTNAUTHMST, ACCESSCNTLMST
---   SGWH0001  GWH_TM_WHS (identity part), GWH_TM_CUST (identity part),
---             GWH_TM_USAH, GWH_TM_PGRP, GWH_TM_PEVT
---   PL/SQL    AGS_PR_TOKEN_010, GWH_PR_PRTTN_010, ENCRYPTDECRYPT (token + tenant check)
---
 -- Tenancy here is the *registry*: company / warehouse / customer / tenant.
 -- Schemas md and inv reference these four tables with real foreign keys
 -- (REFERENCES granted in V3). Their services never query iam tables directly.
@@ -29,7 +22,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA iam GRANT SELECT, INSERT, UPDATE, DELETE ON T
 -- Organisation hierarchy = tenant registry
 -- -----------------------------------------------------------------------------
 
--- Legacy CPNY_COD (e.g. 530014)
+-- Company (e.g. C001)
 CREATE TABLE company (
     id            uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
     code          varchar(6)   NOT NULL UNIQUE,
@@ -45,7 +38,7 @@ CREATE TABLE company (
     version       integer      NOT NULL DEFAULT 0
 );
 
--- Legacy WHS_COD (e.g. BOND) — unique within a company
+-- Warehouse (e.g. WH01) — unique within a company
 CREATE TABLE warehouse (
     id            uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id    uuid         NOT NULL REFERENCES company (id),
@@ -66,7 +59,7 @@ CREATE TABLE warehouse (
     CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date)
 );
 
--- Legacy CUST_COD (e.g. BOND01) — the shipper/owner of goods, unique within a company
+-- Customer (e.g. CUST01) — the shipper/owner of goods, unique within a company
 CREATE TABLE customer (
     id            uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id    uuid         NOT NULL REFERENCES company (id),
@@ -83,8 +76,8 @@ CREATE TABLE customer (
     UNIQUE (company_id, id)
 );
 
--- A customer operated in a warehouse = legacy "partition" (CPNY||WHS||CUST),
--- i.e. the key of GWH_TM_CUST. tenant.id is what every service stores as tenant_id.
+-- A customer operated in a warehouse (company / warehouse / customer).
+-- tenant.id is what every service stores as tenant_id.
 CREATE TABLE tenant (
     id              uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     company_id      uuid        NOT NULL,
@@ -117,16 +110,16 @@ CREATE TABLE tenant (
 
 CREATE TABLE app_user (
     id                  uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
-    username            varchar(50)  NOT NULL,           -- legacy USER_COD
+    username            varchar(50)  NOT NULL,
     email               varchar(254),
     display_name        varchar(200) NOT NULL,
-    -- INTERNAL = warehouse operator staff, CUSTOMER = shipper's staff (legacy EXT users),
+    -- INTERNAL = warehouse operator staff, CUSTOMER = shipper's staff,
     -- SYSTEM   = machine client (batch, EDI, other services)
     user_type           varchar(16)  NOT NULL
                         CHECK (user_type IN ('INTERNAL', 'CUSTOMER', 'SYSTEM')),
     home_company_id     uuid         REFERENCES company (id),
     home_customer_id    uuid         REFERENCES customer (id),  -- set for CUSTOMER users
-    department_code     varchar(20),                     -- legacy division / org
+    department_code     varchar(20),                     -- division / org
     locale              varchar(10)  NOT NULL DEFAULT 'en',
     time_zone           varchar(40),
     status              varchar(16)  NOT NULL DEFAULT 'ACTIVE'
@@ -155,7 +148,7 @@ CREATE TABLE user_credential (
     updated_at      timestamptz  NOT NULL DEFAULT now()
 );
 
--- Prevents password reuse (legacy TMNCUEXTPWDMST history)
+-- Prevents password reuse
 CREATE TABLE password_history (
     user_id        uuid         NOT NULL REFERENCES app_user (id) ON DELETE CASCADE,
     password_hash  varchar(255) NOT NULL,
@@ -183,7 +176,7 @@ CREATE INDEX ix_refresh_token_user   ON refresh_token (user_id) WHERE revoked_at
 CREATE INDEX ix_refresh_token_family ON refresh_token (family_id);
 
 -- JWT signing keys, published as JWKS. The private key itself lives in KMS / Vault;
--- this table holds only a reference to it (legacy kept an AES key in a PL/SQL body).
+-- this table holds only a reference to it.
 CREATE TABLE signing_key (
     kid              varchar(64)  PRIMARY KEY,
     algorithm        varchar(10)  NOT NULL DEFAULT 'ES256'
@@ -214,7 +207,7 @@ CREATE TABLE oauth_client (
 -- Subject attributes (ABAC "subject")
 -- -----------------------------------------------------------------------------
 
--- Named bundle of responsibilities (legacy role group GWH_TM_PGRP / ROLEGRPMST).
+-- Named bundle of responsibilities.
 -- In ABAC a role is just one subject attribute that policies can test.
 CREATE TABLE role (
     code         varchar(50)  PRIMARY KEY,               -- WMS_OPERATOR, WMS_SUPERVISOR, CUSTOMER_VIEWER ...
@@ -224,8 +217,8 @@ CREATE TABLE role (
     created_by   varchar(50)  NOT NULL
 );
 
--- Where a user may work, and with which roles there (legacy GWH_TM_USAH).
--- NULL warehouse/customer = '*' (all within the company) — same idea as legacy wildcards.
+-- Where a user may work, and with which roles there.
+-- NULL warehouse/customer = '*' (all within the company).
 CREATE TABLE user_tenant_grant (
     id            uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id       uuid         NOT NULL REFERENCES app_user (id) ON DELETE CASCADE,
@@ -245,7 +238,7 @@ CREATE TABLE user_tenant_grant (
 CREATE INDEX ix_user_tenant_grant_user ON user_tenant_grant (user_id);
 
 -- Free-form subject attributes used by policy conditions,
--- e.g. auth_level = 3 (legacy AUTH_LEVEL), max_adjust_qty = 500, shift = "NIGHT".
+-- e.g. auth_level = 3, max_adjust_qty = 500, shift = "NIGHT".
 CREATE TABLE user_attribute (
     user_id     uuid         NOT NULL REFERENCES app_user (id) ON DELETE CASCADE,
     attr_key    varchar(50)  NOT NULL,
@@ -257,7 +250,7 @@ CREATE TABLE user_attribute (
 );
 
 -- -----------------------------------------------------------------------------
--- ABAC policy store (replaces GWH_TM_PEVT, ROLEAUTHMST, BTNAUTHMST, ACCESSCNTLMST)
+-- ABAC policy store
 -- -----------------------------------------------------------------------------
 
 -- Things that can be protected, e.g. 'inventory.stock', 'inventory.stocktake'
@@ -276,8 +269,25 @@ CREATE TABLE action (
     code           varchar(40)  NOT NULL,                -- read, adjust, relocate, confirm ...
     grpc_method    varchar(200),                         -- epl.inventory.v1.StockService/Adjust
     description    varchar(500),
-    legacy_ref     varchar(200),                         -- epl_lpadj_010 / eplLpadj010Reg
     PRIMARY KEY (resource_type, code)
+);
+
+-- UI screens: EPL-<domain>-<nnn><channel>, e.g. EPL-IV-120W (docs/screen-codes.md)
+CREATE TABLE screen (
+    code         varchar(12)  PRIMARY KEY CHECK (code ~ '^EPL-[A-Z]{2}-[0-9]{3}[WH]$'),
+    domain       char(2)      NOT NULL,                  -- SY, MD, IB, IV, OB, BL, IT, RP
+    channel      char(1)      NOT NULL CHECK (channel IN ('W', 'H')),   -- W = web (PC), H = handheld
+    name         varchar(200) NOT NULL,
+    CHECK (substr(code, 5, 2) = domain AND right(code, 1) = channel)
+);
+
+-- Actions a screen calls; the client BatchChecks them to show or hide buttons
+CREATE TABLE screen_action (
+    screen_code    varchar(12)  NOT NULL REFERENCES screen (code),
+    resource_type  varchar(60)  NOT NULL,
+    action         varchar(40)  NOT NULL,
+    PRIMARY KEY (screen_code, resource_type, action),
+    FOREIGN KEY (resource_type, action) REFERENCES action (resource_type, code)
 );
 
 -- A rule: "in <scope>, <effect> <actions> on <resource_type> when <condition>".
@@ -334,8 +344,7 @@ CREATE TRIGGER trg_policy_revision
     AFTER INSERT OR UPDATE OR DELETE ON policy
     FOR EACH STATEMENT EXECUTE FUNCTION bump_policy_revision();
 
--- Append-only decision log written asynchronously by every service's PEP
--- (legacy had no equivalent; OPEHST only logged operations).
+-- Append-only decision log written asynchronously by every service's PEP.
 CREATE TABLE authz_decision_log (
     id             bigint        GENERATED ALWAYS AS IDENTITY,
     occurred_at    timestamptz   NOT NULL DEFAULT now(),

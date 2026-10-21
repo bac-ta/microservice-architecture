@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Reports, labels and KPIs (legacy GwhSrvcRpWeb, GwhSrvcRbWeb, GwhSrvcKpWeb).
+ * Reports, labels and KPIs.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

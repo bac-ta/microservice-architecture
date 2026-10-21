@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 /**
- * Billing: warehouse charge rates, statements, month-end close (legacy lpw*, mpw*).
+ * Billing: warehouse charge rates, statements, month-end close.
  */
 @SpringBootApplication
 // libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.

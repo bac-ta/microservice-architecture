@@ -15,48 +15,33 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.auth.v1.AuthorizationService (contract: proto/src/main/proto/epl/auth/v1/auth.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(AuthorizationServiceGrpc.class)
 public class AuthorizationGrpcServer extends AuthorizationServiceGrpc.AuthorizationServiceImplBase {
 
-    /**
-     * Legacy: GWH_PR_PRTTN_010 (GWH_TM_PEVT function-key permissions)
-     */
     @Override
     public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/Check", "GWH_PR_PRTTN_010 (GWH_TM_PEVT function-key permissions)"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/Check"));
     }
 
-    /**
-     * Legacy: BTNAUTHMST (which buttons a screen may show)
-     */
     @Override
     public void batchCheck(BatchCheckRequest request, StreamObserver<BatchCheckResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/BatchCheck", "BTNAUTHMST (which buttons a screen may show)"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/BatchCheck"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void listPolicies(ListPoliciesRequest request, StreamObserver<ListPoliciesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/ListPolicies", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/ListPolicies", "EPL-SY-310W"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void upsertPolicy(Policy request, StreamObserver<Policy> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/UpsertPolicy", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/UpsertPolicy", "EPL-SY-310W"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void deletePolicy(DeletePolicyRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/DeletePolicy", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthorizationService/DeletePolicy", "EPL-SY-310W"));
     }
 }

@@ -12,40 +12,28 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.auth.v1.AuthService (contract: proto/src/main/proto/epl/auth/v1/auth.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(AuthServiceGrpc.class)
 public class AuthGrpcServer extends AuthServiceGrpc.AuthServiceImplBase {
 
-    /**
-     * Legacy: AGS_PR_TOKEN_010 / ENCRYPTDECRYPT (AES token) — replaced by ES256 JWT
-     */
     @Override
     public void login(LoginRequest request, StreamObserver<TokenResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Login", "AGS_PR_TOKEN_010 / ENCRYPTDECRYPT (AES token) — replaced by ES256 JWT"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Login", "EPL-SY-010W", "EPL-SY-010H"));
     }
 
-    /**
-     * Legacy: none (no refresh in GWH)
-     */
     @Override
     public void refresh(RefreshRequest request, StreamObserver<TokenResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Refresh", "none (no refresh in GWH)"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Refresh"));
     }
 
-    /**
-     * Legacy: TJNCUEXTUSERINFO session end
-     */
     @Override
     public void logout(LogoutRequest request, StreamObserver<Empty> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Logout", "TJNCUEXTUSERINFO session end"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/Logout"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void getJwks(Empty request, StreamObserver<JwksResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/GetJwks", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.AuthService/GetJwks"));
     }
 }

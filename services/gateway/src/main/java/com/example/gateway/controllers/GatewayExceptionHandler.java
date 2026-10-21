@@ -26,7 +26,7 @@ public class GatewayExceptionHandler {
     public ResponseEntity<ApiError> handleStatus(StatusRuntimeException e, HttpServletRequest request) {
         var status = e.getStatus();
         var httpStatus = GrpcHttpStatus.of(status.getCode());
-        // UNIMPLEMENTED is expected while the legacy logic is being ported
+        // UNIMPLEMENTED is expected while RPCs are still being implemented
         if (httpStatus >= 500 && status.getCode() != Status.Code.UNIMPLEMENTED) {
             logger.warn("{} {} -> {}", request.getMethod(), request.getRequestURI(), status, e);
         }

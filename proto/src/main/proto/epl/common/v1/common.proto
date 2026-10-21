@@ -23,31 +23,31 @@ message PageResponse {
   int64 total_size = 2;        // -1 when not computed
 }
 
-// Calendar date in the warehouse's time zone (legacy *_YMD columns).
+// Calendar date in the warehouse's time zone.
 message Date {
   int32 year = 1;
   int32 month = 2;
   int32 day = 3;
 }
 
-// Decimal value as a string, e.g. "12.500" (legacy NUMBER(12,3) quantities).
+// Decimal value as a string, e.g. "12.500", 3 decimal places.
 message Decimal {
   string value = 1;
 }
 
-// Quantity in the three packing levels used everywhere in GWH:
+// Quantity in the three packing levels used everywhere:
 // cases (CS), balls (BL) and pieces (PC). total_pieces is authoritative.
 message Quantity {
   int32 cases = 1;
   int32 balls = 2;
   Decimal pieces = 3;
   Decimal total_pieces = 4;
-  int32 units_per_case = 5;  // PPCS_QTY
-  int32 units_per_ball = 6;  // PPB_QTY
+  int32 units_per_case = 5;
+  int32 units_per_ball = 6;
 }
 
 // Picking keys 1..7 (lot no, expiry date, …). Their meaning is configured per tenant
-// in masterdata (PickingKeyDefinition, legacy GWH_TM_PIK).
+// in masterdata (PickingKeyDefinition).
 message PickKeys {
   string key1 = 1;
   string key2 = 2;
@@ -58,7 +58,7 @@ message PickKeys {
   string key7 = 7;
 }
 
-// Stock lot identity = originating receipt line (legacy AV_NUM / AVLN_NUM / AVSQ_NUM).
+// Stock lot identity = originating receipt line.
 message ReceiptRef {
   string receipt_no = 1;
   int32 line_no = 2;
@@ -89,11 +89,10 @@ message Audit {
   int32 version = 5;  // optimistic lock: send back on update
 }
 
-// Result of a bulk operation where some rows may fail validation
-// (legacy GwhMessageList / ERRB… message ids).
+// Result of a bulk operation where some rows may fail validation.
 message RowError {
   int32 row = 1;
   string field = 2;
-  string message_code = 3;   // e.g. ERRB013
+  string message_code = 3;
   repeated string message_args = 4;
 }

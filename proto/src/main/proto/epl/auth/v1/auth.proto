@@ -15,11 +15,9 @@ option java_multiple_files = true;
 // Authentication
 // ---------------------------------------------------------------------------
 service AuthService {
-  // legacy: AGS_PR_TOKEN_010 / ENCRYPTDECRYPT (AES token) — replaced by ES256 JWT
+  // screens: EPL-SY-010W, EPL-SY-010H
   rpc Login(LoginRequest) returns (TokenResponse);
-  // legacy: none (no refresh in GWH)
   rpc Refresh(RefreshRequest) returns (TokenResponse);
-  // legacy: TJNCUEXTUSERINFO session end
   rpc Logout(LogoutRequest) returns (google.protobuf.Empty);
   // Public keys for local JWT verification by every service.
   rpc GetJwks(google.protobuf.Empty) returns (JwksResponse);
@@ -57,22 +55,28 @@ message JwksResponse {
 // Users and tenant grants
 // ---------------------------------------------------------------------------
 service UserService {
-  // legacy: TMNCUCMNUSERMST / TMNCUEXTUSERMST maintenance
+  // screens: EPL-SY-110W
   rpc CreateUser(CreateUserRequest) returns (User);
+  // screens: EPL-SY-110W
   rpc GetUser(GetUserRequest) returns (User);
+  // screens: EPL-SY-110W
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  // screens: EPL-SY-110W
   rpc UpdateUser(User) returns (User);
+  // screens: EPL-SY-130W
   rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty);
-  // legacy: gwh_mpuah (GWH_TM_USAH user ↔ cpny/whs/cust + role group)
+  // screens: EPL-SY-120W
   rpc GrantTenant(GrantTenantRequest) returns (TenantGrant);
+  // screens: EPL-SY-120W
   rpc RevokeGrant(RevokeGrantRequest) returns (google.protobuf.Empty);
+  // screens: EPL-SY-120W
   rpc ListGrants(ListGrantsRequest) returns (ListGrantsResponse);
 }
 
 enum UserType {
   USER_TYPE_UNSPECIFIED = 0;
   USER_TYPE_INTERNAL = 1;  // warehouse operator staff
-  USER_TYPE_CUSTOMER = 2;  // shipper's staff (legacy EXT users)
+  USER_TYPE_CUSTOMER = 2;  // shipper's staff
   USER_TYPE_SYSTEM = 3;    // machine client
 }
 
@@ -158,17 +162,19 @@ message ListGrantsResponse {
 // Tenant registry (company / warehouse / customer / tenant)
 // ---------------------------------------------------------------------------
 service TenantService {
-  // legacy: TMNCUCMNCPNYMST, GWH_TM_WHS, GWH_TM_CUST (identity part)
+  // screens: EPL-SY-210W
   rpc ListCompanies(google.protobuf.Empty) returns (ListCompaniesResponse);
+  // screens: EPL-SY-210W
   rpc ListWarehouses(ListWarehousesRequest) returns (ListWarehousesResponse);
+  // screens: EPL-SY-020W, EPL-SY-020H, EPL-SY-210W
   rpc ListTenants(ListTenantsRequest) returns (ListTenantsResponse);
-  // legacy: GWH_TM_CPY tenant copy (onboarding by cloning a template tenant)
+  // screens: EPL-SY-220W
   rpc CreateTenant(CreateTenantRequest) returns (Tenant);
 }
 
 message Company {
   string id = 1;
-  string code = 2;  // e.g. 530014
+  string code = 2;  // e.g. C001
   string name = 3;
   string country_code = 4;
   string time_zone = 5;
@@ -177,7 +183,7 @@ message Company {
 message Warehouse {
   string id = 1;
   string company_code = 2;
-  string code = 3;  // e.g. BOND
+  string code = 3;  // e.g. WH01
   string name = 4;
   string time_zone = 5;
 }
@@ -186,7 +192,7 @@ message Tenant {
   string id = 1;
   string company_code = 2;
   string warehouse_code = 3;
-  string customer_code = 4;  // e.g. BOND01
+  string customer_code = 4;  // e.g. CUST01
   string customer_name = 5;
   string status = 6;
 }
@@ -224,12 +230,13 @@ message CreateTenantRequest {
 // ABAC authorization (policy decision point + policy administration)
 // ---------------------------------------------------------------------------
 service AuthorizationService {
-  // legacy: GWH_PR_PRTTN_010 (GWH_TM_PEVT function-key permissions)
   rpc Check(CheckRequest) returns (CheckResponse);
-  // legacy: BTNAUTHMST (which buttons a screen may show)
   rpc BatchCheck(BatchCheckRequest) returns (BatchCheckResponse);
+  // screens: EPL-SY-310W
   rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse);
+  // screens: EPL-SY-310W
   rpc UpsertPolicy(Policy) returns (Policy);
+  // screens: EPL-SY-310W
   rpc DeletePolicy(DeletePolicyRequest) returns (google.protobuf.Empty);
 }
 

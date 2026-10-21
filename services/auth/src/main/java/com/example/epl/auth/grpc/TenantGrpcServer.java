@@ -14,40 +14,28 @@ import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.auth.v1.TenantService (contract: proto/src/main/proto/epl/auth/v1/auth.proto).
- * Every RPC answers UNIMPLEMENTED until the legacy logic named in its Javadoc is ported.
+ * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
  */
 @GrpcServer(TenantServiceGrpc.class)
 public class TenantGrpcServer extends TenantServiceGrpc.TenantServiceImplBase {
 
-    /**
-     * Legacy: TMNCUCMNCPNYMST, GWH_TM_WHS, GWH_TM_CUST (identity part)
-     */
     @Override
     public void listCompanies(Empty request, StreamObserver<ListCompaniesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListCompanies", "TMNCUCMNCPNYMST, GWH_TM_WHS, GWH_TM_CUST (identity part)"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListCompanies", "EPL-SY-210W"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void listWarehouses(ListWarehousesRequest request, StreamObserver<ListWarehousesResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListWarehouses", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListWarehouses", "EPL-SY-210W"));
     }
 
-    /**
-     * Legacy: new in EPL
-     */
     @Override
     public void listTenants(ListTenantsRequest request, StreamObserver<ListTenantsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListTenants", "new in EPL"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/ListTenants", "EPL-SY-020W", "EPL-SY-020H", "EPL-SY-210W"));
     }
 
-    /**
-     * Legacy: GWH_TM_CPY tenant copy (onboarding by cloning a template tenant)
-     */
     @Override
     public void createTenant(CreateTenantRequest request, StreamObserver<Tenant> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/CreateTenant", "GWH_TM_CPY tenant copy (onboarding by cloning a template tenant)"));
+        responseObserver.onError(NotPorted.error("epl.auth.v1.TenantService/CreateTenant", "EPL-SY-220W"));
     }
 }

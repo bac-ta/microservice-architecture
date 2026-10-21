@@ -1,4 +1,4 @@
-// Billing: warehouse charge rates, statements, month-end close (legacy lpw*, mpw*).
+// Billing: warehouse charge rates, statements, month-end close.
 plugins {
     id 'epl.spring-boot-service'
 }
