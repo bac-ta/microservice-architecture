@@ -1,0 +1,18 @@
+// Spring Boot service that owns a PostgreSQL schema (services/<service>/src/main/resources/db/migration).
+// Adds libs/database and a bootMigrate task that applies the migrations, then exits.
+plugins {
+    id 'epl.spring-boot-service'
+}
+
+dependencies {
+    implementation project(':libs:database')
+}
+
+tasks.register('bootMigrate', org.springframework.boot.gradle.tasks.run.BootRun) {
+    group = 'database'
+    description = 'Applies this service\'s Flyway migrations as the schema owner (profile "migrate"), then exits.'
+    def bootRun = tasks.named('bootRun', org.springframework.boot.gradle.tasks.run.BootRun).get()
+    mainClass = bootRun.mainClass
+    classpath = bootRun.classpath
+    args '--spring.profiles.active=migrate'
+}

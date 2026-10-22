@@ -1,6 +1,6 @@
 // Reports, labels and KPIs.
 plugins {
-    id 'epl.spring-boot-service'
+    id 'epl.database-service'
 }
 
 dependencies {

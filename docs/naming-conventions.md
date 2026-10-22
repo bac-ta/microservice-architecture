@@ -1,111 +1,112 @@
-# Quy tắc đặt tên (EPL)
+# Naming conventions (EPL)
 
-Áp dụng cho toàn bộ repo. Hệ thống EPL **không dùng lại bất kỳ tên nào của hệ thống cũ**:
-không mã màn / mã chương trình cũ (`gwh_mppik_010`, `lpadj`…), không tên bảng / cột cũ
-(`GWH_TM_*`, `AV_NUM`, `*_FLG`…), không comment kiểu `Legacy: …`.
-
-## 1. Mã màn hình
+## 1. Screen codes
 
 ```
 EPL-IV-120W
-│   │  │  └─ kênh:  W = web (PC), H = handheld (máy cầm tay)
-│   │  └──── số:    hàng trăm = nhóm chức năng, hàng chục = màn trong nhóm (bước 10)
-│   └─────── miền:  2 chữ, mỗi service một miền
-└─────────── tiền tố hệ thống
+│   │  │  └─ channel: W = web (PC), H = handheld
+│   │  └──── number:  hundreds = function group, tens = screen within the group (step 10)
+│   └─────── domain:  2 letters, one domain per service
+└─────────── system prefix
 ```
 
-| Miền | Ý nghĩa | Service |
+| Domain | Meaning | Service |
 |---|---|---|
-| `SY` | Hệ thống / IAM | `auth` |
+| `SY` | System / IAM | `auth` |
 | `MD` | Master data | `masterdata` |
-| `IB` | Nhập hàng | `inbound` |
-| `IV` | Tồn kho | `inventory` |
-| `OB` | Xuất hàng | `outbound` |
-| `BL` | Tính phí | `billing` |
-| `IT` | Tích hợp | `integration` |
-| `RP` | Báo cáo | `report` |
+| `IB` | Inbound | `inbound` |
+| `IV` | Inventory | `inventory` |
+| `OB` | Outbound | `outbound` |
+| `BL` | Billing | `billing` |
+| `IT` | Integration | `integration` |
+| `RP` | Reporting | `report` |
 
-Quy tắc:
+Rules:
 
-* Regex: `^EPL-[A-Z]{2}-[0-9]{3}[WH]$` (được CHECK trong `iam.screen`).
-* Mã định danh **một màn**, không phải một chức năng: cùng chức năng thì bản web và handheld
-  dùng chung số, chỉ khác kênh (`EPL-IV-110W` / `EPL-IV-110H`).
-* Đánh số bước 10 để chèn màn mới vào giữa (`EPL-IV-115W`). Mã đã bỏ thì **không dùng lại**.
-* `0xx` để dành cho màn dùng chung của miền (ví dụ `EPL-SY-010W` đăng nhập).
+* Regex: `^EPL-[A-Z]{2}-[0-9]{3}[WH]$` (enforced by a CHECK constraint on `iam.screen`).
+* A code identifies **one screen**, not one function: the web and handheld versions of the same
+  function share the number and differ only in the channel (`EPL-IV-110W` / `EPL-IV-110H`).
+* Number in steps of 10 so new screens can be inserted in between (`EPL-IV-115W`). Retired codes
+  are **never reused**.
+* `0xx` is reserved for screens shared across the domain (e.g. `EPL-SY-010W` login).
 
-Thêm màn mới:
+Adding a new screen:
 
-1. Thêm dòng vào `docs/screen-codes.md`.
-2. Thêm `// screens: …` trên các `rpc` mà màn gọi trong `proto/`.
-3. Thêm mã vào `NotPorted.error(...)` của RPC tương ứng (khi RPC chưa implement).
-4. Seed `iam.screen` và `iam.screen_action` bằng một migration **mới** của `services/auth`
-   (không sửa migration đã chạy).
+1. Add a row to `docs/screen-codes.md`.
+2. Add `// screens: …` above every `rpc` the screen calls in `proto/`.
+3. Add the code to `NotPorted.error(...)` of the corresponding RPC (while the RPC is not implemented).
+4. Seed `iam.screen` and `iam.screen_action` with a **new** migration in `services/auth`
+   (never edit a migration that has already run).
 
-## 2. Service, module, package
+## 2. Services, modules, packages
 
-| Thứ | Quy tắc | Ví dụ |
+| Item | Rule | Example |
 |---|---|---|
-| Module Gradle | `services:<service>`, `libs:<lib>`; tên service là danh từ tiếng Anh viết thường | `services:inventory` |
-| Spring `application.name` | = tên service | `inventory` |
-| Java package gốc | `com.example.epl.<service>` | `com.example.epl.inventory` |
-| Class main | `<Service>ServiceApplication` | `InventoryServiceApplication` |
-| Cấu hình | package `configurations`, class `<Service><Thứ>Configuration` | `InventoryGrpcServerConfiguration` |
-| gRPC server | package `grpc`, class `<TênServiceTrongProto>GrpcServer` | `StockGrpcServer` |
-| Cổng | HTTP `81NN`, gRPC `91NN`, `NN` theo thứ tự service | inventory `8104` / `9104` |
+| Gradle module | `services:<service>`, `libs:<lib>`; service name is a lowercase English noun | `services:inventory` |
+| Spring `application.name` | = service name | `inventory` |
+| Root Java package | `com.example.epl.<service>` | `com.example.epl.inventory` |
+| Main class | `<Service>ServiceApplication` | `InventoryServiceApplication` |
+| Configuration | package `configurations`, class `<Service><Thing>Configuration` | `InventoryGrpcServerConfiguration` |
+| gRPC server | package `grpc`, class `<ProtoServiceName>GrpcServer` | `StockGrpcServer` |
+| Ports | HTTP `81NN`, gRPC `91NN`, `NN` = service order | inventory `8104` / `9104` |
 
 ## 3. Proto / gRPC
 
-| Thứ | Quy tắc | Ví dụ |
+| Item | Rule | Example |
 |---|---|---|
 | File | `proto/src/main/proto/epl/<service>/v1/<service>.proto` | `epl/inventory/v1/inventory.proto` |
 | Package | `epl.<service>.v1` | `epl.inventory.v1` |
 | `java_package` | `com.example.epl.<service>.v1` | |
-| Service | `<Danh từ>Service` | `StockService`, `StocktakeService` |
-| RPC | Động từ + danh từ, PascalCase | `SearchArrivals`, `ConfirmShipment` |
-| Message | `<Rpc>Request` / `<Rpc>Response`, entity là danh từ | `SearchArrivalsRequest`, `Arrival` |
-| Field | `snake_case`; số chứng từ `*_no`, mã `*_code`, ngày `*_date`, số lượng `*_qty` | `arrival_no`, `product_code` |
-| Enum | Giá trị `<ENUM>_<VALUE>`, giá trị 0 = `<ENUM>_UNSPECIFIED` | `USER_TYPE_CUSTOMER` |
-| Comment RPC | `// screens: EPL-…` (bỏ qua nếu RPC dùng chung cho mọi màn) | |
-| Tên đầy đủ của method | `epl.<service>.v1.<Service>/<Rpc>` (dùng trong `iam.action.grpc_method`) | `epl.inventory.v1.StockService/Adjust` |
+| Service | `<Noun>Service` | `StockService`, `StocktakeService` |
+| RPC | Verb + noun, PascalCase | `SearchArrivals`, `ConfirmShipment` |
+| Message | `<Rpc>Request` / `<Rpc>Response`, entities are nouns | `SearchArrivalsRequest`, `Arrival` |
+| Field | `snake_case`; document numbers `*_no`, codes `*_code`, dates `*_date`, quantities `*_qty` | `arrival_no`, `product_code` |
+| Enum | Values `<ENUM>_<VALUE>`, value 0 = `<ENUM>_UNSPECIFIED` | `USER_TYPE_CUSTOMER` |
+| RPC comment | `// screens: EPL-…` (omit if the RPC is shared by all screens) | |
+| Full method name | `epl.<service>.v1.<Service>/<Rpc>` (used in `iam.action.grpc_method`) | `epl.inventory.v1.StockService/Adjust` |
 
-Đổi contract không tương thích ngược thì tạo `v2`, không sửa `v1`.
+Backward-incompatible contract changes go into a new `v2`; never modify `v1`.
 
 ## 4. Database
 
-| Thứ | Quy tắc | Ví dụ |
+| Item | Rule | Example |
 |---|---|---|
-| Database | `epl` (một DB, mỗi service một schema) | |
-| Schema | viết tắt ngắn của service | `iam`, `md`, `inv` |
-| Role | `<schema>_owner` (migration), `<schema>_app` (runtime) | `inv_owner`, `inv_app` |
-| Bảng | `snake_case`, số ít | `stock`, `stock_movement`, `stocktake_line` |
-| Khoá chính | `id uuid` (bảng ledger lớn: `bigint identity`) | |
-| Khoá ngoại | `<bảng>_id` | `tenant_id`, `warehouse_id` |
-| Mã nghiệp vụ | `code` trong bảng của nó, `<thứ>_code` ở bảng khác | `product_code` |
-| Cờ | `boolean`, tên dạng tính từ / `is_`, không dùng `*_flg` | `on_hold`, `locked` |
+| Database | `epl` (one DB, one schema per service) | |
+| Schema | short abbreviation of the service (list in `database/bootstrap/bootstrap.sql`) | `iam`, `md`, `inv`, `inb`, `outb`, `bill`, `intg`, `rpt` |
+| Role | `<schema>_owner` (migrate job), `<schema>_app` (running service) | `inv_owner`, `inv_app` |
+| Table | `snake_case`, singular | `stock`, `stock_movement`, `stocktake_line` |
+| Primary key | `id uuid` (large ledger tables: `bigint identity`) | |
+| Foreign key | `<table>_id` | `tenant_id`, `warehouse_id` |
+| Business code | `code` in its own table, `<thing>_code` in other tables | `product_code` |
+| Flag | `boolean`, adjective / `is_` name, never `*_flg` | `on_hold`, `locked` |
 | Audit | `created_at/by`, `updated_at/by`, `version` | |
-| Index | `ix_<bảng>_<cột/mục đích>` | `ix_stock_available` |
-| Migration Flyway | `V<n>__<mô_tả>.sql` theo từng service; **không sửa file đã chạy**, luôn thêm file mới | `V4__screen_seed.sql` |
+| Index | `ix_<table>_<column/purpose>` | `ix_stock_available` |
+| Flyway migration | `V<n>__<description>.sql`, sequential per service, snake_case; **never edit a file that has run**, always add a new one | `V5__screen_seed.sql` |
+| Repeatable migration | `R__<description>.sql`, only for `CREATE OR REPLACE` views / functions | `R__effective_views.sql` |
+| Constraint | `ck_<table>_<rule>`, unique index `ux_<table>_<columns>` | `ck_stock_qty_balance`, `ux_app_user_email` |
+| RLS policy | `p_tenant`, `p_warehouse`, `p_scope_read` | |
 
-## 5. Phân quyền (ABAC)
+## 5. Authorization (ABAC)
 
-| Thứ | Quy tắc | Ví dụ |
+| Item | Rule | Example |
 |---|---|---|
 | Resource type | `<service>.<resource>` | `inventory.stock`, `billing.charge` |
-| Action | `snake_case`, động từ | `read`, `adjust`, `change_pick_key`, `close_month` |
-| Role | `UPPER_SNAKE`, nhóm theo nghiệp vụ | `WMS_OPERATOR`, `CUSTOMER_VIEWER` |
-| Policy code | `kebab-case` mô tả quy tắc | `adjust-within-limit` |
+| Action | `snake_case`, verb | `read`, `adjust`, `change_pick_key`, `close_month` |
+| Role | `UPPER_SNAKE`, grouped by business function | `WMS_OPERATOR`, `CUSTOMER_VIEWER` |
+| Policy code | `kebab-case` describing the rule | `adjust-within-limit` |
 
-## 6. Sự kiện (Kafka / outbox)
+## 6. Events (Kafka / outbox)
 
-`<miền nghiệp vụ>.<entity>.<động từ quá khứ>`, viết thường, ví dụ `stock.adjusted`,
+`<business domain>.<entity>.<past-tense verb>`, lowercase, e.g. `stock.adjusted`,
 `stocktake.confirmed`, `inbound.arrival.confirmed`, `user.grants.changed`.
 
-## 7. Cấu hình và dữ liệu mẫu
+## 7. Configuration and sample data
 
-* Biến môi trường: `UPPER_SNAKE`, có tiền tố theo nhóm: `DB_*`, `FLYWAY_*`, `GRPC_SERVER_*`,
-  `GRPC_<BACKEND>_TARGET`, `HTTP_SERVER_PORT`.
-* Header tenant: `x-company`, `x-warehouse`, `x-customer`.
-* Mã loại file upload: `UPPER_SNAKE` theo nghiệp vụ (`ARRIVAL`, `SHIPMENT`, `PRODUCT`), không
-  dùng mã số.
-* Dữ liệu mẫu trong test / tài liệu: company `C001`, warehouse `WH01`, customer `CUST01`,
+* Environment variables: `UPPER_SNAKE`, prefixed by group: `DB_*` (runtime role),
+  `FLYWAY_*` (schema owner, migrate job only), `GRPC_SERVER_*`, `GRPC_<BACKEND>_TARGET`, `HTTP_SERVER_PORT`.
+* Spring profile `migrate` = migrate job (see `database/README.md`).
+* Tenant headers: `x-company`, `x-warehouse`, `x-customer`.
+* Upload file type codes: `UPPER_SNAKE` by business entity (`ARRIVAL`, `SHIPMENT`, `PRODUCT`), never
+  numeric codes.
+* Sample data in tests / docs: company `C001`, warehouse `WH01`, customer `CUST01`,
   product `P001`.

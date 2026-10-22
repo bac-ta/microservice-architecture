@@ -20,6 +20,10 @@ include 'proto'
 include 'libs:grpc-server'
 include 'libs:grpc-client'
 include 'libs:security'
+include 'libs:database'
+
+// Database: bootstrap + migration tests of every schema (database/README.md)
+include 'database'
 
 // Edge
 include 'services:gateway'
@@ -27,9 +31,9 @@ include 'services:gateway'
 // EPL warehouse services                                    http / gRPC port
 include 'services:auth'          // IAM, JWT, ABAC           8101 / 9101   schema iam
 include 'services:masterdata'    // locations, products      8102 / 9102   schema md
-include 'services:inbound'       // arrivals                 8103 / 9103
+include 'services:inbound'       // arrivals                 8103 / 9103   schema inb
 include 'services:inventory'     // stock, stocktake         8104 / 9104   schema inv
-include 'services:outbound'      // shipments                8105 / 9105
-include 'services:billing'       // warehouse charges        8106 / 9106
-include 'services:integration'   // uploads, EDI, jobs       8107 / 9107
-include 'services:report'        // reports, labels, KPI     8108 / 9108
+include 'services:outbound'      // shipments                8105 / 9105   schema outb
+include 'services:billing'       // warehouse charges        8106 / 9106   schema bill
+include 'services:integration'   // uploads, EDI, jobs       8107 / 9107   schema intg
+include 'services:report'        // reports, labels, KPI     8108 / 9108   schema rpt

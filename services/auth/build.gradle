@@ -1,15 +1,10 @@
 // IAM: login / JWT, users and tenant grants, tenant registry, ABAC authorization.
 plugins {
-    id 'epl.spring-boot-service'
+    id 'epl.database-service'
 }
 
 dependencies {
     implementation project(':proto')
     implementation project(':libs:grpc-server')
     implementation project(':libs:security')
-
-    implementation libs.spring.boot.starter.jdbc
-    implementation libs.flyway.core
-    runtimeOnly libs.flyway.database.postgresql
-    runtimeOnly libs.postgresql
 }

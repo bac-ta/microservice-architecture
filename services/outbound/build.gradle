@@ -1,6 +1,6 @@
 // Outbound: shipping orders, allocation, picking, packing, confirmation.
 plugins {
-    id 'epl.spring-boot-service'
+    id 'epl.database-service'
 }
 
 dependencies {

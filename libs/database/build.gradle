@@ -1,0 +1,14 @@
+// PostgreSQL + Flyway for services that own a schema: driver, migrations, and the
+// validate (runtime) / migrate (migrate job) switch. Applied through epl.database-service.
+plugins {
+    id 'epl.java-library'
+}
+
+dependencies {
+    api libs.spring.boot.starter.jdbc
+    api libs.flyway.core
+    implementation libs.spring.boot.autoconfigure
+    runtimeOnly libs.flyway.database.postgresql
+    runtimeOnly libs.postgresql
+    annotationProcessor libs.spring.boot.configuration.processor
+}

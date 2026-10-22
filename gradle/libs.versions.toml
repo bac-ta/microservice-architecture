@@ -11,6 +11,7 @@ protobuf = "3.25.5"           # must match grpc-java (1.72 is built on protobuf 
 protobuf-plugin = "0.9.4"
 commons-lang3 = "3.14.0"
 javax-annotation = "1.3.2"
+testcontainers = "1.21.4"       # newer than the Boot 3.3 BOM (1.19.8): Docker Engine 29 needs Docker API >= 1.40
 spring-security-oauth2-legacy = "2.5.2.RELEASE"   # end-of-life; used by libs/security RequestHandlerInterceptor
 
 [libraries]
@@ -44,6 +45,8 @@ spring-boot-starter-jdbc = { module = "org.springframework.boot:spring-boot-star
 postgresql = { module = "org.postgresql:postgresql" }
 flyway-core = { module = "org.flywaydb:flyway-core" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
 
 # Misc
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }

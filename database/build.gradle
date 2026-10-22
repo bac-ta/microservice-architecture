@@ -1,0 +1,28 @@
+// Not deployed: tests that bootstrap.sql and every service's migrations apply, in order, on PostgreSQL 16
+// (Testcontainers, skipped when Docker is not available).
+plugins {
+    id 'epl.java-conventions'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}"
+    }
+}
+
+dependencies {
+    testImplementation libs.flyway.core
+    testRuntimeOnly libs.flyway.database.postgresql
+    testImplementation libs.postgresql
+    testImplementation libs.testcontainers.postgresql
+    testImplementation libs.testcontainers.junit.jupiter
+}
+
+tasks.named('test') {
+    systemProperty 'epl.repository.root', rootDir.absolutePath
+    // the migrations are read from the services' source folders
+    inputs.files(fileTree(rootProject.file('services')) { include '*/src/main/resources/db/migration/**' })
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(file('bootstrap')).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.dir(file('local')).withPathSensitivity(PathSensitivity.RELATIVE)
+}

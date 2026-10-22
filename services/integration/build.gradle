@@ -1,6 +1,6 @@
 // Integration: file uploads, EDI, batch jobs, data purge.
 plugins {
-    id 'epl.spring-boot-service'
+    id 'epl.database-service'
 }
 
 dependencies {

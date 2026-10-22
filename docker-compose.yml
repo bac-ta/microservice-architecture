@@ -1,4 +1,26 @@
 services:
+  # Single EPL database. On a new volume the entrypoint runs bootstrap.sql (roles, schemas)
+  # and dev-passwords.sql (password = role name); service migrations run with bootMigrate.
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: epl
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - "postgres-data:/var/lib/postgresql/data"
+      - "./database/bootstrap/bootstrap.sql:/docker-entrypoint-initdb.d/01-bootstrap.sql:ro"
+      - "./database/local/dev-passwords.sql:/docker-entrypoint-initdb.d/02-dev-passwords.sql:ro"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d epl"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   nexus:
     image: sonatype/nexus3:latest
     container_name: nexus
@@ -49,5 +71,6 @@ services:
       start_period: 30s
 
 volumes:
+  postgres-data: {}
   nexus-data: {}
   kafka-data: {}

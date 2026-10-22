@@ -1,22 +1,27 @@
 # EPL database design
 
-PostgreSQL 16 schemas for the EPL warehouse management system (gRPC microservices).
-First slice: identity/permissions, master data and inventory
-(stock, relocation, adjustment, stocktake, serials).
+PostgreSQL 16 schemas for the EPL warehouse management system (gRPC microservices):
+identity/permissions, master data, inventory, inbound, outbound, billing, integration and reports.
 
 **One PostgreSQL database `epl`, one schema per service, two roles per service.**
 
-| Schema | Owner service         | Migration role | Runtime role | Migration files |
-|--------|-----------------------|----------------|--------------|-----------------|
-| `app`  | shared (bootstrap)    | superuser      | —            | `database/bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
-| `iam`  | `services/auth`       | `iam_owner`    | `iam_app`    | `services/auth/src/main/resources/db/migration/V1..V3` |
-| `md`   | `services/masterdata` | `md_owner`     | `md_app`     | `services/masterdata/src/main/resources/db/migration/V1` |
-| `inv`  | `services/inventory`  | `inv_owner`    | `inv_app`    | `services/inventory/src/main/resources/db/migration/V1` |
-
-Each service applies its own migrations with Flyway when it starts. Inbound, outbound, billing,
-integration and report have no schema yet (see section 5).
+| Schema | Owner service          | Migration role | Runtime role | Migrations (`services/<service>/src/main/resources/db/migration`) |
+|--------|------------------------|----------------|--------------|-----------------|
+| `app`  | shared (bootstrap)     | superuser      | —            | `database/bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
+| `iam`  | `services/auth`        | `iam_owner`    | `iam_app`    | `V1..V4` |
+| `md`   | `services/masterdata`  | `md_owner`     | `md_app`     | `V1` |
+| `inv`  | `services/inventory`   | `inv_owner`    | `inv_app`    | `V1` |
+| `inb`  | `services/inbound`     | `inb_owner`    | `inb_app`    | `V1` |
+| `outb` | `services/outbound`    | `outb_owner`   | `outb_app`   | `V1` |
+| `bill` | `services/billing`     | `bill_owner`   | `bill_app`   | `V1` |
+| `intg` | `services/integration` | `intg_owner`   | `intg_app`   | `V1` |
+| `rpt`  | `services/report`      | `rpt_owner`    | `rpt_app`    | `V1` |
 
 `epl_admin` (BYPASSRLS) is for config maintenance, reports and data migration across tenants.
+
+`database/` is also a Gradle project: `./gradlew :database:test` runs bootstrap.sql and every
+migration on PostgreSQL 16 (Testcontainers), then checks the runtime validation, schema isolation
+and RLS. It runs in `./gradlew build` and is skipped when Docker is not available.
 
 ### Why one database and not one per service
 
@@ -25,8 +30,8 @@ Ownership is enforced by **privileges instead of separate servers**:
 * `<svc>_app` has DML on its own schema only. Reading another service's tables fails with
   `permission denied`, so services still talk to each other through gRPC and Kafka, never SQL.
 * The only cross-schema links are **foreign keys to the tenant registry**
-  (`iam.company / warehouse / customer / tenant`). `iam/V3` grants `REFERENCES` on those four
-  tables to `md_owner` and `inv_owner`, nothing else; FK checks run as the iam table owner.
+  (`iam.company / warehouse / customer / tenant`). `iam/V3` and `iam/V4` grant `REFERENCES` on
+  those four tables to the other schema owners, nothing else; FK checks run as the iam table owner.
 * Everything else that crosses services (product, location, sub-inventory, transaction kind,
   reason) is a plain code checked over gRPC, with no FK, so stock history doesn't depend on the
   current master data and `md` / `inv` can be deployed and migrated independently.
@@ -36,26 +41,108 @@ of tenants, and the database itself guarantees that every row belongs to a real 
 To move a service to its own server later, copy its schema and replace its tenant FKs with
 a replicated `tenant_ref` table; the service code doesn't change.
 
-### Migration order and Flyway
+## Migrations (Flyway)
 
-1. `database/bootstrap/bootstrap.sql` once per environment, as superuser (then set role passwords from the secret store).
-2. Start `services/auth` first: its migrations create the `iam` tables that `md` and `inv` reference.
-3. Then `services/masterdata` and `services/inventory`.
+### Migrate job, separate from the running service
 
-Each service runs its own Flyway on its own schema, with its own history table
-(already configured in each service's `application.yml`, overridable with `DB_*` / `FLYWAY_*` env vars):
+Migrations are **never applied by the running service**. Each service jar has two modes,
+switched by the Spring profile `migrate` (`libs/database`, `epl.database.migration.mode`):
+
+| | Running service (default) | Migrate job (`--spring.profiles.active=migrate`) |
+|---|---|---|
+| Connects as | `<schema>_app` (`DB_USERNAME` / `DB_PASSWORD`) | `<schema>_owner` (`FLYWAY_USERNAME` / `FLYWAY_PASSWORD`) |
+| Flyway | `validate`: refuses to start if a migration is pending, missing or changed | `migrate`, then the process exits (code 0, or 1 on failure) |
+| HTTP / gRPC server | started | not started (`web-application-type: none`, `app.grpc.server.enabled: false`) |
+
+So the runtime role never needs DDL rights and the owner password exists only in the job.
+Flyway takes a PostgreSQL advisory lock, so two jobs started at once are safe.
+The runtime role can read `flyway_schema_history` (bootstrap default privileges) but not change it.
+
+**Order** (on an empty database; later releases just run each service's job before its rollout):
+
+1. `database/bootstrap/bootstrap.sql` as superuser, then set the role passwords from the secret store.
+   Idempotent: re-run it when a schema is added.
+2. Migrate job of `auth`: it creates the `iam` tables the other schemas reference.
+3. Migrate jobs of the other services, in any order.
+
+**Local**
+
+```bash
+docker compose up -d postgres                  # bootstrap.sql + dev passwords (password = role name)
+FLYWAY_PASSWORD=iam_owner ./gradlew :services:auth:bootMigrate
+FLYWAY_PASSWORD=inv_owner ./gradlew :services:inventory:bootMigrate
+DB_PASSWORD=inv_app       ./gradlew :services:inventory:bootRun
+```
+
+**Kubernetes**: a Job per service and release (or a Helm `pre-install,pre-upgrade` hook), using the
+same image as the Deployment:
+
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: inventory-migrate-1-4-0
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: registry/epl/inventory:1.4.0
+          args: ["--spring.profiles.active=migrate"]
+          envFrom:
+            - secretRef: { name: inventory-db-owner }   # DB_HOST, DB_NAME, FLYWAY_USERNAME, FLYWAY_PASSWORD
+```
+
+An init container with the same `args` in the Deployment also works, but it then runs on every pod
+start and needs the owner secret in the Deployment; prefer the Job.
+
+### Configuration
+
+Every service that owns a schema applies the `epl.database-service` convention plugin
+(adds `libs/database` and the `bootMigrate` task) and has the same block in `application.yml`:
 
 ```yaml
 spring:
-  datasource:            # runtime: DML only, RLS applies
-    url: jdbc:postgresql://db:5432/epl
-    username: inv_app
-  flyway:                # migrations: schema owner
-    user: inv_owner
+  datasource:                       # runtime: DML only, RLS applies
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:epl}
+    username: ${DB_USERNAME:inv_app}
+  flyway:
     schemas: inv
-    default-schema: inv  # history table inv.flyway_schema_history
+    default-schema: inv             # history table inv.flyway_schema_history
+    create-schemas: false           # schemas come from bootstrap.sql
     locations: classpath:db/migration
+    validate-migration-naming: true
+---
+spring.config.activate.on-profile: migrate
+spring:
+  main.web-application-type: none
+  flyway:
+    user: ${FLYWAY_USERNAME:inv_owner}
+    connect-retries: 10
+app.grpc.server.enabled: false
+epl.database.migration.mode: migrate
 ```
+
+### Writing migrations
+
+* Location: `services/<service>/src/main/resources/db/migration`, only for that service's schema.
+* Versioned `V<n>__<description>.sql` (`V5__shipment_add_carrier_service.sql`): sequential integers per
+  service, lowercase snake_case description. **A file that has run anywhere is never edited**,
+  renamed or deleted; fix it with a new version (validation fails otherwise).
+* Repeatable `R__<description>.sql` only for objects that are fully replaced on each change
+  (`CREATE OR REPLACE VIEW / FUNCTION`); they re-run whenever their checksum changes.
+* Start the file with `SET search_path = <schema>;` and a header comment saying what it is for.
+* Every new schema's `V1` grants its app role DML through `ALTER DEFAULT PRIVILEGES` and enables
+  `FORCE ROW LEVEL SECURITY` with a policy on every tenant / warehouse table.
+* Backward compatible with the version still running (expand → migrate data → contract in a later
+  release): add nullable columns or columns with defaults, never rename or drop in the same release
+  the code stops using them. Large data changes go in a separate job, not in a migration.
+* `CREATE INDEX CONCURRENTLY` on big tables: put it alone in its own file, which Flyway then runs
+  outside a transaction.
+* No seed data for tenants; reference data the code depends on (job codes, screen catalogue) is fine.
+* Run `./gradlew :database:test` before pushing.
 
 ## 1. Tenancy model
 
@@ -242,9 +329,73 @@ erDiagram
 * Numbering: `number_sequence` row per tenant and code, taken with
   `UPDATE … RETURNING` in the same transaction (the row lock serialises callers).
 
+### Inbound
+
+```mermaid
+erDiagram
+    arrival ||--o{ arrival_line : contains
+    arrival_line ||--o{ inspection_result : "received as"
+    inspection_result ||--o{ putaway : "put away by"
+    arrival_line ||--o{ arrival_serial : has
+```
+
+* An arrival goes `PLANNED → INSPECTING → INSPECTED → CONFIRMED` (or `CANCELLED`).
+* Each `inspection_result` becomes one stock lot on confirmation: `receipt_no = arrival_no`,
+  `receipt_line = line_no`, `receipt_seq`. Inventory creates the lots from
+  `inbound.arrival.confirmed`; inbound never writes to `inv`.
+* Supplier details are a jsonb snapshot (`supplier`) next to `supplier_code`, so a document keeps
+  what was printed on it even after the party master changes.
+
+### Outbound
+
+```mermaid
+erDiagram
+    shipment ||--o{ shipment_line : contains
+    shipment_line ||--o{ allocation : "reserved by"
+    allocation ||--o{ pick_record : "picked by"
+    picking_batch ||--o{ shipment : groups
+    picking_batch ||--o{ allocation : "pick list"
+    shipment ||--o{ carton : "packed in"
+    carton ||--o{ carton_item : contains
+```
+
+* `allocation` = one reserved stock lot (`stock_id` from `inv`, no FK, plus the receipt identity)
+  and is also the pick task (`picking_batch_id`, `picking_sequence`). `pick_record` is append-only.
+* Line quantities keep `allocated ≤ ordered` and `shipped ≤ allocated` as CHECKs.
+* Ship-to, final ship-to, shipper and bill-to are jsonb snapshots, like inbound.
+
+### Billing
+
+```mermaid
+erDiagram
+    rate ||--o{ charge_line : "priced by (rate_code)"
+    charge_statement ||--o{ charge_line : contains
+    month_end_run }o--|| charge_statement : closes
+```
+
+* Billing builds everything from events: `charge_line.source_event_id` + `rate_code` is unique,
+  so an event delivered twice charges once. Manual lines have no event.
+* `rate` is versioned by `valid_from`; a charge line copies the unit price valid on its charge date.
+* `month_end_balance` keeps opening / in / out / adjust per product and sub-inventory;
+  `closing_qty` is a generated column and the next month's opening.
+* Only one `month_end_run` per tenant and month can be `RUNNING` (partial unique index).
+
+### Integration
+
+* `upload` / `upload_error`: metadata and every row error of an upload; the file itself is in
+  object storage (`storage_ref`).
+* `edi_message`: sent and received messages; `Resend` creates a new row with `resend_of_id`.
+* `job_definition` and `purge_rule` are global catalogues (read-only for `intg_app`);
+  `job_run` / `purge_history` are per tenant. The purge itself runs in the service that owns the
+  table (`purge_rule.service`), triggered by an event, so no service deletes in another schema.
+
+### Report
+
+* `report_definition` / `label_definition` are scoped config resolved most-specific-wins
+  (`effective_report_definition`, `effective_label_definition`); read-only for `rpt_app`.
+* `printer` / `device_printer` are warehouse-scoped; `print_job` is the history of renders and prints.
+* `kpi_daily_stock` is a read model filled from inventory / outbound events (partitioned by date).
+
 ## 5. Not designed yet
 
-* **Inbound / outbound** (arrivals, shipping orders, picking, packing, delivery), which kitting
-  depends on.
-* **Billing** (charge statements, month-end balances).
-* **Integration** (uploads, EDI, event re-send), plus i18n labels/messages and printing.
+* Kitting (inventory) and i18n labels/messages.

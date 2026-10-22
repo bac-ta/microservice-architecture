@@ -10,6 +10,7 @@ import com.example.grpc.server.services.impls.GrpcServerServiceLifecycleImpl;
 import io.grpc.Server;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +46,8 @@ public class GrpcServerConfiguration {
         return grpcServerService;
     }
 
+    // app.grpc.server.enabled=false (e.g. the "migrate" profile) builds the context without serving
+    @ConditionalOnProperty(prefix = "app.grpc.server", name = "enabled", matchIfMissing = true)
     @ConditionalOnMissingBean
     @Bean
     public GrpcServerServiceLifecycleImpl grpcServerLifecycle(GrpcServerService grpcServerService) {
