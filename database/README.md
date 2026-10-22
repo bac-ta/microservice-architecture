@@ -10,9 +10,9 @@ identity/permissions, master data, inventory, inbound, outbound, billing, integr
 | `app`  | shared (bootstrap)     | superuser      | —            | `database/bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
 | `iam`  | `services/auth`        | `iam_owner`    | `iam_app`    | `V1..V5` |
 | `md`   | `services/masterdata`  | `md_owner`     | `md_app`     | `V1` |
-| `inv`  | `services/inventory`   | `inv_owner`    | `inv_app`    | `V1` |
+| `inv`  | `services/inventory`   | `inv_owner`    | `inv_app`    | `V1..V2` |
 | `inb`  | `services/inbound`     | `inb_owner`    | `inb_app`    | `V1` |
-| `outb` | `services/outbound`    | `outb_owner`   | `outb_app`   | `V1` |
+| `outb` | `services/outbound`    | `outb_owner`   | `outb_app`   | `V1..V2` |
 | `bill` | `services/billing`     | `bill_owner`   | `bill_app`   | `V1` |
 | `intg` | `services/integration` | `intg_owner`   | `intg_app`   | `V1` |
 | `rpt`  | `services/report`      | `rpt_owner`    | `rpt_app`    | `V1` |
@@ -308,6 +308,8 @@ erDiagram
 
 ```mermaid
 erDiagram
+    lot ||--o{ stock : "keys of"
+    lot ||--o{ stock_movement : "keys of"
     stock ||--o{ stock_movement : "changed by"
     stocktake ||--o{ stocktake_line : contains
     stock ||--o{ stocktake_line : "counted as"
@@ -316,7 +318,15 @@ erDiagram
         varchar receipt_no
         int receipt_line
         int receipt_seq
+        uuid lot_id
         numeric physical_qty "= available + allocated"
+    }
+    lot {
+        uuid id PK
+        varchar product_code
+        varchar pick_key1_7 "meaning per tenant (md.picking_key_def)"
+        varchar lot_no
+        date expiry_date
     }
 ```
 
@@ -328,6 +338,25 @@ erDiagram
   all in one local transaction.
 * Numbering: `number_sequence` row per tenant and code, taken with
   `UPDATE … RETURNING` in the same transaction (the row lock serialises callers).
+
+#### Lots and picking keys
+
+Picking keys 1..7 (lot no, expiry date, colour …) have a meaning configured per tenant in
+`md.picking_key_def`. A stock lot's keys are one row of `inv.lot` (`inv/V2__lot.sql`):
+
+* **Same lot ⇔ same `lot_id`.** `UNIQUE NULLS NOT DISTINCT (tenant_id, product_code, pick_key1..7)`
+  makes "no key" equal to "no key"; nobody compares 7 nullable columns.
+* **Typed copies** `lot_no` and `expiry_date` are derived from the keys the tenant defines as lot
+  number / expiry when the lot is created, so FEFO sorts real dates (`ix_lot_expiry`).
+* **Immutable** (no UPDATE / DELETE for `inv_app`): `ChangePickKey` moves stock to another lot,
+  history keeps pointing at the old one. `LotService.findOrCreate` returns the id for a set of keys.
+* `stock`, `stock_movement`, `stocktake_line` reference it with
+  `(tenant_id, product_code, lot_id) → lot (tenant_id, product_code, id)`: a lot can't be filed
+  under another product.
+* Outbound `allocation` / `carton_item` store `lot_id` (no FK, other schema) plus a jsonb copy of
+  the keys for pick lists and labels.
+* **Raw keys stay on documents:** `arrival_line` / `shipment_line` hold what was requested (empty =
+  any lot) and `inspection_result` what was scanned; the lot is created by inventory on receipt.
 
 ### Inbound
 
@@ -359,8 +388,8 @@ erDiagram
     carton ||--o{ carton_item : contains
 ```
 
-* `allocation` = one reserved stock lot (`stock_id` from `inv`, no FK, plus the receipt identity)
-  and is also the pick task (`picking_batch_id`, `picking_sequence`). `pick_record` is append-only.
+* `allocation` = one reserved stock lot (`stock_id` and `lot_id` from `inv`, no FK, plus the receipt
+  identity) and is also the pick task (`picking_batch_id`, `picking_sequence`). `pick_record` is append-only.
 * Line quantities keep `allocated ≤ ordered` and `shipped ≤ allocated` as CHECKs.
 * Ship-to, final ship-to, shipper and bill-to are jsonb snapshots, like inbound.
 

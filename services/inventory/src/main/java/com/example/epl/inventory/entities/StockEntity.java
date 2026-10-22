@@ -2,9 +2,11 @@ package com.example.epl.inventory.entities;
 
 import com.example.database.AuditedEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * inv.stock — one receipt lot at one location. Read here; changed only by the stock operations
+ * inv.stock — goods of one receipt line at one location, with their lot (picking keys, inv.lot).
+ * Read here; changed only by the stock operations
  * (adjust, relocate …), each writing the movement ledger in the same transaction.
  */
 @Getter
@@ -58,8 +61,10 @@ public class StockEntity extends AuditedEntity {
     @Column(name = "origin_country", length = 2)
     private String originCountry;
 
-    @Embedded
-    private PickKeyColumns pickKeys = new PickKeyColumns();
+    /** picking keys 1..7 (inv.lot); same product, enforced by fk_stock_lot */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "lot_id", nullable = false)
+    private LotEntity lot;
 
     @Column(name = "location_code", nullable = false, length = 18)
     private String locationCode;

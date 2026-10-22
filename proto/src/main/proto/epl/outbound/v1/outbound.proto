@@ -152,6 +152,7 @@ message AllocatedLot {
   string location_code = 3;
   epl.common.v1.PickKeys pick_keys = 4;
   epl.common.v1.Decimal qty = 5;
+  string lot_id = 6;  // inventory lot reserved
 }
 
 message AllocateRequest {
@@ -187,6 +188,7 @@ message PickTask {
   epl.common.v1.PickKeys pick_keys = 6;
   epl.common.v1.Decimal qty = 7;
   int32 picking_sequence = 8;
+  string lot_id = 9;
 }
 
 message PickingBatch {
@@ -239,6 +241,7 @@ message Carton {
     epl.common.v1.PickKeys pick_keys = 3;
     epl.common.v1.Decimal qty = 4;
     repeated string serial_numbers = 5;
+    string lot_id = 6;
   }
   repeated Item items = 6;
 }

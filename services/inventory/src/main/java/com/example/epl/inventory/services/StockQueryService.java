@@ -56,6 +56,10 @@ public class StockQueryService {
 
     private static Specification<StockEntity> specification(UUID tenantId, SearchStockRequest request) {
         return (root, query, cb) -> {
+            // load the lot with the page; the count query must not fetch
+            if (query.getResultType() != Long.class && query.getResultType() != long.class) {
+                root.fetch("lot");
+            }
             var where = new ArrayList<jakarta.persistence.criteria.Predicate>();
             where.add(cb.equal(root.get("tenantId"), tenantId));
             if (!request.getProductCode().isBlank()) {
@@ -82,7 +86,7 @@ public class StockQueryService {
             var keys = pickKeyFilters(request.getPickKeys());
             for (int i = 0; i < keys.size(); i++) {
                 if (!keys.get(i).isBlank()) {
-                    where.add(cb.equal(root.get("pickKeys").get("key" + (i + 1)), keys.get(i)));
+                    where.add(cb.equal(root.get("lot").get("pickKeys").get("key" + (i + 1)), keys.get(i)));
                 }
             }
             if (request.getOnlyAvailable()) {

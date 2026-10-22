@@ -2,6 +2,7 @@ package com.example.epl.inventory;
 
 import com.example.epl.common.v1.Date;
 import com.example.epl.common.v1.PickKeys;
+import com.example.epl.inventory.services.LotService;
 import com.example.epl.inventory.v1.CancelStocktakeRequest;
 import com.example.epl.inventory.v1.CreateStocktakeRequest;
 import com.example.epl.inventory.v1.GetStockRequest;
@@ -13,9 +14,12 @@ import com.example.epl.inventory.v1.Stocktake;
 import com.example.epl.inventory.v1.StocktakeServiceGrpc;
 import com.example.epl.inventory.v1.StocktakeStatus;
 import com.example.epl.inventory.v1.UpdateStocktakeRequest;
+import com.example.service.core.RequestContext;
 import com.example.service.core.test.EplServiceTestConfiguration;
 import com.example.service.core.test.EplTestDatabase;
 import com.example.service.core.test.GrpcTestServer;
+import com.example.service.core.test.TestTenantResolver;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +29,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,13 +59,19 @@ class InventoryCrudTests {
     @BeforeAll
     static void seedStock(@Autowired GrpcTestServer ignored) {
         EplTestDatabase.execute("""
-                INSERT INTO inv.stock (id, tenant_id, warehouse_id, receipt_no, receipt_line, receipt_seq, stock_kind,
-                                       received_on, product_code, pick_key1, location_code, area_code, sub_inventory_code,
-                                       physical_qty, available_qty, allocated_qty, created_by, updated_by)
-                SELECT gen_random_uuid(), t.id, t.warehouse_id, 'AR00000001', l, 1, '1', current_date, 'P001',
-                       'LOT' || l, 'A01-R1-0' || l, 'A01', 'GOOD', 10 * l, 10 * l, 0, 'test', 'test'
+                INSERT INTO inv.lot (tenant_id, product_code, pick_key1, lot_no, expiry_date, created_by)
+                SELECT t.id, 'P001', 'LOT' || l, 'LOT' || l, DATE '2027-01-01' + l, 'test'
                 FROM iam.tenant t, generate_series(1, 2) l
                 WHERE t.customer_code = 'CUST01'
+                ON CONFLICT DO NOTHING;
+                INSERT INTO inv.stock (id, tenant_id, warehouse_id, receipt_no, receipt_line, receipt_seq, stock_kind,
+                                       received_on, product_code, lot_id, location_code, area_code, sub_inventory_code,
+                                       physical_qty, available_qty, allocated_qty, created_by, updated_by)
+                SELECT gen_random_uuid(), t.id, t.warehouse_id, 'AR00000001', l, 1, '1', current_date, 'P001',
+                       lot.id, 'A01-R1-0' || l, 'A01', 'GOOD', 10 * l, 10 * l, 0, 'test', 'test'
+                FROM iam.tenant t, generate_series(1, 2) l
+                JOIN inv.lot lot ON lot.pick_key1 = 'LOT' || l
+                WHERE t.customer_code = 'CUST01' AND lot.tenant_id = t.id
                 ON CONFLICT DO NOTHING;
                 """);
     }
@@ -71,6 +86,9 @@ class InventoryCrudTests {
         var lot2 = stock.search(SearchStockRequest.newBuilder()
                 .setPickKeys(PickKeys.newBuilder().setKey1("LOT2")).build()).getLots(0);
         assertThat(lot2.getPhysicalQty().getValue()).isEqualTo("20.000");
+        assertThat(lot2.getLotNo()).isEqualTo("LOT2");
+        assertThat(lot2.getExpiryDate()).isEqualTo(Date.newBuilder().setYear(2027).setMonth(1).setDay(3).build());
+        assertThat(lot2.getLotId()).isNotEmpty();
         assertThat(stock.get(GetStockRequest.newBuilder().setId(lot2.getId()).build()).getLocationCode()).isEqualTo("A01-R1-02");
 
         // other customer of the warehouse: no rows (RLS), and the lot id is not found
@@ -106,6 +124,25 @@ class InventoryCrudTests {
 
         assertThatThrownBy(() -> stocktakes.update(UpdateStocktakeRequest.newBuilder().setStocktake(cancelled).build()))
                 .satisfies(e -> assertThat(code(e)).isEqualTo(Status.Code.FAILED_PRECONDITION));
+    }
+
+    @Test
+    void sameKeysAreTheSameLot(@Autowired LotService lots, @Autowired PlatformTransactionManager transactionManager) throws Exception {
+        var tenant = new TestTenantResolver().resolve("C001", "WH01", "CUST01");
+        var context = new RequestContext("tester", "C001", "WH01", "CUST01", UUID.fromString(tenant.getCompanyId()),
+                UUID.fromString(tenant.getWarehouseId()), UUID.fromString(tenant.getCustomerId()), UUID.fromString(tenant.getTenantId()));
+        var transaction = new TransactionTemplate(transactionManager);
+        var keys = PickKeys.newBuilder().setKey1("L-9").setKey3("BLUE").build();
+
+        var ids = context.attach(Context.current()).call(() -> transaction.execute(status -> List.of(
+                lots.findOrCreate("P009", keys, "L-9", null),
+                lots.findOrCreate("P009", keys, "L-9", null),
+                lots.findOrCreate("P009", keys.toBuilder().setKey3("").build(), "L-9", null),   // key3 NULL: another lot
+                lots.findOrCreate("P009", PickKeys.getDefaultInstance(), null, null),
+                lots.findOrCreate("P009", PickKeys.getDefaultInstance(), null, null))));     // no keys at all: one lot
+        assertThat(ids.get(0)).isEqualTo(ids.get(1));
+        assertThat(ids.get(2)).isNotEqualTo(ids.get(0));
+        assertThat(ids.get(3)).isEqualTo(ids.get(4)).isNotIn(ids.get(0), ids.get(2));
     }
 
     private static Status.Code code(Throwable e) {

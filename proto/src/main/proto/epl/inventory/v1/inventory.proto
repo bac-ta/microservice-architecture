@@ -42,7 +42,7 @@ message StockLot {
   epl.common.v1.Date received_on = 4;
   string product_code = 5;
   string origin_country = 6;
-  epl.common.v1.PickKeys pick_keys = 7;
+  epl.common.v1.PickKeys pick_keys = 7;   // keys of the lot (lot_id)
   string location_code = 8;
   string area_code = 9;
   string sub_inventory_code = 10;
@@ -56,6 +56,9 @@ message StockLot {
   bool locked = 18;
   google.protobuf.Struct ext = 19;
   int32 version = 20;
+  string lot_id = 21;                     // same lot <=> same lot_id
+  string lot_no = 22;                     // the key the tenant defines as lot number
+  epl.common.v1.Date expiry_date = 23;    // the key with expiry control
 }
 
 message SearchStockRequest {
@@ -230,6 +233,7 @@ message StocktakeLine {
   epl.common.v1.Decimal diff_total_qty = 11;
   string remarks = 12;
   int32 version = 13;
+  string lot_id = 14;  // empty = empty location / found stock without a lot yet
 }
 
 message Stocktake {

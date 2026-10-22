@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface StocktakeLineRepository extends JpaRepository<StocktakeLineEntity, UUID> {
 
     @Query("""
-            select l from StocktakeLineEntity l
+            select l from StocktakeLineEntity l left join fetch l.lot
             where l.stocktakeId = :stocktakeId and (:onlyDifferences = false or l.diffTotalQty <> 0)
             order by l.locationCode, l.countNo
             """)

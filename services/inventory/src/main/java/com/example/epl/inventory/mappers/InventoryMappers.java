@@ -36,7 +36,10 @@ public final class InventoryMappers {
                 .setReceivedOn(date(entity.getReceivedOn()))
                 .setProductCode(entity.getProductCode())
                 .setOriginCountry(emptyIfNull(entity.getOriginCountry()))
-                .setPickKeys(pickKeys(entity.getPickKeys()))
+                .setPickKeys(pickKeys(entity.getLot().getPickKeys()))
+                .setLotId(text(entity.getLot().getId()))
+                .setLotNo(emptyIfNull(entity.getLot().getLotNo()))
+                .setExpiryDate(date(entity.getLot().getExpiryDate()))
                 .setLocationCode(entity.getLocationCode())
                 .setAreaCode(entity.getAreaCode())
                 .setSubInventoryCode(entity.getSubInventoryCode())
@@ -82,7 +85,8 @@ public final class InventoryMappers {
                 .setCountNo(entity.getCountNo())
                 .setStockId(text(entity.getStockId()))
                 .setProductCode(emptyIfNull(entity.getProductCode()))
-                .setPickKeys(pickKeys(entity.getPickKeys()))
+                .setPickKeys(entity.getLot() == null ? PickKeys.getDefaultInstance() : pickKeys(entity.getLot().getPickKeys()))
+                .setLotId(entity.getLot() == null ? "" : text(entity.getLot().getId()))
                 .setLocationCode(entity.getLocationCode())
                 .setSubInventoryCode(emptyIfNull(entity.getSubInventoryCode()))
                 .setBook(quantity(entity.getBookCaseQty(), entity.getBookBallQty(), entity.getBookPieceQty(),
@@ -101,7 +105,7 @@ public final class InventoryMappers {
         return builder.build();
     }
 
-    /** Hibernate loads the embeddable as null when all seven columns are null. */
+    /** Hibernate loads the embeddable as null when all seven columns are null (a lot without keys). */
     public static PickKeys pickKeys(PickKeyColumns columns) {
         if (columns == null) {
             return PickKeys.getDefaultInstance();

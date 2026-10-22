@@ -5,7 +5,7 @@ import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
-/** pick_key1..7 (lot no, expiry date …; meaning per tenant in md.picking_key_def). */
+/** pick_key1..7 of a lot (lot no, expiry date …; meaning per tenant in md.picking_key_def). */
 @Getter
 @Setter
 @Embeddable

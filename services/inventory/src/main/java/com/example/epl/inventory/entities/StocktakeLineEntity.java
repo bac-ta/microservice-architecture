@@ -2,9 +2,11 @@ package com.example.epl.inventory.entities;
 
 import com.example.database.AuditedEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,8 +48,10 @@ public class StocktakeLineEntity extends AuditedEntity {
     @Column(name = "product_code", length = 50)
     private String productCode;
 
-    @Embedded
-    private PickKeyColumns pickKeys = new PickKeyColumns();
+    /** picking keys 1..7 of this line; null = empty location / found stock without a lot yet */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lot_id")
+    private LotEntity lot;
 
     @Column(name = "location_code", nullable = false, length = 18)
     private String locationCode;
