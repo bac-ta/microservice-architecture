@@ -15,7 +15,8 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 │   ├── grpc-server/           @GrpcServer, server lifecycle, interceptor registry
 │   ├── grpc-client/           @GrpcClient, channel factory, discovery name resolver
 │   ├── security/              gRPC auth/header/error interceptors, password hashing, error handling
-│   └── database/              PostgreSQL + Flyway: validate at runtime, migrate in the migrate job
+│   ├── database/              PostgreSQL + Flyway + JPA: validate at runtime, migrate in the migrate job, RLS context
+│   └── service-core/          request (tenant) context, GrpcCalls error mapping, paging, proto conversions, test fixtures
 ├── services/                  deployable services (below)
 └── database/                  PostgreSQL design, bootstrap script, migration tests (see database/README.md)
 ```
@@ -35,10 +36,48 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 | `report` | 8108 / 9108 | `rpt` | `EPL-RP-*` | `epl/report/v1` |
 
 Contracts live in `proto/src/main/proto/epl/<service>/v1/`; each RPC is commented with the
-screens that call it. Screen codes (`EPL-<domain>-<nnn><channel>`) are listed in
+screens that call it. The `:proto` module generates the Java messages and stubs once
+(`com.example.epl.<service>.v1`); every service and the gateway use them. Screen codes (`EPL-<domain>-<nnn><channel>`) are listed in
 [`docs/screen-codes.md`](docs/screen-codes.md); naming rules for code, proto, DB and events are in
 [`docs/naming-conventions.md`](docs/naming-conventions.md). The services expose every RPC already; one that
 is not implemented yet answers `UNIMPLEMENTED` naming its screens.
+
+### Service layout and CRUD
+
+Every service with a schema follows the same layers:
+
+```
+grpc/<Service>GrpcServer      gRPC endpoint: GrpcCalls.unary(observer, () -> service.method(request))
+services/<Aggregate>Service   @Transactional business rules (state checks, version checks, numbering)
+repositories/<Table>Repository Spring Data JPA (+ Specification for searches)
+entities/<Table>Entity        JPA mapping of the Flyway schema (ddl-auto=validate)
+mappers/<Area>Mappers         entity <-> proto message
+```
+
+Implemented (CRUD of the main aggregates; business operations such as allocation, inspection or
+stocktake confirmation still answer `UNIMPLEMENTED`):
+
+| Service | Implemented |
+|---|---|
+| `auth` | companies, warehouses, customers, tenants (+ `ResolveTenant`), users (+ password, grants), roles |
+| `masterdata` | areas, locations, products (+ barcodes, `ResolveBarcode`), sub-inventories |
+| `inventory` | stock search / get, stocktake create / get / list / update / cancel |
+| `inbound` | arrivals with lines: create / get / search / update / cancel / delete |
+| `outbound` | shipments with lines: create / get / search / update / cancel / delete |
+| `billing` | rates with price periods: list / get / upsert / delete |
+| `integration` | job definitions, job runs (queue / get / list / delete), purge history |
+| `report` | report catalogue (most specific scope wins), printers |
+
+**Request context**: the gateway forwards `x-company`, `x-warehouse`, `x-customer` and `x-user`
+(from the verified JWT). `RequestContextServerInterceptor` resolves the codes to ids (auth
+`TenantService/ResolveTenant`, cached; `GRPC_AUTH_TARGET`) and every transaction starts with
+`set_config('app.tenant_id', …)`, so Row-Level Security applies to all JPA queries. Tenant data needs all
+three headers, warehouse data (areas, locations, printers) `x-company` + `x-warehouse`; the tenant registry
+and users need none. `created_by` / `updated_by` come from `x-user`.
+
+**Tests**: each service has `@SpringBootTest` CRUD tests against PostgreSQL 16 (Testcontainers) that call
+the real gRPC endpoints in-process with metadata, through all interceptors (`libs/service-core` test
+fixtures: `EplTestDatabase`, `GrpcTestServer`).
 
 Services with a schema need PostgreSQL prepared by `database/bootstrap/bootstrap.sql`
 (`docker compose up -d postgres` locally). Their migrations are applied by a separate migrate job,

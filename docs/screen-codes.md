@@ -18,7 +18,8 @@ EPL-IV-120W
   screen calls, so the client can `AuthorizationService/BatchCheck` them and hide denied buttons.
 * In `proto/`, each RPC has a `// screens:` comment; an unimplemented RPC answers
   `UNIMPLEMENTED` with the same list. RPCs without screens (`Refresh`, `Logout`, `GetJwks`, `Check`,
-  `ResolveBarcode` …) are shared by every screen.
+  `ResolveBarcode`, `ResolveTenant` …) are shared by every screen or called by services.
+* A new screen also needs a row in `iam.screen` through a new auth migration (e.g. `V5__crud_screens.sql`).
 
 ## Domains
 
@@ -41,10 +42,11 @@ EPL-IV-120W
 | `EPL-SY-010H` | Login | `AuthService/Login` |
 | `EPL-SY-020W` | Work place selection (company / warehouse / customer) | `TenantService/ListTenants` |
 | `EPL-SY-020H` | Work place selection (company / warehouse / customer) | `TenantService/ListTenants` |
-| `EPL-SY-110W` | User maintenance | `UserService/CreateUser`, `UserService/UpdateUser`, `UserService/GetUser`, `UserService/ListUsers` |
-| `EPL-SY-120W` | User work place grants | `UserService/GrantTenant`, `UserService/ListGrants`, `UserService/RevokeGrant` |
+| `EPL-SY-110W` | User maintenance | `UserService/CreateUser`, `UserService/UpdateUser`, `UserService/GetUser`, `UserService/ListUsers`, `UserService/DeleteUser` |
+| `EPL-SY-120W` | User work place grants | `UserService/GrantTenant`, `UserService/ListGrants`, `UserService/RevokeGrant`, `RoleService/ListRoles` |
 | `EPL-SY-130W` | Change password | `UserService/ChangePassword` |
-| `EPL-SY-210W` | Tenant registry | `TenantService/ListCompanies`, `TenantService/ListWarehouses`, `TenantService/ListTenants` |
+| `EPL-SY-140W` | Roles | `RoleService/ListRoles`, `RoleService/UpsertRole`, `RoleService/DeleteRole` |
+| `EPL-SY-210W` | Tenant registry | `TenantService/` List / Get / Create / Update / Delete of `Companies`, `Warehouses`, `Customers`; `ListTenants`, `GetTenant`, `UpdateTenant`, `DeleteTenant` |
 | `EPL-SY-220W` | Tenant onboarding | `TenantService/CreateTenant` |
 | `EPL-SY-310W` | Access policies | `AuthorizationService/ListPolicies`, `AuthorizationService/UpsertPolicy`, `AuthorizationService/DeletePolicy` |
 
@@ -52,13 +54,13 @@ EPL-IV-120W
 
 | Code | Screen | RPCs |
 |---|---|---|
-| `EPL-MD-110W` | Areas | `LocationService/ListAreas`, `LocationService/UpsertArea` |
-| `EPL-MD-120W` | Locations | `LocationService/ListLocations`, `LocationService/GetLocation`, `LocationService/UpsertLocation` |
-| `EPL-MD-210W` | Products | `ProductService/GetProduct`, `ProductService/ListProducts`, `ProductService/UpsertProduct` |
+| `EPL-MD-110W` | Areas | `LocationService/ListAreas`, `LocationService/GetArea`, `LocationService/UpsertArea`, `LocationService/DeleteArea` |
+| `EPL-MD-120W` | Locations | `LocationService/ListLocations`, `LocationService/GetLocation`, `LocationService/UpsertLocation`, `LocationService/DeleteLocation` |
+| `EPL-MD-210W` | Products | `ProductService/GetProduct`, `ProductService/ListProducts`, `ProductService/UpsertProduct`, `ProductService/DeleteProduct` |
 | `EPL-MD-210H` | Product inquiry | `ProductService/GetProduct` |
 | `EPL-MD-310W` | Delivery destinations | `PartyService/ListDeliveryDestinations` |
 | `EPL-MD-320W` | Suppliers | `PartyService/ListSuppliers` |
-| `EPL-MD-410W` | Sub-inventories | `ConfigService/ListSubInventories` |
+| `EPL-MD-410W` | Sub-inventories | `ConfigService/ListSubInventories`, `ConfigService/UpsertSubInventory`, `ConfigService/DeleteSubInventory` |
 | `EPL-MD-420W` | Picking key definitions | `ConfigService/ListPickingKeyDefinitions` |
 | `EPL-MD-430W` | Transaction kinds | `ConfigService/ListTransactionKinds` |
 | `EPL-MD-440W` | Statuses and process control | `ConfigService/ListStatuses` |
@@ -69,7 +71,7 @@ EPL-IV-120W
 
 | Code | Screen | RPCs |
 |---|---|---|
-| `EPL-IB-110W` | Arrival entry | `ArrivalService/CreateArrival`, `ArrivalService/CancelArrival` |
+| `EPL-IB-110W` | Arrival entry | `ArrivalService/CreateArrival`, `ArrivalService/UpdateArrival`, `ArrivalService/CancelArrival`, `ArrivalService/DeleteArrival` |
 | `EPL-IB-110H` | Unplanned arrival | `ArrivalService/CreateArrival` |
 | `EPL-IB-120W` | Arrival inquiry | `ArrivalService/GetArrival`, `ArrivalService/SearchArrivals` |
 | `EPL-IB-120H` | Arrival inquiry | `ArrivalService/GetArrival`, `ArrivalService/SearchArrivals` |
@@ -84,8 +86,8 @@ EPL-IV-120W
 
 | Code | Screen | RPCs |
 |---|---|---|
-| `EPL-IV-110W` | Stock inquiry | `StockService/Search`, `StockService/Export` |
-| `EPL-IV-110H` | Stock inquiry | `StockService/Search` |
+| `EPL-IV-110W` | Stock inquiry | `StockService/Search`, `StockService/Get`, `StockService/Export` |
+| `EPL-IV-110H` | Stock inquiry | `StockService/Search`, `StockService/Get` |
 | `EPL-IV-120W` | Stock adjustment | `StockService/Adjust` |
 | `EPL-IV-130W` | Relocation | `StockService/Relocate` |
 | `EPL-IV-130H` | Relocation | `StockService/Relocate` |
@@ -95,7 +97,7 @@ EPL-IV-120W
 | `EPL-IV-160W` | Divide cargo ID | `StockService/Divide` |
 | `EPL-IV-210W` | In / out history | `MovementService/Search`, `MovementService/Export` |
 | `EPL-IV-310W` | Stocktake inquiry | `StocktakeService/List`, `StocktakeService/Get` |
-| `EPL-IV-320W` | Stocktake instruction | `StocktakeService/Create` |
+| `EPL-IV-320W` | Stocktake instruction | `StocktakeService/Create`, `StocktakeService/Update` |
 | `EPL-IV-330W` | Stocktake count entry | `StocktakeService/RecordCount` |
 | `EPL-IV-330H` | Stocktake count entry | `StocktakeService/RecordCount` |
 | `EPL-IV-340W` | Stocktake confirmation | `StocktakeService/Confirm`, `StocktakeService/Cancel` |
@@ -110,7 +112,7 @@ EPL-IV-120W
 
 | Code | Screen | RPCs |
 |---|---|---|
-| `EPL-OB-110W` | Shipping order entry | `ShipmentService/CreateShipment`, `ShipmentService/CancelShipment` |
+| `EPL-OB-110W` | Shipping order entry | `ShipmentService/CreateShipment`, `ShipmentService/UpdateShipment`, `ShipmentService/CancelShipment`, `ShipmentService/DeleteShipment` |
 | `EPL-OB-120W` | Shipping order inquiry | `ShipmentService/GetShipment`, `ShipmentService/SearchShipments` |
 | `EPL-OB-120H` | Shipping order inquiry | `ShipmentService/GetShipment`, `ShipmentService/SearchShipments` |
 | `EPL-OB-210W` | Allocation | `AllocationService/Allocate`, `AllocationService/CancelAllocation` |
@@ -127,7 +129,7 @@ EPL-IV-120W
 
 | Code | Screen | RPCs |
 |---|---|---|
-| `EPL-BL-110W` | Charge rates | `RateService/ListRates`, `RateService/UpsertRate`, `RateService/DeleteRate` |
+| `EPL-BL-110W` | Charge rates | `RateService/ListRates`, `RateService/GetRate`, `RateService/UpsertRate`, `RateService/DeleteRate` |
 | `EPL-BL-210W` | Charge statement | `ChargeService/Get`, `ChargeService/Update` |
 | `EPL-BL-310W` | Month-end close | `MonthEndService/Run`, `MonthEndService/GetStatus` |
 
@@ -137,7 +139,7 @@ EPL-IV-120W
 |---|---|---|
 | `EPL-IT-110W` | File upload | `UploadService/Upload`, `UploadService/GetUploadErrors` |
 | `EPL-IT-210W` | EDI history and resend | `EdiService/Search`, `EdiService/Resend` |
-| `EPL-IT-310W` | Batch job monitor | `JobService/ListJobs` |
+| `EPL-IT-310W` | Batch job monitor | `JobService/ListJobDefinitions`, `JobService/ListJobs`, `JobService/GetJob`, `JobService/CreateJob`, `JobService/DeleteJob` |
 | `EPL-IT-320W` | Data purge | `JobService/RunPurge`, `JobService/ListPurgeHistory` |
 
 ## RP — Report
@@ -148,3 +150,4 @@ EPL-IV-120W
 | `EPL-RP-210W` | Label printing | `LabelService/PrintLabels` |
 | `EPL-RP-210H` | Label printing | `LabelService/PrintLabels` |
 | `EPL-RP-310W` | Inventory turnover KPI | `KpiService/GetInventoryTurnover` |
+| `EPL-RP-410W` | Printers | `PrinterService/ListPrinters`, `PrinterService/GetPrinter`, `PrinterService/UpsertPrinter`, `PrinterService/DeletePrinter` |

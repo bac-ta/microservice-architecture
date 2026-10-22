@@ -87,7 +87,8 @@ public final class EplTestDatabase {
         registryReady = true;
     }
 
-    static void execute(String sql) {
+    /** Runs SQL as superuser (bypasses RLS), e.g. to seed rows a service does not create itself. */
+    public static void execute(String sql) {
         try (var connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
              var statement = connection.createStatement()) {
             statement.execute(sql);

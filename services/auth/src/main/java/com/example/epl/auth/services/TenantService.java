@@ -28,16 +28,13 @@ public class TenantService {
     private final CustomerRepository customerRepository;
     private final CompanyService companyService;
     private final WarehouseService warehouseService;
-    private final CustomerService customerService;
 
     public TenantService(TenantRepository tenantRepository, CustomerRepository customerRepository,
-                         CompanyService companyService, WarehouseService warehouseService,
-                         CustomerService customerService) {
+                         CompanyService companyService, WarehouseService warehouseService) {
         this.tenantRepository = tenantRepository;
         this.customerRepository = customerRepository;
         this.companyService = companyService;
         this.warehouseService = warehouseService;
-        this.customerService = customerService;
     }
 
     @Transactional(readOnly = true)

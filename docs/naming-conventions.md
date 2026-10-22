@@ -47,7 +47,11 @@ Adding a new screen:
 | Root Java package | `com.example.epl.<service>` | `com.example.epl.inventory` |
 | Main class | `<Service>ServiceApplication` | `InventoryServiceApplication` |
 | Configuration | package `configurations`, class `<Service><Thing>Configuration` | `InventoryGrpcServerConfiguration` |
-| gRPC server | package `grpc`, class `<ProtoServiceName>GrpcServer` | `StockGrpcServer` |
+| gRPC server | package `grpc`, class `<ProtoServiceName>GrpcServer`; only maps calls to services (`GrpcCalls.unary`) | `StockGrpcServer` |
+| Business logic | package `services`, class `<Aggregate>Service`, `@Transactional` methods | `ArrivalService`, `StocktakeService` |
+| JPA entity | package `entities`, class `<Table>Entity` (`AuditedEntity` for the audit columns) | `ArrivalLineEntity` |
+| Repository | package `repositories`, `<Table>Repository extends JpaRepository` | `ArrivalRepository` |
+| Entity <-> proto | package `mappers`, final class `<Area>Mappers` with static methods | `ArrivalMappers` |
 | Ports | HTTP `81NN`, gRPC `91NN`, `NN` = service order | inventory `8104` / `9104` |
 
 ## 3. Proto / gRPC
@@ -59,6 +63,9 @@ Adding a new screen:
 | `java_package` | `com.example.epl.<service>.v1` | |
 | Service | `<Noun>Service` | `StockService`, `StocktakeService` |
 | RPC | Verb + noun, PascalCase | `SearchArrivals`, `ConfirmShipment` |
+| CRUD RPCs | `Create<X>` / `Get<X>` / `List<X>s` (or `Search<X>s` with filters) / `Update<X>` / `Delete<X>`; `Upsert<X>` for masters keyed by a code | `GetArea`, `UpsertProduct`, `DeleteArrival` |
+| Updates / deletes | send the version read (`audit.version` or a `version` field): a stale one answers `ABORTED`; `Upsert` of an existing key without it answers `ALREADY_EXISTS` | |
+| Errors | `NOT_FOUND`, `ALREADY_EXISTS`, `INVALID_ARGUMENT`, `FAILED_PRECONDITION` (state or references), `ABORTED` (version), `PERMISSION_DENIED` | |
 | Message | `<Rpc>Request` / `<Rpc>Response`, entities are nouns | `SearchArrivalsRequest`, `Arrival` |
 | Field | `snake_case`; document numbers `*_no`, codes `*_code`, dates `*_date`, quantities `*_qty` | `arrival_no`, `product_code` |
 | Enum | Values `<ENUM>_<VALUE>`, value 0 = `<ENUM>_UNSPECIFIED` | `USER_TYPE_CUSTOMER` |

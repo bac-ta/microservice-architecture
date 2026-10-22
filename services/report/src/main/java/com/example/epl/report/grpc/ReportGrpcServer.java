@@ -1,23 +1,32 @@
 package com.example.epl.report.grpc;
 
+import com.example.epl.report.services.ReportCatalogService;
 import com.example.epl.report.v1.FileChunk;
 import com.example.epl.report.v1.ListReportsRequest;
 import com.example.epl.report.v1.ListReportsResponse;
 import com.example.epl.report.v1.RenderRequest;
 import com.example.epl.report.v1.ReportServiceGrpc;
 import com.example.grpc.server.models.annotations.GrpcServer;
+import com.example.service.core.GrpcCalls;
 import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.report.v1.ReportService (contract: proto/src/main/proto/epl/report/v1/report.proto).
- * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
+ * ListReports is implemented; Render answers UNIMPLEMENTED, naming its screen, until it is.
  */
 @GrpcServer(ReportServiceGrpc.class)
 public class ReportGrpcServer extends ReportServiceGrpc.ReportServiceImplBase {
 
+    private final ReportCatalogService reportCatalogService;
+
+    public ReportGrpcServer(ReportCatalogService reportCatalogService) {
+        this.reportCatalogService = reportCatalogService;
+    }
+
     @Override
     public void listReports(ListReportsRequest request, StreamObserver<ListReportsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.report.v1.ReportService/ListReports", "EPL-RP-110W"));
+        GrpcCalls.unary(responseObserver, () -> ListReportsResponse.newBuilder()
+                .addAllReports(reportCatalogService.list(request.getProcessCode())).build());
     }
 
     /**

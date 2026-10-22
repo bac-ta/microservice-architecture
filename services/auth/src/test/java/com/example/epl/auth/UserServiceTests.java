@@ -19,9 +19,9 @@ import com.example.epl.auth.v1.UserServiceGrpc;
 import com.example.epl.auth.v1.UserStatus;
 import com.example.epl.auth.v1.UserType;
 import com.example.epl.common.v1.PageRequest;
-import com.example.service.core.test.EplServiceTestConfiguration;
 import com.example.service.core.test.EplTestDatabase;
 import com.example.service.core.test.GrpcTestServer;
+import com.example.service.core.test.GrpcTestServerConfiguration;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Testcontainers(disabledWithoutDocker = true)
-@Import(EplServiceTestConfiguration.GrpcOnly.class)
+@Import(GrpcTestServerConfiguration.class)
 class UserServiceTests {
 
     @DynamicPropertySource

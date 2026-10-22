@@ -4,13 +4,15 @@ import com.example.database.AuditedEntity;
 import com.example.epl.common.v1.Audit;
 import com.example.epl.common.v1.Date;
 import com.example.epl.common.v1.Decimal;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.Struct;
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Message;
+import com.google.protobuf.MessageOrBuilder;
+import com.google.protobuf.Struct;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.JsonFormat;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -133,6 +135,32 @@ public final class Protos {
             });
         } catch (InvalidProtocolBufferException | JsonProcessingException e) {
             throw Errors.invalid("Invalid json object");
+        }
+    }
+
+    /** Any message (e.g. a Party snapshot) to a jsonb column, in proto3 JSON (camelCase keys); never null. */
+    public static Map<String, Object> map(MessageOrBuilder message) {
+        if (message instanceof Struct struct) {
+            return map(struct);
+        }
+        try {
+            return JSON.readValue(JsonFormat.printer().print(message), new TypeReference<LinkedHashMap<String, Object>>() {
+            });
+        } catch (InvalidProtocolBufferException | JsonProcessingException e) {
+            throw new IllegalStateException("Cannot convert " + message.getClass().getSimpleName() + " to json", e);
+        }
+    }
+
+    /** jsonb column written by {@link #map(MessageOrBuilder)} back into a message builder; unknown keys are ignored. */
+    public static <B extends Message.Builder> B merge(Map<String, Object> value, B builder) {
+        if (value == null || value.isEmpty()) {
+            return builder;
+        }
+        try {
+            JsonFormat.parser().ignoringUnknownFields().merge(JSON.writeValueAsString(value), builder);
+            return builder;
+        } catch (JsonProcessingException | InvalidProtocolBufferException e) {
+            throw new IllegalStateException("Cannot convert json to " + builder.getDescriptorForType().getName(), e);
         }
     }
 

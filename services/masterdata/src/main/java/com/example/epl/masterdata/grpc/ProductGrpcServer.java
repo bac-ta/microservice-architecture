@@ -1,5 +1,7 @@
 package com.example.epl.masterdata.grpc;
 
+import com.example.epl.masterdata.services.ProductService;
+import com.example.epl.masterdata.v1.DeleteProductRequest;
 import com.example.epl.masterdata.v1.GetProductRequest;
 import com.example.epl.masterdata.v1.ListProductsRequest;
 import com.example.epl.masterdata.v1.ListProductsResponse;
@@ -8,32 +10,45 @@ import com.example.epl.masterdata.v1.ProductServiceGrpc;
 import com.example.epl.masterdata.v1.ResolveBarcodeRequest;
 import com.example.epl.masterdata.v1.ResolveBarcodeResponse;
 import com.example.grpc.server.models.annotations.GrpcServer;
+import com.example.service.core.GrpcCalls;
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 
 /**
  * gRPC endpoint epl.masterdata.v1.ProductService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
- * Every RPC answers UNIMPLEMENTED, naming the screens that call it, until it is implemented.
+ * Products of the tenant in x-company / x-warehouse / x-customer.
  */
 @GrpcServer(ProductServiceGrpc.class)
 public class ProductGrpcServer extends ProductServiceGrpc.ProductServiceImplBase {
 
+    private final ProductService productService;
+
+    public ProductGrpcServer(ProductService productService) {
+        this.productService = productService;
+    }
+
     @Override
     public void getProduct(GetProductRequest request, StreamObserver<Product> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/GetProduct", "EPL-MD-210W", "EPL-MD-210H"));
+        GrpcCalls.unary(responseObserver, () -> productService.get(request.getCode()));
     }
 
     @Override
     public void listProducts(ListProductsRequest request, StreamObserver<ListProductsResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ListProducts", "EPL-MD-210W"));
+        GrpcCalls.unary(responseObserver, () -> productService.list(request));
     }
 
     @Override
     public void upsertProduct(Product request, StreamObserver<Product> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/UpsertProduct", "EPL-MD-210W"));
+        GrpcCalls.unary(responseObserver, () -> productService.upsert(request));
+    }
+
+    @Override
+    public void deleteProduct(DeleteProductRequest request, StreamObserver<Empty> responseObserver) {
+        GrpcCalls.unaryEmpty(responseObserver, () -> productService.delete(request.getCode(), request.getVersion()));
     }
 
     @Override
     public void resolveBarcode(ResolveBarcodeRequest request, StreamObserver<ResolveBarcodeResponse> responseObserver) {
-        responseObserver.onError(NotPorted.error("epl.masterdata.v1.ProductService/ResolveBarcode"));
+        GrpcCalls.unary(responseObserver, () -> productService.resolveBarcode(request.getBarcode()));
     }
 }

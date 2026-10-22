@@ -10,9 +10,9 @@ import com.example.epl.auth.v1.ListTenantsRequest;
 import com.example.epl.auth.v1.ResolveTenantRequest;
 import com.example.epl.auth.v1.TenantServiceGrpc;
 import com.example.epl.auth.v1.Warehouse;
-import com.example.service.core.test.EplServiceTestConfiguration;
 import com.example.service.core.test.EplTestDatabase;
 import com.example.service.core.test.GrpcTestServer;
+import com.example.service.core.test.GrpcTestServerConfiguration;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Testcontainers(disabledWithoutDocker = true)
-@Import(EplServiceTestConfiguration.GrpcOnly.class)
+@Import(GrpcTestServerConfiguration.class)
 class TenantRegistryTests {
 
     @DynamicPropertySource

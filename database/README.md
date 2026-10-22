@@ -8,7 +8,7 @@ identity/permissions, master data, inventory, inbound, outbound, billing, integr
 | Schema | Owner service          | Migration role | Runtime role | Migrations (`services/<service>/src/main/resources/db/migration`) |
 |--------|------------------------|----------------|--------------|-----------------|
 | `app`  | shared (bootstrap)     | superuser      | —            | `database/bootstrap/bootstrap.sql` (roles, schemas, RLS helpers) |
-| `iam`  | `services/auth`        | `iam_owner`    | `iam_app`    | `V1..V4` |
+| `iam`  | `services/auth`        | `iam_owner`    | `iam_app`    | `V1..V5` |
 | `md`   | `services/masterdata`  | `md_owner`     | `md_app`     | `V1` |
 | `inv`  | `services/inventory`   | `inv_owner`    | `inv_app`    | `V1` |
 | `inb`  | `services/inbound`     | `inb_owner`    | `inb_app`    | `V1` |
