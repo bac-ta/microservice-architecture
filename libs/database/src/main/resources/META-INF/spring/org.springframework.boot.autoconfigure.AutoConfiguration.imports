@@ -1,1 +1,2 @@
 com.example.database.DatabaseMigrationAutoConfiguration
+com.example.database.DatabasePersistenceAutoConfiguration

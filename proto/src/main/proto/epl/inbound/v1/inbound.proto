@@ -18,8 +18,14 @@ service ArrivalService {
   rpc GetArrival(GetArrivalRequest) returns (Arrival);
   // screens: EPL-IB-120W, EPL-IB-120H
   rpc SearchArrivals(SearchArrivalsRequest) returns (SearchArrivalsResponse);
+  // Replaces header and lines while the arrival is PLANNED.
+  // screens: EPL-IB-110W
+  rpc UpdateArrival(UpdateArrivalRequest) returns (Arrival);
   // screens: EPL-IB-110W
   rpc CancelArrival(CancelArrivalRequest) returns (Arrival);
+  // Only a PLANNED arrival; once work started, cancel it instead.
+  // screens: EPL-IB-110W
+  rpc DeleteArrival(DeleteArrivalRequest) returns (google.protobuf.Empty);
   // screens: EPL-IB-210W, EPL-IB-210H
   rpc RecordInspection(RecordInspectionRequest) returns (RecordInspectionResponse);
   // screens: EPL-IB-220H
@@ -94,6 +100,15 @@ message SearchArrivalsRequest {
 message SearchArrivalsResponse {
   repeated Arrival arrivals = 1;  // headers only (lines empty)
   epl.common.v1.PageResponse page = 2;
+}
+
+message UpdateArrivalRequest {
+  Arrival arrival = 1;  // identified by arrival_no, audit.version required
+}
+
+message DeleteArrivalRequest {
+  string arrival_no = 1;
+  int32 version = 2;
 }
 
 message CancelArrivalRequest {

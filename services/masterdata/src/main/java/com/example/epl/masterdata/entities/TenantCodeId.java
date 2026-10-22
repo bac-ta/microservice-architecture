@@ -1,0 +1,18 @@
+package com.example.epl.masterdata.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+/** Primary key (tenant_id, code) of tenant-scoped tables. */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TenantCodeId implements Serializable {
+
+    private UUID tenantId;
+    private String code;
+}

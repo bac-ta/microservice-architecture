@@ -19,6 +19,8 @@ option java_multiple_files = true;
 service StockService {
   // screens: EPL-IV-110W, EPL-IV-110H
   rpc Search(SearchStockRequest) returns (SearchStockResponse);
+  // screens: EPL-IV-110W, EPL-IV-110H
+  rpc Get(GetStockRequest) returns (StockLot);
   // screens: EPL-IV-120W
   rpc Adjust(AdjustStockRequest) returns (MovementResult);
   // screens: EPL-IV-130W, EPL-IV-130H
@@ -67,6 +69,10 @@ message SearchStockRequest {
   epl.common.v1.ReceiptRef receipt = 8;
   bool only_available = 9;
   bool include_zero = 10;
+}
+
+message GetStockRequest {
+  string id = 1;
 }
 
 message SearchStockResponse {
@@ -190,6 +196,9 @@ service StocktakeService {
   rpc Get(GetStocktakeRequest) returns (Stocktake);
   // screens: EPL-IV-310W
   rpc List(ListStocktakesRequest) returns (ListStocktakesResponse);
+  // Header only, while the stocktake is INSTRUCTED.
+  // screens: EPL-IV-320W
+  rpc Update(UpdateStocktakeRequest) returns (Stocktake);
   // screens: EPL-IV-330W, EPL-IV-330H
   rpc RecordCount(RecordCountRequest) returns (RecordCountResponse);
   // screens: EPL-IV-340W
@@ -242,6 +251,10 @@ message Stocktake {
 
 message CreateStocktakeRequest {
   Stocktake stocktake = 1;  // stocktake_no empty = numbered by the server
+}
+
+message UpdateStocktakeRequest {
+  Stocktake stocktake = 1;  // identified by stocktake_no, audit.version required
 }
 
 message GetStocktakeRequest {

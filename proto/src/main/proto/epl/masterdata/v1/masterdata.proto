@@ -18,13 +18,19 @@ service LocationService {
   // screens: EPL-MD-110W
   rpc ListAreas(ListAreasRequest) returns (ListAreasResponse);
   // screens: EPL-MD-110W
+  rpc GetArea(GetAreaRequest) returns (Area);
+  // screens: EPL-MD-110W
   rpc UpsertArea(Area) returns (Area);
+  // screens: EPL-MD-110W
+  rpc DeleteArea(DeleteAreaRequest) returns (google.protobuf.Empty);
   // screens: EPL-MD-120W
   rpc ListLocations(ListLocationsRequest) returns (ListLocationsResponse);
   // screens: EPL-MD-120W
   rpc GetLocation(GetLocationRequest) returns (Location);
   // screens: EPL-MD-120W
   rpc UpsertLocation(Location) returns (Location);
+  // screens: EPL-MD-120W
+  rpc DeleteLocation(DeleteLocationRequest) returns (google.protobuf.Empty);
 }
 
 message Area {
@@ -38,6 +44,16 @@ message Area {
   bool single_pick_key_only = 8;
   bool locked = 9;
   epl.common.v1.Audit audit = 10;
+}
+
+message GetAreaRequest {
+  string code = 1;
+}
+
+// Areas and locations are soft-deleted: stock and history keep their codes.
+message DeleteAreaRequest {
+  string code = 1;
+  int32 version = 2;
 }
 
 message ListAreasRequest {
@@ -88,6 +104,11 @@ message GetLocationRequest {
   string code = 1;
 }
 
+message DeleteLocationRequest {
+  string code = 1;
+  int32 version = 2;
+}
+
 // ---------------------------------------------------------------------------
 // Products and barcodes (tenant-scoped)
 // ---------------------------------------------------------------------------
@@ -98,6 +119,8 @@ service ProductService {
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
   // screens: EPL-MD-210W
   rpc UpsertProduct(Product) returns (Product);
+  // screens: EPL-MD-210W
+  rpc DeleteProduct(DeleteProductRequest) returns (google.protobuf.Empty);
   rpc ResolveBarcode(ResolveBarcodeRequest) returns (ResolveBarcodeResponse);
 }
 
@@ -150,6 +173,11 @@ message ListProductsResponse {
   epl.common.v1.PageResponse page = 2;
 }
 
+message DeleteProductRequest {
+  string code = 1;
+  int32 version = 2;
+}
+
 message ResolveBarcodeRequest {
   string barcode = 1;
 }
@@ -185,6 +213,10 @@ message ListPartiesResponse {
 service ConfigService {
   // screens: EPL-MD-410W
   rpc ListSubInventories(google.protobuf.Empty) returns (ListSubInventoriesResponse);
+  // screens: EPL-MD-410W
+  rpc UpsertSubInventory(SubInventory) returns (SubInventory);
+  // screens: EPL-MD-410W
+  rpc DeleteSubInventory(DeleteSubInventoryRequest) returns (google.protobuf.Empty);
   // screens: EPL-MD-420W
   rpc ListPickingKeyDefinitions(google.protobuf.Empty) returns (ListPickingKeyDefinitionsResponse);
   // screens: EPL-MD-430W
@@ -201,6 +233,10 @@ message SubInventory {
   string code = 1;
   string name = 2;
   bool is_default = 3;
+}
+
+message DeleteSubInventoryRequest {
+  string code = 1;
 }
 
 message ListSubInventoriesResponse {

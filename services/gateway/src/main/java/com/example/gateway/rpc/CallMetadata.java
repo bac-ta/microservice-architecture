@@ -3,6 +3,8 @@ package com.example.gateway.rpc;
 import com.example.gateway.configurations.RequestIdFilter;
 import io.grpc.Metadata;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.List;
 
@@ -23,8 +25,15 @@ public final class CallMetadata {
     private CallMetadata() {
     }
 
+    /** Authenticated user, set from the verified JWT ("usr", else "sub"); used by backends for created_by / updated_by. */
+    static final String USER_HEADER = "x-user";
+
     public static Metadata from(HttpServletRequest request) {
         var metadata = new Metadata();
+        var user = authenticatedUser();
+        if (user != null) {
+            metadata.put(Metadata.Key.of(USER_HEADER, Metadata.ASCII_STRING_MARSHALLER), user);
+        }
         for (var header : FORWARDED_HEADERS) {
             var value = request.getHeader(header);
             if (value != null && !value.isBlank()) {
@@ -33,5 +42,14 @@ public final class CallMetadata {
         }
         metadata.put(Metadata.Key.of(RequestIdFilter.HEADER, Metadata.ASCII_STRING_MARSHALLER), RequestIdFilter.requestId(request));
         return metadata;
+    }
+
+    private static String authenticatedUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken jwt) {
+            var username = jwt.getToken().getClaimAsString("usr");
+            return username != null && !username.isBlank() ? username : jwt.getName();
+        }
+        return null;
     }
 }

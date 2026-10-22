@@ -7,4 +7,5 @@ dependencies {
     implementation project(':proto')
     implementation project(':libs:grpc-server')
     implementation project(':libs:security')
+    implementation libs.spring.security.crypto
 }

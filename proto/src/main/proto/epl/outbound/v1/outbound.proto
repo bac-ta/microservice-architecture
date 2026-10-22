@@ -21,8 +21,14 @@ service ShipmentService {
   rpc GetShipment(GetShipmentRequest) returns (Shipment);
   // screens: EPL-OB-120W, EPL-OB-120H
   rpc SearchShipments(SearchShipmentsRequest) returns (SearchShipmentsResponse);
+  // Replaces header and lines while the shipment is ORDERED.
+  // screens: EPL-OB-110W
+  rpc UpdateShipment(UpdateShipmentRequest) returns (Shipment);
   // screens: EPL-OB-110W
   rpc CancelShipment(CancelShipmentRequest) returns (Shipment);
+  // Only an ORDERED shipment; once allocated, cancel it instead.
+  // screens: EPL-OB-110W
+  rpc DeleteShipment(DeleteShipmentRequest) returns (google.protobuf.Empty);
   // screens: EPL-OB-510W
   rpc ConfirmShipment(ConfirmShipmentRequest) returns (ConfirmShipmentResponse);
   // screens: EPL-OB-520W
@@ -98,6 +104,15 @@ message SearchShipmentsRequest {
 message SearchShipmentsResponse {
   repeated Shipment shipments = 1;
   epl.common.v1.PageResponse page = 2;
+}
+
+message UpdateShipmentRequest {
+  Shipment shipment = 1;  // identified by shipment_no, audit.version required
+}
+
+message DeleteShipmentRequest {
+  string shipment_no = 1;
+  int32 version = 2;
 }
 
 message CancelShipmentRequest {

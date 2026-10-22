@@ -1,11 +1,13 @@
 // Spring Boot service that owns a PostgreSQL schema (services/<service>/src/main/resources/db/migration).
-// Adds libs/database and a bootMigrate task that applies the migrations, then exits.
+// Adds libs/service-core (+ libs/database: JPA, Flyway) and a bootMigrate task that applies the
+// migrations, then exits.
 plugins {
     id 'epl.spring-boot-service'
 }
 
 dependencies {
-    implementation project(':libs:database')
+    implementation project(':libs:service-core')
+    testImplementation testFixtures(project(':libs:service-core'))
 }
 
 tasks.register('bootMigrate', org.springframework.boot.gradle.tasks.run.BootRun) {

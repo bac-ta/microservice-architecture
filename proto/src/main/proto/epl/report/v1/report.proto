@@ -5,6 +5,7 @@ syntax = "proto3";
 package epl.report.v1;
 
 import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 
 option java_package = "com.example.epl.report.v1";
@@ -68,6 +69,45 @@ message PrintLabelsRequest {
 message PrintLabelsResponse {
   string print_job_id = 1;
   int32 printed = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Printers of the warehouse (x-warehouse), shared by all its customers
+// ---------------------------------------------------------------------------
+service PrinterService {
+  // screens: EPL-RP-410W
+  rpc ListPrinters(ListPrintersRequest) returns (ListPrintersResponse);
+  // screens: EPL-RP-410W
+  rpc GetPrinter(GetPrinterRequest) returns (Printer);
+  // screens: EPL-RP-410W
+  rpc UpsertPrinter(Printer) returns (Printer);
+  // screens: EPL-RP-410W
+  rpc DeletePrinter(DeletePrinterRequest) returns (google.protobuf.Empty);
+}
+
+message Printer {
+  string code = 1;      // PrintLabelsRequest.printer_id
+  string name = 2;
+  string kind = 3;      // LABEL / DOCUMENT
+  string endpoint = 4;  // ipp://… / host:port / print server queue
+  bool enabled = 5;
+  epl.common.v1.Audit audit = 6;
+}
+
+message ListPrintersRequest {
+  string kind = 1;  // empty = all
+}
+
+message ListPrintersResponse {
+  repeated Printer printers = 1;
+}
+
+message GetPrinterRequest {
+  string code = 1;
+}
+
+message DeletePrinterRequest {
+  string code = 1;
 }
 
 // ---------------------------------------------------------------------------

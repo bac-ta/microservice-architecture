@@ -20,6 +20,16 @@ dependencyManagement {
         mavenBom "org.springframework.boot:spring-boot-dependencies:${catalog.findVersion('spring-boot').get()}"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${catalog.findVersion('spring-cloud').get()}"
     }
+    // newer than the BOMs' 1.19.8: Docker Engine 29 needs Docker API >= 1.40
+    dependencies {
+        dependencySet(group: 'org.testcontainers', version: catalog.findVersion('testcontainers').get().requiredVersion) {
+            entry 'testcontainers'
+            entry 'database-commons'
+            entry 'jdbc'
+            entry 'postgresql'
+            entry 'junit-jupiter'
+        }
+    }
 }
 
 dependencies {
@@ -36,4 +46,6 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
+    // database tests read bootstrap.sql and other services' migrations from the source tree
+    systemProperty 'epl.repository.root', rootDir.absolutePath
 }

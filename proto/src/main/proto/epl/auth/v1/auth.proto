@@ -63,6 +63,8 @@ service UserService {
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
   // screens: EPL-SY-110W
   rpc UpdateUser(User) returns (User);
+  // screens: EPL-SY-110W
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
   // screens: EPL-SY-130W
   rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty);
   // screens: EPL-SY-120W
@@ -124,6 +126,11 @@ message ListUsersResponse {
   epl.common.v1.PageResponse page = 2;
 }
 
+message DeleteUserRequest {
+  string id = 1;
+  int32 version = 2;
+}
+
 message ChangePasswordRequest {
   string user_id = 1;
   string current_password = 2;
@@ -165,27 +172,85 @@ service TenantService {
   // screens: EPL-SY-210W
   rpc ListCompanies(google.protobuf.Empty) returns (ListCompaniesResponse);
   // screens: EPL-SY-210W
+  rpc GetCompany(GetCompanyRequest) returns (Company);
+  // screens: EPL-SY-210W
+  rpc CreateCompany(Company) returns (Company);
+  // screens: EPL-SY-210W
+  rpc UpdateCompany(Company) returns (Company);
+  // screens: EPL-SY-210W
+  rpc DeleteCompany(DeleteCompanyRequest) returns (google.protobuf.Empty);
+
+  // screens: EPL-SY-210W
   rpc ListWarehouses(ListWarehousesRequest) returns (ListWarehousesResponse);
+  // screens: EPL-SY-210W
+  rpc GetWarehouse(GetWarehouseRequest) returns (Warehouse);
+  // screens: EPL-SY-210W
+  rpc CreateWarehouse(Warehouse) returns (Warehouse);
+  // screens: EPL-SY-210W
+  rpc UpdateWarehouse(Warehouse) returns (Warehouse);
+  // screens: EPL-SY-210W
+  rpc DeleteWarehouse(DeleteWarehouseRequest) returns (google.protobuf.Empty);
+
+  // screens: EPL-SY-210W
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+  // screens: EPL-SY-210W
+  rpc GetCustomer(GetCustomerRequest) returns (Customer);
+  // screens: EPL-SY-210W
+  rpc CreateCustomer(Customer) returns (Customer);
+  // screens: EPL-SY-210W
+  rpc UpdateCustomer(Customer) returns (Customer);
+  // screens: EPL-SY-210W
+  rpc DeleteCustomer(DeleteCustomerRequest) returns (google.protobuf.Empty);
+
   // screens: EPL-SY-020W, EPL-SY-020H, EPL-SY-210W
   rpc ListTenants(ListTenantsRequest) returns (ListTenantsResponse);
+  // screens: EPL-SY-210W
+  rpc GetTenant(GetTenantRequest) returns (Tenant);
   // screens: EPL-SY-220W
   rpc CreateTenant(CreateTenantRequest) returns (Tenant);
+  // screens: EPL-SY-210W
+  rpc UpdateTenant(Tenant) returns (Tenant);
+  // screens: EPL-SY-210W
+  rpc DeleteTenant(DeleteTenantRequest) returns (google.protobuf.Empty);
+
+  // Turns the tenant metadata (x-company, x-warehouse, x-customer) into ids for Row-Level Security.
+  // Called by every service (cached), not by screens.
+  rpc ResolveTenant(ResolveTenantRequest) returns (ResolvedTenant);
 }
+
+// Registry status of a company, warehouse, customer or tenant: ACTIVE, SUSPENDED, CLOSED
+// (tenant also ONBOARDING).
 
 message Company {
   string id = 1;
-  string code = 2;  // e.g. C001
+  string code = 2;  // e.g. C001, immutable
   string name = 3;
   string country_code = 4;
   string time_zone = 5;
+  string status = 6;
+  epl.common.v1.Audit audit = 7;
 }
 
 message Warehouse {
   string id = 1;
   string company_code = 2;
-  string code = 3;  // e.g. WH01
+  string code = 3;  // e.g. WH01, unique within the company, immutable
   string name = 4;
   string time_zone = 5;
+  string status = 6;
+  epl.common.v1.Date start_date = 7;
+  epl.common.v1.Date end_date = 8;
+  epl.common.v1.Audit audit = 9;
+}
+
+// Shipper / owner of the goods, unique within a company.
+message Customer {
+  string id = 1;
+  string company_code = 2;
+  string code = 3;  // e.g. CUST01, immutable
+  string name = 4;
+  string status = 5;
+  epl.common.v1.Audit audit = 6;
 }
 
 message Tenant {
@@ -195,6 +260,72 @@ message Tenant {
   string customer_code = 4;  // e.g. CUST01
   string customer_name = 5;
   string status = 6;
+  epl.common.v1.Date start_date = 7;
+  epl.common.v1.Date end_date = 8;
+  epl.common.v1.Audit audit = 9;
+}
+
+message GetCompanyRequest {
+  string code = 1;
+}
+
+message DeleteCompanyRequest {
+  string code = 1;
+  int32 version = 2;
+}
+
+message GetWarehouseRequest {
+  string company_code = 1;
+  string code = 2;
+}
+
+message DeleteWarehouseRequest {
+  string company_code = 1;
+  string code = 2;
+  int32 version = 3;
+}
+
+message ListCustomersRequest {
+  string company_code = 1;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+}
+
+message GetCustomerRequest {
+  string company_code = 1;
+  string code = 2;
+}
+
+message DeleteCustomerRequest {
+  string company_code = 1;
+  string code = 2;
+  int32 version = 3;
+}
+
+message GetTenantRequest {
+  string id = 1;
+}
+
+message DeleteTenantRequest {
+  string id = 1;
+  int32 version = 2;
+}
+
+// Empty warehouse / customer = resolve only up to the company / warehouse.
+message ResolveTenantRequest {
+  string company_code = 1;
+  string warehouse_code = 2;
+  string customer_code = 3;
+}
+
+// Ids for app.company_id / app.warehouse_id / app.customer_id / app.tenant_id; empty when not requested.
+message ResolvedTenant {
+  string company_id = 1;
+  string warehouse_id = 2;
+  string customer_id = 3;
+  string tenant_id = 4;
 }
 
 message ListCompaniesResponse {
@@ -224,6 +355,32 @@ message CreateTenantRequest {
   string customer_code = 3;
   string customer_name = 4;
   string copy_config_from_tenant_id = 5;  // optional template tenant
+}
+
+// ---------------------------------------------------------------------------
+// Roles (named bundles of responsibilities, granted per tenant)
+// ---------------------------------------------------------------------------
+service RoleService {
+  // screens: EPL-SY-120W, EPL-SY-140W
+  rpc ListRoles(google.protobuf.Empty) returns (ListRolesResponse);
+  // screens: EPL-SY-140W
+  rpc UpsertRole(Role) returns (Role);
+  // screens: EPL-SY-140W
+  rpc DeleteRole(DeleteRoleRequest) returns (google.protobuf.Empty);
+}
+
+message Role {
+  string code = 1;  // UPPER_SNAKE, e.g. WMS_OPERATOR
+  string name = 2;
+  string description = 3;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+}
+
+message DeleteRoleRequest {
+  string code = 1;
 }
 
 // ---------------------------------------------------------------------------

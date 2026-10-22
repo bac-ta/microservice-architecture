@@ -4,6 +4,8 @@ syntax = "proto3";
 package epl.integration.v1;
 
 import "epl/common/v1/common.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
 option java_package = "com.example.epl.integration.v1";
@@ -96,11 +98,33 @@ message ResendEdiRequest {
 // ---------------------------------------------------------------------------
 service JobService {
   // screens: EPL-IT-310W
+  rpc ListJobDefinitions(google.protobuf.Empty) returns (ListJobDefinitionsResponse);
+  // screens: EPL-IT-310W
   rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
+  // screens: EPL-IT-310W
+  rpc GetJob(GetJobRequest) returns (Job);
+  // Queues a run; the worker of the job picks it up.
+  // screens: EPL-IT-310W
+  rpc CreateJob(CreateJobRequest) returns (Job);
+  // Only a QUEUED run.
+  // screens: EPL-IT-310W
+  rpc DeleteJob(DeleteJobRequest) returns (google.protobuf.Empty);
   // screens: EPL-IT-320W
   rpc RunPurge(RunPurgeRequest) returns (Job);
   // screens: EPL-IT-320W
   rpc ListPurgeHistory(ListPurgeHistoryRequest) returns (ListPurgeHistoryResponse);
+}
+
+message JobDefinition {
+  string code = 1;      // PURGE, EDI_RECEIVE …
+  string name = 2;
+  string schedule = 3;  // cron expression, informational
+  bool enabled = 4;
+  string description = 5;
+}
+
+message ListJobDefinitionsResponse {
+  repeated JobDefinition definitions = 1;
 }
 
 message Job {
@@ -110,6 +134,22 @@ message Job {
   google.protobuf.Timestamp started_at = 4;
   google.protobuf.Timestamp finished_at = 5;
   string message = 6;
+  google.protobuf.Struct parameters = 7;
+  google.protobuf.Timestamp created_at = 8;
+  string created_by = 9;
+}
+
+message GetJobRequest {
+  string id = 1;
+}
+
+message CreateJobRequest {
+  string job_code = 1;
+  google.protobuf.Struct parameters = 2;
+}
+
+message DeleteJobRequest {
+  string id = 1;
 }
 
 message ListJobsRequest {

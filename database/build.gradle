@@ -4,12 +4,6 @@ plugins {
     id 'epl.java-conventions'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:${libs.versions.testcontainers.get()}"
-    }
-}
-
 dependencies {
     testImplementation libs.flyway.core
     testRuntimeOnly libs.flyway.database.postgresql
@@ -19,7 +13,6 @@ dependencies {
 }
 
 tasks.named('test') {
-    systemProperty 'epl.repository.root', rootDir.absolutePath
     // the migrations are read from the services' source folders
     inputs.files(fileTree(rootProject.file('services')) { include '*/src/main/resources/db/migration/**' })
         .withPathSensitivity(PathSensitivity.RELATIVE)

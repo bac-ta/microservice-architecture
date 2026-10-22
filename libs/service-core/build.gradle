@@ -1,0 +1,29 @@
+// Building blocks of every EPL gRPC service: request (tenant) context from gRPC metadata,
+// RLS session settings, auditing user, unary call helper with error -> gRPC status mapping,
+// paging and proto <-> Java conversions.
+plugins {
+    id 'epl.java-library'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api project(':proto')
+    api project(':libs:database')
+    api libs.grpc.stub
+    api libs.protobuf.java.util
+    api libs.jackson.databind
+    implementation libs.spring.boot.autoconfigure
+    implementation libs.grpc.netty
+    implementation libs.caffeine
+    annotationProcessor libs.spring.boot.configuration.processor
+
+    // shared by the services' tests: PostgreSQL 16 with bootstrap + iam, in-process gRPC server
+    testFixturesApi libs.spring.boot.starter.test
+    testFixturesApi libs.testcontainers.postgresql
+    testFixturesApi libs.testcontainers.junit.jupiter
+    testFixturesApi libs.grpc.inprocess
+    testFixturesApi project(':libs:grpc-server')
+    testFixturesImplementation libs.flyway.core
+    testFixturesRuntimeOnly libs.flyway.database.postgresql
+    testFixturesImplementation libs.postgresql
+}
