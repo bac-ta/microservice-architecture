@@ -25,13 +25,13 @@ service ReportService {
 message ReportDefinition {
   string code = 1;          // e.g. PICKING_LIST
   string name = 2;
-  string process_code = 3;  // which business step offers it
+  string processCode = 3;  // which business step offers it
   repeated string formats = 4;  // PDF, XLSX, CSV
   repeated string parameters = 5;
 }
 
 message ListReportsRequest {
-  string process_code = 1;
+  string processCode = 1;
 }
 
 message ListReportsResponse {
@@ -39,15 +39,15 @@ message ListReportsResponse {
 }
 
 message RenderRequest {
-  string report_code = 1;
+  string reportCode = 1;
   string format = 2;  // PDF / XLSX / CSV
   google.protobuf.Struct parameters = 3;
   string locale = 4;
 }
 
 message FileChunk {
-  string file_name = 1;     // set on the first chunk
-  string content_type = 2;  // set on the first chunk
+  string fileName = 1;     // set on the first chunk
+  string contentType = 2;  // set on the first chunk
   bytes data = 3;
 }
 
@@ -60,14 +60,14 @@ service LabelService {
 }
 
 message PrintLabelsRequest {
-  string label_code = 1;  // CARGO_ID, PRODUCT, CARTON …
-  string printer_id = 2;  // empty = printer paired with the calling device
+  string labelCode = 1;  // CARGO_ID, PRODUCT, CARTON …
+  string printerId = 2;  // empty = printer paired with the calling device
   repeated google.protobuf.Struct items = 3;
   int32 copies = 4;
 }
 
 message PrintLabelsResponse {
-  string print_job_id = 1;
+  string printJobId = 1;
   int32 printed = 2;
 }
 
@@ -86,7 +86,7 @@ service PrinterService {
 }
 
 message Printer {
-  string code = 1;      // PrintLabelsRequest.printer_id
+  string code = 1;      // PrintLabelsRequest.printerId
   string name = 2;
   string kind = 3;      // LABEL / DOCUMENT
   string endpoint = 4;  // ipp://… / host:port / print server queue
@@ -119,17 +119,17 @@ service KpiService {
 }
 
 message GetInventoryTurnoverRequest {
-  epl.common.v1.Date date_from = 1;
-  epl.common.v1.Date date_to = 2;
-  string product_group_code = 3;
+  epl.common.v1.Date dateFrom = 1;
+  epl.common.v1.Date dateTo = 2;
+  string productGroupCode = 3;
 }
 
 message TurnoverRow {
-  string product_code = 1;
-  epl.common.v1.Decimal average_stock = 2;
-  epl.common.v1.Decimal shipped_qty = 3;
-  epl.common.v1.Decimal turnover_rate = 4;
-  epl.common.v1.Decimal days_on_hand = 5;
+  string productCode = 1;
+  epl.common.v1.Decimal averageStock = 2;
+  epl.common.v1.Decimal shippedQty = 3;
+  epl.common.v1.Decimal turnoverRate = 4;
+  epl.common.v1.Decimal daysOnHand = 5;
 }
 
 message GetInventoryTurnoverResponse {

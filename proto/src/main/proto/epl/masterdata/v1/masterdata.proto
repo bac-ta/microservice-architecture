@@ -36,12 +36,12 @@ service LocationService {
 message Area {
   string code = 1;
   string name = 2;
-  string temperature_kind = 3;
-  string picking_group_code = 4;
-  bool no_allocation = 5;
-  bool no_replenishment = 6;
-  bool single_product_only = 7;
-  bool single_pick_key_only = 8;
+  string temperatureKind = 3;
+  string pickingGroupCode = 4;
+  bool noAllocation = 5;
+  bool noReplenishment = 6;
+  bool singleProductOnly = 7;
+  bool singlePickKeyOnly = 8;
   bool locked = 9;
   epl.common.v1.Audit audit = 10;
 }
@@ -67,21 +67,21 @@ message ListAreasResponse {
 
 message Location {
   string code = 1;  // area+rack+position+level, max 18
-  string area_code = 2;
-  string rack_code = 3;
-  string position_code = 4;
-  string level_code = 5;
-  string zone_code = 6;
-  bool no_allocation = 7;
-  bool no_replenishment = 8;
-  bool single_product_only = 9;
-  bool single_pick_key_only = 10;
-  int32 allocation_priority = 11;
-  int32 picking_sequence = 12;
-  string dedicated_product_code = 13;
-  string sub_inventory_code = 14;
-  string bond_kind = 15;
-  string temperature_control = 16;
+  string areaCode = 2;
+  string rackCode = 3;
+  string positionCode = 4;
+  string levelCode = 5;
+  string zoneCode = 6;
+  bool noAllocation = 7;
+  bool noReplenishment = 8;
+  bool singleProductOnly = 9;
+  bool singlePickKeyOnly = 10;
+  int32 allocationPriority = 11;
+  int32 pickingSequence = 12;
+  string dedicatedProductCode = 13;
+  string subInventoryCode = 14;
+  string bondKind = 15;
+  string temperatureControl = 16;
   string remarks = 17;
   google.protobuf.Struct ext = 18;
   epl.common.v1.Audit audit = 19;
@@ -89,10 +89,10 @@ message Location {
 
 message ListLocationsRequest {
   epl.common.v1.PageRequest page = 1;
-  string area_code = 2;
-  string code_from = 3;
-  string code_to = 4;
-  bool only_empty = 5;  // no stock (asks inventory service)
+  string areaCode = 2;
+  string codeFrom = 3;
+  string codeTo = 4;
+  bool onlyEmpty = 5;  // no stock (asks inventory service)
 }
 
 message ListLocationsResponse {
@@ -125,34 +125,34 @@ service ProductService {
 }
 
 message Packing {
-  int32 units_per_case = 1;
-  int32 units_per_ball = 2;
-  int32 cases_per_pallet = 3;
-  string uom_piece = 4;
-  string uom_case = 5;
-  string uom_ball = 6;
-  epl.common.v1.Decimal case_weight = 7;
-  epl.common.v1.Decimal case_volume = 8;
-  epl.common.v1.Decimal piece_weight = 9;
-  epl.common.v1.Decimal piece_volume = 10;
+  int32 unitsPerCase = 1;
+  int32 unitsPerBall = 2;
+  int32 casesPerPallet = 3;
+  string uomPiece = 4;
+  string uomCase = 5;
+  string uomBall = 6;
+  epl.common.v1.Decimal caseWeight = 7;
+  epl.common.v1.Decimal caseVolume = 8;
+  epl.common.v1.Decimal pieceWeight = 9;
+  epl.common.v1.Decimal pieceVolume = 10;
 }
 
 message Product {
   string code = 1;
   repeated string names = 2;  // NAM1..NAM4
-  string product_group_code = 3;
+  string productGroupCode = 3;
   repeated string hierarchy = 4;
   Packing packing = 5;
-  string storage_kind = 6;
-  string abc_class = 7;
-  string expiry_kind = 8;
-  int32 expiry_days = 9;
-  bool not_shippable = 10;
-  bool is_kit_parent = 11;
-  string hs_code = 12;
-  string bond_kind = 13;
-  string origin_country = 14;
-  string recommended_location = 15;
+  string storageKind = 6;
+  string abcClass = 7;
+  string expiryKind = 8;
+  int32 expiryDays = 9;
+  bool notShippable = 10;
+  bool isKitParent = 11;
+  string hsCode = 12;
+  string bondKind = 13;
+  string originCountry = 14;
+  string recommendedLocation = 15;
   repeated string barcodes = 16;
   google.protobuf.Struct ext = 17;
   epl.common.v1.Audit audit = 18;
@@ -165,7 +165,7 @@ message GetProductRequest {
 message ListProductsRequest {
   epl.common.v1.PageRequest page = 1;
   string query = 2;  // code or name contains
-  string product_group_code = 3;
+  string productGroupCode = 3;
 }
 
 message ListProductsResponse {
@@ -184,7 +184,7 @@ message ResolveBarcodeRequest {
 
 message ResolveBarcodeResponse {
   Product product = 1;
-  string uom_level = 2;  // PIECE / BALL / CASE / PALLET
+  string uomLevel = 2;  // PIECE / BALL / CASE / PALLET
 }
 
 // ---------------------------------------------------------------------------
@@ -232,7 +232,7 @@ service ConfigService {
 message SubInventory {
   string code = 1;
   string name = 2;
-  bool is_default = 3;
+  bool isDefault = 3;
 }
 
 message DeleteSubInventoryRequest {
@@ -240,19 +240,19 @@ message DeleteSubInventoryRequest {
 }
 
 message ListSubInventoriesResponse {
-  repeated SubInventory sub_inventories = 1;
+  repeated SubInventory subInventories = 1;
 }
 
 message PickingKeyDefinition {
-  int32 key_no = 1;  // 1..7
-  bool in_use = 2;
+  int32 keyNo = 1;  // 1..7
+  bool inUse = 2;
   string name = 3;
-  string data_type = 4;
-  int32 max_length = 5;
-  string date_format = 6;
-  bool required_on_receipt = 7;
-  bool required_on_ship = 8;
-  bool expiry_control = 9;
+  string dataType = 4;
+  int32 maxLength = 5;
+  string dateFormat = 6;
+  bool requiredOnReceipt = 7;
+  bool requiredOnShip = 8;
+  bool expiryControl = 9;
 }
 
 message ListPickingKeyDefinitionsResponse {
@@ -263,10 +263,10 @@ message TransactionKind {
   string code = 1;
   string name = 2;
   repeated string usages = 3;        // RECEIPT, SHIP, ADJUST, RELOCATE …
-  repeated string charge_types = 4;  // IN, OUT, STORAGE, PROCESSING
-  bool reason_required = 5;
-  bool allow_surplus = 6;
-  bool allow_shortage = 7;
+  repeated string chargeTypes = 4;  // IN, OUT, STORAGE, PROCESSING
+  bool reasonRequired = 5;
+  bool allowSurplus = 6;
+  bool allowShortage = 7;
 }
 
 message ListTransactionKindsRequest {
@@ -278,32 +278,32 @@ message ListTransactionKindsResponse {
 }
 
 message Status {
-  string business_code = 1;  // AV, SP, STK
-  string status_code = 2;
-  string label_key = 3;
+  string businessCode = 1;  // AV, SP, STK
+  string statusCode = 2;
+  string labelKey = 3;
 }
 
 message ProcessControl {
-  string process_code = 1;
-  string required_status = 2;
-  string processing_status = 3;
-  string finished_status = 4;
+  string processCode = 1;
+  string requiredStatus = 2;
+  string processingStatus = 3;
+  string finishedStatus = 4;
 }
 
 message ListStatusesRequest {
-  string business_code = 1;
+  string businessCode = 1;
 }
 
 message ListStatusesResponse {
   repeated Status statuses = 1;
-  repeated ProcessControl process_controls = 2;
+  repeated ProcessControl processControls = 2;
 }
 
 message Code {
   string kind = 1;
   string code = 2;
-  string label_key = 3;
-  int32 sort_order = 4;
+  string labelKey = 3;
+  int32 sortOrder = 4;
   google.protobuf.Struct attributes = 5;
 }
 

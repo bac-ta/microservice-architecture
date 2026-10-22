@@ -22,30 +22,30 @@ service ChargeService {
 }
 
 message ChargeLine {
-  string charge_type = 1;  // IN, OUT, STORAGE, PROCESSING, OTHER
-  string rate_code = 2;
+  string chargeType = 1;  // IN, OUT, STORAGE, PROCESSING, OTHER
+  string rateCode = 2;
   string description = 3;
   epl.common.v1.Decimal quantity = 4;
   string unit = 5;         // CS, PC, M3, KG, PALLET …
-  epl.common.v1.Decimal unit_price = 6;
+  epl.common.v1.Decimal unitPrice = 6;
   epl.common.v1.Decimal amount = 7;
   string currency = 8;
-  string source_doc_no = 9;  // shipment / arrival number
+  string sourceDocNo = 9;  // shipment / arrival number
 }
 
 message ChargeStatement {
   string period = 1;  // YYYY-MM
   string status = 2;  // OPEN, CLOSED
-  string bill_to_code = 3;
+  string billToCode = 3;
   repeated ChargeLine lines = 4;
-  epl.common.v1.Decimal total_amount = 5;
+  epl.common.v1.Decimal totalAmount = 5;
   string currency = 6;
   epl.common.v1.Audit audit = 7;
 }
 
 message GetChargeStatementRequest {
   string period = 1;
-  string bill_to_code = 2;
+  string billToCode = 2;
 }
 
 message UpdateChargeStatementRequest {
@@ -74,8 +74,8 @@ message GetMonthEndStatusRequest {
 message MonthEndStatus {
   string period = 1;
   string status = 2;  // NOT_STARTED, RUNNING, DONE, FAILED
-  google.protobuf.Timestamp started_at = 3;
-  google.protobuf.Timestamp finished_at = 4;
+  google.protobuf.Timestamp startedAt = 3;
+  google.protobuf.Timestamp finishedAt = 4;
   string message = 5;
 }
 
@@ -87,7 +87,7 @@ service RateService {
   rpc ListRates(ListRatesRequest) returns (ListRatesResponse);
   // screens: EPL-BL-110W
   rpc GetRate(GetRateRequest) returns (Rate);
-  // Keyed by code + valid_from: a new valid_from adds a price period.
+  // Keyed by code + validFrom: a new validFrom adds a price period.
   // screens: EPL-BL-110W
   rpc UpsertRate(Rate) returns (Rate);
   // screens: EPL-BL-110W
@@ -96,24 +96,24 @@ service RateService {
 
 message Rate {
   string code = 1;
-  string charge_type = 2;
+  string chargeType = 2;
   string name = 3;
   string unit = 4;
-  epl.common.v1.Decimal unit_price = 5;
+  epl.common.v1.Decimal unitPrice = 5;
   string currency = 6;
-  epl.common.v1.Date valid_from = 7;
-  epl.common.v1.Date valid_to = 8;
+  epl.common.v1.Date validFrom = 7;
+  epl.common.v1.Date validTo = 8;
   epl.common.v1.Audit audit = 9;
 }
 
 message GetRateRequest {
   string code = 1;
-  epl.common.v1.Date valid_on = 2;  // empty = today
+  epl.common.v1.Date validOn = 2;  // empty = today
 }
 
 message ListRatesRequest {
-  string charge_type = 1;
-  epl.common.v1.Date valid_on = 2;
+  string chargeType = 1;
+  epl.common.v1.Date validOn = 2;
 }
 
 message ListRatesResponse {

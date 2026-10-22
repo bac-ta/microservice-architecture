@@ -24,10 +24,10 @@ service UploadService {
 
 message UploadChunk {
   message Header {
-    string file_kind = 1;  // ARRIVAL, SHIPMENT, PRODUCT …
-    string file_name = 2;
-    string content_type = 3;
-    bool validate_only = 4;
+    string fileKind = 1;  // ARRIVAL, SHIPMENT, PRODUCT …
+    string fileName = 2;
+    string contentType = 3;
+    bool validateOnly = 4;
   }
   oneof part {
     Header header = 1;
@@ -36,14 +36,14 @@ message UploadChunk {
 }
 
 message UploadResult {
-  string upload_id = 1;
-  int32 accepted_rows = 2;
-  int32 rejected_rows = 3;
+  string uploadId = 1;
+  int32 acceptedRows = 2;
+  int32 rejectedRows = 3;
   repeated epl.common.v1.RowError errors = 4;  // first N; full list via GetUploadErrors
 }
 
 message GetUploadErrorsRequest {
-  string upload_id = 1;
+  string uploadId = 1;
   epl.common.v1.PageRequest page = 2;
 }
 
@@ -65,22 +65,22 @@ service EdiService {
 message EdiMessage {
   string id = 1;
   string direction = 2;  // SEND / RECEIVE
-  string edi_code = 3;
+  string ediCode = 3;
   string partner = 4;
   string status = 5;     // OK, ERROR, PENDING
-  string batch_no = 6;
-  google.protobuf.Timestamp processed_at = 7;
-  string error_message = 8;
-  int32 record_count = 9;
+  string batchNo = 6;
+  google.protobuf.Timestamp processedAt = 7;
+  string errorMessage = 8;
+  int32 recordCount = 9;
 }
 
 message SearchEdiRequest {
   epl.common.v1.PageRequest page = 1;
   string direction = 2;
-  string edi_code = 3;
+  string ediCode = 3;
   repeated string statuses = 4;
-  epl.common.v1.Date date_from = 5;
-  epl.common.v1.Date date_to = 6;
+  epl.common.v1.Date dateFrom = 5;
+  epl.common.v1.Date dateTo = 6;
 }
 
 message SearchEdiResponse {
@@ -129,14 +129,14 @@ message ListJobDefinitionsResponse {
 
 message Job {
   string id = 1;
-  string job_code = 2;
+  string jobCode = 2;
   string status = 3;  // QUEUED, RUNNING, DONE, FAILED
-  google.protobuf.Timestamp started_at = 4;
-  google.protobuf.Timestamp finished_at = 5;
+  google.protobuf.Timestamp startedAt = 4;
+  google.protobuf.Timestamp finishedAt = 5;
   string message = 6;
   google.protobuf.Struct parameters = 7;
-  google.protobuf.Timestamp created_at = 8;
-  string created_by = 9;
+  google.protobuf.Timestamp createdAt = 8;
+  string createdBy = 9;
 }
 
 message GetJobRequest {
@@ -144,7 +144,7 @@ message GetJobRequest {
 }
 
 message CreateJobRequest {
-  string job_code = 1;
+  string jobCode = 1;
   google.protobuf.Struct parameters = 2;
 }
 
@@ -154,7 +154,7 @@ message DeleteJobRequest {
 
 message ListJobsRequest {
   epl.common.v1.PageRequest page = 1;
-  string job_code = 2;
+  string jobCode = 2;
   repeated string statuses = 3;
 }
 
@@ -164,24 +164,24 @@ message ListJobsResponse {
 }
 
 message RunPurgeRequest {
-  string table_group = 1;           // which data group to purge
-  epl.common.v1.Date older_than = 2;
-  bool dry_run = 3;
+  string tableGroup = 1;           // which data group to purge
+  epl.common.v1.Date olderThan = 2;
+  bool dryRun = 3;
 }
 
 message PurgeRecord {
-  string table_name = 1;
-  int64 deleted_rows = 2;
+  string tableName = 1;
+  int64 deletedRows = 2;
   string result = 3;
-  google.protobuf.Timestamp started_at = 4;
-  google.protobuf.Timestamp finished_at = 5;
-  string error_message = 6;
+  google.protobuf.Timestamp startedAt = 4;
+  google.protobuf.Timestamp finishedAt = 5;
+  string errorMessage = 6;
 }
 
 message ListPurgeHistoryRequest {
   epl.common.v1.PageRequest page = 1;
-  epl.common.v1.Date date_from = 2;
-  epl.common.v1.Date date_to = 3;
+  epl.common.v1.Date dateFrom = 2;
+  epl.common.v1.Date dateTo = 3;
 }
 
 message ListPurgeHistoryResponse {

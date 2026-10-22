@@ -38,40 +38,40 @@ service StockService {
 message StockLot {
   string id = 1;
   epl.common.v1.ReceiptRef receipt = 2;
-  string stock_kind = 3;
-  epl.common.v1.Date received_on = 4;
-  string product_code = 5;
-  string origin_country = 6;
-  epl.common.v1.PickKeys pick_keys = 7;   // keys of the lot (lot_id)
-  string location_code = 8;
-  string area_code = 9;
-  string sub_inventory_code = 10;
-  epl.common.v1.Decimal physical_qty = 11;   // = available + allocated
-  epl.common.v1.Decimal available_qty = 12;
-  epl.common.v1.Decimal allocated_qty = 13;
-  int32 units_per_case = 14;
-  int32 units_per_ball = 15;
+  string stockKind = 3;
+  epl.common.v1.Date receivedOn = 4;
+  string productCode = 5;
+  string originCountry = 6;
+  epl.common.v1.PickKeys pickKeys = 7;   // keys of the lot (lotId)
+  string locationCode = 8;
+  string areaCode = 9;
+  string subInventoryCode = 10;
+  epl.common.v1.Decimal physicalQty = 11;   // = available + allocated
+  epl.common.v1.Decimal availableQty = 12;
+  epl.common.v1.Decimal allocatedQty = 13;
+  int32 unitsPerCase = 14;
+  int32 unitsPerBall = 15;
   bool bonded = 16;
-  bool on_hold = 17;
+  bool onHold = 17;
   bool locked = 18;
   google.protobuf.Struct ext = 19;
   int32 version = 20;
-  string lot_id = 21;                     // same lot <=> same lot_id
-  string lot_no = 22;                     // the key the tenant defines as lot number
-  epl.common.v1.Date expiry_date = 23;    // the key with expiry control
+  string lotId = 21;                     // same lot <=> same lotId
+  string lotNo = 22;                     // the key the tenant defines as lot number
+  epl.common.v1.Date expiryDate = 23;    // the key with expiry control
 }
 
 message SearchStockRequest {
   epl.common.v1.PageRequest page = 1;
-  string product_code = 2;
-  string location_code_from = 3;
-  string location_code_to = 4;
-  string area_code = 5;
-  string sub_inventory_code = 6;
-  epl.common.v1.PickKeys pick_keys = 7;  // non-empty keys are filters
+  string productCode = 2;
+  string locationCodeFrom = 3;
+  string locationCodeTo = 4;
+  string areaCode = 5;
+  string subInventoryCode = 6;
+  epl.common.v1.PickKeys pickKeys = 7;  // non-empty keys are filters
   epl.common.v1.ReceiptRef receipt = 8;
-  bool only_available = 9;
-  bool include_zero = 10;
+  bool onlyAvailable = 9;
+  bool includeZero = 10;
 }
 
 message GetStockRequest {
@@ -85,59 +85,59 @@ message SearchStockResponse {
 
 // Result of any stock-changing call: the ledger rows written.
 message MovementResult {
-  string operation_no = 1;
+  string operationNo = 1;
   repeated Movement movements = 2;
   repeated epl.common.v1.RowError errors = 3;
 }
 
 message AdjustStockRequest {
   message Line {
-    string stock_id = 1;
-    int32 stock_version = 2;
-    epl.common.v1.Decimal delta_qty = 3;  // + increase / - decrease, in pieces
+    string stockId = 1;
+    int32 stockVersion = 2;
+    epl.common.v1.Decimal deltaQty = 3;  // + increase / - decrease, in pieces
   }
-  string transaction_kind = 1;  // usage ADJUST
-  string reason_code = 2;       // required when the transaction kind asks for a reason
+  string transactionKind = 1;  // usage ADJUST
+  string reasonCode = 2;       // required when the transaction kind asks for a reason
   string remarks = 3;
   repeated Line lines = 4;
 }
 
 message RelocateStockRequest {
   message Line {
-    string stock_id = 1;
-    int32 stock_version = 2;
+    string stockId = 1;
+    int32 stockVersion = 2;
     epl.common.v1.Decimal qty = 3;  // empty = whole lot
-    string to_location_code = 4;
+    string toLocationCode = 4;
   }
-  string transaction_kind = 1;  // usage RELOCATE
-  string reason_code = 2;
+  string transactionKind = 1;  // usage RELOCATE
+  string reasonCode = 2;
   string remarks = 3;
   repeated Line lines = 4;
 }
 
 message ChangePickKeyRequest {
-  string stock_id = 1;
-  int32 stock_version = 2;
+  string stockId = 1;
+  int32 stockVersion = 2;
   epl.common.v1.Decimal qty = 3;
-  epl.common.v1.PickKeys new_pick_keys = 4;
+  epl.common.v1.PickKeys newPickKeys = 4;
   optional bool lock = 5;  // HHT lock / unlock cargo ID
-  string transaction_kind = 6;
-  string reason_code = 7;
+  string transactionKind = 6;
+  string reasonCode = 7;
 }
 
 message ChangeSubInventoryRequest {
-  string stock_id = 1;
-  int32 stock_version = 2;
+  string stockId = 1;
+  int32 stockVersion = 2;
   epl.common.v1.Decimal qty = 3;
-  string to_sub_inventory_code = 4;
-  optional bool on_hold = 5;
-  string reason_code = 6;
+  string toSubInventoryCode = 4;
+  optional bool onHold = 5;
+  string reasonCode = 6;
 }
 
 message DivideStockRequest {
-  string stock_id = 1;
-  int32 stock_version = 2;
-  repeated epl.common.v1.Decimal split_qty = 3;  // one new lot (cargo ID) per entry
+  string stockId = 1;
+  int32 stockVersion = 2;
+  repeated epl.common.v1.Decimal splitQty = 3;  // one new lot (cargo ID) per entry
 }
 
 // ---------------------------------------------------------------------------
@@ -152,35 +152,35 @@ service MovementService {
 
 message Movement {
   string id = 1;
-  string operation_no = 2;
-  int32 operation_line = 3;
-  int32 operation_seq = 4;
-  string movement_type = 5;  // ADJUST, RELOCATE, PICK_KEY_CHANGE, SUB_INVENTORY_CHANGE, DIVIDE, STOCKTAKE, RECEIPT, SHIPMENT
+  string operationNo = 2;
+  int32 operationLine = 3;
+  int32 operationSeq = 4;
+  string movementType = 5;  // ADJUST, RELOCATE, PICK_KEY_CHANGE, SUB_INVENTORY_CHANGE, DIVIDE, STOCKTAKE, RECEIPT, SHIPMENT
   string leg = 6;            // FROM / TO / SINGLE
-  string transaction_kind = 7;
-  epl.common.v1.Date operation_date = 8;
-  string stock_id = 9;
+  string transactionKind = 7;
+  epl.common.v1.Date operationDate = 8;
+  string stockId = 9;
   epl.common.v1.ReceiptRef receipt = 10;
-  string product_code = 11;
-  epl.common.v1.PickKeys pick_keys = 12;
-  string location_code = 13;
-  string sub_inventory_code = 14;
-  epl.common.v1.Quantity quantity = 15;  // total_pieces signed: + in, - out
-  string reason_code = 16;
+  string productCode = 11;
+  epl.common.v1.PickKeys pickKeys = 12;
+  string locationCode = 13;
+  string subInventoryCode = 14;
+  epl.common.v1.Quantity quantity = 15;  // totalPieces signed: + in, - out
+  string reasonCode = 16;
   string remarks = 17;
-  string source_ref = 18;
-  google.protobuf.Timestamp created_at = 19;
-  string created_by = 20;
+  string sourceRef = 18;
+  google.protobuf.Timestamp createdAt = 19;
+  string createdBy = 20;
 }
 
 message SearchMovementsRequest {
   epl.common.v1.PageRequest page = 1;
-  epl.common.v1.Date date_from = 2;
-  epl.common.v1.Date date_to = 3;
-  repeated string movement_types = 4;
-  string product_code = 5;
-  string location_code = 6;
-  string operation_no = 7;
+  epl.common.v1.Date dateFrom = 2;
+  epl.common.v1.Date dateTo = 3;
+  repeated string movementTypes = 4;
+  string productCode = 5;
+  string locationCode = 6;
+  string operationNo = 7;
   epl.common.v1.ReceiptRef receipt = 8;
 }
 
@@ -221,56 +221,56 @@ enum StocktakeStatus {
 
 message StocktakeLine {
   string id = 1;
-  int32 count_no = 2;
-  string stock_id = 3;  // empty = found stock / empty location
+  int32 countNo = 2;
+  string stockId = 3;  // empty = found stock / empty location
   epl.common.v1.ReceiptRef receipt = 4;
-  string product_code = 5;
-  epl.common.v1.PickKeys pick_keys = 6;
-  string location_code = 7;
-  string sub_inventory_code = 8;
+  string productCode = 5;
+  epl.common.v1.PickKeys pickKeys = 6;
+  string locationCode = 7;
+  string subInventoryCode = 8;
   epl.common.v1.Quantity book = 9;
   epl.common.v1.Quantity counted = 10;
-  epl.common.v1.Decimal diff_total_qty = 11;
+  epl.common.v1.Decimal diffTotalQty = 11;
   string remarks = 12;
   int32 version = 13;
-  string lot_id = 14;  // empty = empty location / found stock without a lot yet
+  string lotId = 14;  // empty = empty location / found stock without a lot yet
 }
 
 message Stocktake {
   string id = 1;
-  string stocktake_no = 2;
-  epl.common.v1.Date stocktake_date = 3;
-  epl.common.v1.Date confirmed_date = 4;
+  string stocktakeNo = 2;
+  epl.common.v1.Date stocktakeDate = 3;
+  epl.common.v1.Date confirmedDate = 4;
   StocktakeStatus status = 5;
   string kind = 6;
-  string target_kind = 7;
-  bool include_empty_locations = 8;
-  bool update_stock_on_confirm = 9;
+  string targetKind = 7;
+  bool includeEmptyLocations = 8;
+  bool updateStockOnConfirm = 9;
   google.protobuf.Struct criteria = 10;  // location ranges, product, ABC …
-  epl.common.v1.Decimal planned_qty = 11;
-  epl.common.v1.Decimal counted_qty = 12;
+  epl.common.v1.Decimal plannedQty = 11;
+  epl.common.v1.Decimal countedQty = 12;
   repeated StocktakeLine lines = 13;     // filled by Get only
   epl.common.v1.Audit audit = 14;
 }
 
 message CreateStocktakeRequest {
-  Stocktake stocktake = 1;  // stocktake_no empty = numbered by the server
+  Stocktake stocktake = 1;  // stocktakeNo empty = numbered by the server
 }
 
 message UpdateStocktakeRequest {
-  Stocktake stocktake = 1;  // identified by stocktake_no, audit.version required
+  Stocktake stocktake = 1;  // identified by stocktakeNo, audit.version required
 }
 
 message GetStocktakeRequest {
-  string stocktake_no = 1;
-  bool only_differences = 2;
+  string stocktakeNo = 1;
+  bool onlyDifferences = 2;
 }
 
 message ListStocktakesRequest {
   epl.common.v1.PageRequest page = 1;
   repeated StocktakeStatus statuses = 2;
-  epl.common.v1.Date date_from = 3;
-  epl.common.v1.Date date_to = 4;
+  epl.common.v1.Date dateFrom = 3;
+  epl.common.v1.Date dateTo = 4;
 }
 
 message ListStocktakesResponse {
@@ -279,9 +279,9 @@ message ListStocktakesResponse {
 }
 
 message RecordCountRequest {
-  string stocktake_no = 1;
+  string stocktakeNo = 1;
   repeated StocktakeLine lines = 2;  // counted quantities; new lines for found stock
-  string entry_kind = 3;             // PC / HHT / UPLOAD
+  string entryKind = 3;             // PC / HHT / UPLOAD
 }
 
 message RecordCountResponse {
@@ -289,12 +289,12 @@ message RecordCountResponse {
 }
 
 message ConfirmStocktakeRequest {
-  string stocktake_no = 1;
+  string stocktakeNo = 1;
   int32 version = 2;
 }
 
 message CancelStocktakeRequest {
-  string stocktake_no = 1;
+  string stocktakeNo = 1;
   int32 version = 2;
 }
 
@@ -309,20 +309,20 @@ service SerialService {
 }
 
 message Serial {
-  string serial_no = 1;
-  string product_code = 2;
+  string serialNo = 1;
+  string productCode = 2;
   epl.common.v1.ReceiptRef receipt = 3;
   string status = 4;
-  string doc_kind = 5;  // AV / SP
-  string doc_no = 6;
-  string carton_id = 7;
+  string docKind = 5;  // AV / SP
+  string docNo = 6;
+  string cartonId = 7;
 }
 
 message SearchSerialsRequest {
   epl.common.v1.PageRequest page = 1;
-  string serial_no = 2;
-  string product_code = 3;
-  string doc_no = 4;
+  string serialNo = 2;
+  string productCode = 3;
+  string docNo = 4;
 }
 
 message SearchSerialsResponse {
@@ -351,27 +351,27 @@ service KittingService {
 }
 
 message KittingOrder {
-  string order_no = 1;
-  string kit_product_code = 2;
-  epl.common.v1.Decimal kit_qty = 3;
+  string orderNo = 1;
+  string kitProductCode = 2;
+  epl.common.v1.Decimal kitQty = 3;
   string status = 4;
-  string component_shipment_no = 5;  // outbound document for the components
-  string kit_arrival_no = 6;         // inbound document for the finished kits
+  string componentShipmentNo = 5;  // outbound document for the components
+  string kitArrivalNo = 6;         // inbound document for the finished kits
   epl.common.v1.Audit audit = 7;
 }
 
 message CreateKittingOrderRequest {
-  string kit_product_code = 1;
-  epl.common.v1.Decimal kit_qty = 2;
-  epl.common.v1.Date scheduled_date = 3;
+  string kitProductCode = 1;
+  epl.common.v1.Decimal kitQty = 2;
+  epl.common.v1.Date scheduledDate = 3;
 }
 
 message ReceiveKittingRequest {
-  string order_no = 1;
-  epl.common.v1.Decimal received_qty = 2;
-  string location_code = 3;
+  string orderNo = 1;
+  epl.common.v1.Decimal receivedQty = 2;
+  string locationCode = 3;
 }
 
 message SendKittingConfirmationRequest {
-  repeated string order_nos = 1;
+  repeated string orderNos = 1;
 }

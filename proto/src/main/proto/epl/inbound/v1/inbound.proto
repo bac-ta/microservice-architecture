@@ -39,39 +39,39 @@ service ArrivalService {
 }
 
 message ArrivalLine {
-  int32 line_no = 1;
+  int32 lineNo = 1;
   string status = 2;
   bool inspected = 3;
-  string product_code = 4;
-  string product_name = 5;
-  string origin_country = 6;
-  string supplier_product_code = 7;
+  string productCode = 4;
+  string productName = 5;
+  string originCountry = 6;
+  string supplierProductCode = 7;
   epl.common.v1.Quantity planned = 8;
   epl.common.v1.Quantity received = 9;  // sum of recorded results
-  string sub_inventory_code = 10;
-  epl.common.v1.PickKeys pick_keys = 11;
-  bool on_hold = 12;
-  int32 customer_line_seq = 13;
+  string subInventoryCode = 10;
+  epl.common.v1.PickKeys pickKeys = 11;
+  bool onHold = 12;
+  int32 customerLineSeq = 13;
   string remarks = 14;
   google.protobuf.Struct ext = 15;      // CIT / COIL customer fields
 }
 
 message Arrival {
-  string arrival_no = 1;
-  epl.common.v1.Date scheduled_date = 2;
-  string transaction_kind = 3;
+  string arrivalNo = 1;
+  epl.common.v1.Date scheduledDate = 2;
+  string transactionKind = 3;
   string status = 4;
-  epl.common.v1.Date arrived_date = 5;
-  epl.common.v1.Date confirmed_date = 6;
-  string invoice_no = 7;
-  string customer_ref = 8;
-  string po_no = 9;
+  epl.common.v1.Date arrivedDate = 5;
+  epl.common.v1.Date confirmedDate = 6;
+  string invoiceNo = 7;
+  string customerRef = 8;
+  string poNo = 9;
   epl.common.v1.Party supplier = 10;
   bool bonded = 11;
-  string bl_no = 12;
-  string container_no = 13;
-  string transport_code = 14;
-  string return_shipment_no = 15;         // returns
+  string blNo = 12;
+  string containerNo = 13;
+  string transportCode = 14;
+  string returnShipmentNo = 15;         // returns
   string remarks = 16;
   repeated ArrivalLine lines = 17;
   google.protobuf.Struct ext = 18;
@@ -79,22 +79,22 @@ message Arrival {
 }
 
 message CreateArrivalRequest {
-  Arrival arrival = 1;  // arrival_no empty = numbered by the server
+  Arrival arrival = 1;  // arrivalNo empty = numbered by the server
 }
 
 message GetArrivalRequest {
-  string arrival_no = 1;
+  string arrivalNo = 1;
 }
 
 message SearchArrivalsRequest {
   epl.common.v1.PageRequest page = 1;
-  epl.common.v1.Date scheduled_from = 2;
-  epl.common.v1.Date scheduled_to = 3;
+  epl.common.v1.Date scheduledFrom = 2;
+  epl.common.v1.Date scheduledTo = 3;
   repeated string statuses = 4;
-  string invoice_no = 5;
-  string customer_ref = 6;
-  string product_code = 7;
-  string supplier_code = 8;
+  string invoiceNo = 5;
+  string customerRef = 6;
+  string productCode = 7;
+  string supplierCode = 8;
 }
 
 message SearchArrivalsResponse {
@@ -103,34 +103,34 @@ message SearchArrivalsResponse {
 }
 
 message UpdateArrivalRequest {
-  Arrival arrival = 1;  // identified by arrival_no, audit.version required
+  Arrival arrival = 1;  // identified by arrivalNo, audit.version required
 }
 
 message DeleteArrivalRequest {
-  string arrival_no = 1;
+  string arrivalNo = 1;
   int32 version = 2;
 }
 
 message CancelArrivalRequest {
-  string arrival_no = 1;
-  string reason_code = 2;
+  string arrivalNo = 1;
+  string reasonCode = 2;
   int32 version = 3;
 }
 
 message InspectionResult {
-  int32 line_no = 1;
+  int32 lineNo = 1;
   epl.common.v1.Quantity quantity = 2;
-  epl.common.v1.PickKeys pick_keys = 3;  // actual lot / expiry
-  string sub_inventory_code = 4;
-  bool on_hold = 5;
-  string cargo_id = 6;                   // pallet / cargo label scanned on HHT
+  epl.common.v1.PickKeys pickKeys = 3;  // actual lot / expiry
+  string subInventoryCode = 4;
+  bool onHold = 5;
+  string cargoId = 6;                   // pallet / cargo label scanned on HHT
 }
 
 message RecordInspectionRequest {
-  string arrival_no = 1;
+  string arrivalNo = 1;
   repeated InspectionResult results = 2;
-  bool allow_surplus = 3;   // needs a transaction kind that allows surplus
-  bool allow_shortage = 4;  // needs a transaction kind that allows shortage
+  bool allowSurplus = 3;   // needs a transaction kind that allows surplus
+  bool allowShortage = 4;  // needs a transaction kind that allows shortage
 }
 
 message RecordInspectionResponse {
@@ -139,14 +139,14 @@ message RecordInspectionResponse {
 }
 
 message Putaway {
-  string cargo_id = 1;
-  int32 line_no = 2;
-  string location_code = 3;
+  string cargoId = 1;
+  int32 lineNo = 2;
+  string locationCode = 3;
   epl.common.v1.Quantity quantity = 4;
 }
 
 message RecordPutawayRequest {
-  string arrival_no = 1;
+  string arrivalNo = 1;
   repeated Putaway putaways = 2;
 }
 
@@ -155,18 +155,18 @@ message RecordPutawayResponse {
 }
 
 message ConfirmArrivalRequest {
-  string arrival_no = 1;
-  epl.common.v1.Date arrived_date = 2;
+  string arrivalNo = 1;
+  epl.common.v1.Date arrivedDate = 2;
   int32 version = 3;
 }
 
 message RegisterSerialsRequest {
-  string arrival_no = 1;
-  int32 line_no = 2;
-  repeated string serial_numbers = 3;
+  string arrivalNo = 1;
+  int32 lineNo = 2;
+  repeated string serialNumbers = 3;
 }
 
 message SendArrivalResultRequest {
-  repeated string arrival_nos = 1;
+  repeated string arrivalNos = 1;
   string channel = 2;  // EDI / CSV / MAIL
 }

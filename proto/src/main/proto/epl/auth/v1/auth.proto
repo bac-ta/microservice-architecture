@@ -26,29 +26,29 @@ service AuthService {
 message LoginRequest {
   string username = 1;
   string password = 2;
-  string client_id = 3;  // PC_WEB, HHT, API …
+  string clientId = 3;  // PC_WEB, HHT, API …
 }
 
 message RefreshRequest {
-  string refresh_token = 1;
-  string client_id = 2;
+  string refreshToken = 1;
+  string clientId = 2;
 }
 
 message LogoutRequest {
-  string refresh_token = 1;
-  bool all_sessions = 2;  // bump token_version: invalidates every issued JWT
+  string refreshToken = 1;
+  bool allSessions = 2;  // bump token_version: invalidates every issued JWT
 }
 
 message TokenResponse {
-  string access_token = 1;
-  string refresh_token = 2;
-  int32 expires_in_seconds = 3;
-  string token_type = 4;  // "Bearer"
-  bool must_change_password = 5;
+  string accessToken = 1;
+  string refreshToken = 2;
+  int32 expiresInSeconds = 3;
+  string tokenType = 4;  // "Bearer"
+  bool mustChangePassword = 5;
 }
 
 message JwksResponse {
-  string jwks_json = 1;  // RFC 7517 JSON Web Key Set
+  string jwksJson = 1;  // RFC 7517 JSON Web Key Set
 }
 
 // ---------------------------------------------------------------------------
@@ -93,22 +93,22 @@ message User {
   string id = 1;
   string username = 2;
   string email = 3;
-  string display_name = 4;
+  string displayName = 4;
   UserType type = 5;
   UserStatus status = 6;
-  string home_company_code = 7;
-  string home_customer_code = 8;
-  string department_code = 9;
+  string homeCompanyCode = 7;
+  string homeCustomerCode = 8;
+  string departmentCode = 9;
   string locale = 10;
-  string time_zone = 11;
+  string timeZone = 11;
   map<string, string> attributes = 12;  // ABAC subject attributes (auth_level, max_adjust_qty …)
-  google.protobuf.Timestamp last_login_at = 13;
+  google.protobuf.Timestamp lastLoginAt = 13;
   epl.common.v1.Audit audit = 14;
 }
 
 message CreateUserRequest {
   User user = 1;
-  string initial_password = 2;
+  string initialPassword = 2;
 }
 
 message GetUserRequest {
@@ -132,21 +132,21 @@ message DeleteUserRequest {
 }
 
 message ChangePasswordRequest {
-  string user_id = 1;
-  string current_password = 2;
-  string new_password = 3;
+  string userId = 1;
+  string currentPassword = 2;
+  string newPassword = 3;
 }
 
 // "*" (empty) warehouse / customer = all within the company.
 message TenantGrant {
   string id = 1;
-  string user_id = 2;
-  string company_code = 3;
-  string warehouse_code = 4;
-  string customer_code = 5;
-  string role_code = 6;
-  epl.common.v1.Date valid_from = 7;
-  epl.common.v1.Date valid_to = 8;
+  string userId = 2;
+  string companyCode = 3;
+  string warehouseCode = 4;
+  string customerCode = 5;
+  string roleCode = 6;
+  epl.common.v1.Date validFrom = 7;
+  epl.common.v1.Date validTo = 8;
 }
 
 message GrantTenantRequest {
@@ -154,11 +154,11 @@ message GrantTenantRequest {
 }
 
 message RevokeGrantRequest {
-  string grant_id = 1;
+  string grantId = 1;
 }
 
 message ListGrantsRequest {
-  string user_id = 1;
+  string userId = 1;
 }
 
 message ListGrantsResponse {
@@ -225,28 +225,28 @@ message Company {
   string id = 1;
   string code = 2;  // e.g. C001, immutable
   string name = 3;
-  string country_code = 4;
-  string time_zone = 5;
+  string countryCode = 4;
+  string timeZone = 5;
   string status = 6;
   epl.common.v1.Audit audit = 7;
 }
 
 message Warehouse {
   string id = 1;
-  string company_code = 2;
+  string companyCode = 2;
   string code = 3;  // e.g. WH01, unique within the company, immutable
   string name = 4;
-  string time_zone = 5;
+  string timeZone = 5;
   string status = 6;
-  epl.common.v1.Date start_date = 7;
-  epl.common.v1.Date end_date = 8;
+  epl.common.v1.Date startDate = 7;
+  epl.common.v1.Date endDate = 8;
   epl.common.v1.Audit audit = 9;
 }
 
 // Shipper / owner of the goods, unique within a company.
 message Customer {
   string id = 1;
-  string company_code = 2;
+  string companyCode = 2;
   string code = 3;  // e.g. CUST01, immutable
   string name = 4;
   string status = 5;
@@ -255,13 +255,13 @@ message Customer {
 
 message Tenant {
   string id = 1;
-  string company_code = 2;
-  string warehouse_code = 3;
-  string customer_code = 4;  // e.g. CUST01
-  string customer_name = 5;
+  string companyCode = 2;
+  string warehouseCode = 3;
+  string customerCode = 4;  // e.g. CUST01
+  string customerName = 5;
   string status = 6;
-  epl.common.v1.Date start_date = 7;
-  epl.common.v1.Date end_date = 8;
+  epl.common.v1.Date startDate = 7;
+  epl.common.v1.Date endDate = 8;
   epl.common.v1.Audit audit = 9;
 }
 
@@ -275,18 +275,18 @@ message DeleteCompanyRequest {
 }
 
 message GetWarehouseRequest {
-  string company_code = 1;
+  string companyCode = 1;
   string code = 2;
 }
 
 message DeleteWarehouseRequest {
-  string company_code = 1;
+  string companyCode = 1;
   string code = 2;
   int32 version = 3;
 }
 
 message ListCustomersRequest {
-  string company_code = 1;
+  string companyCode = 1;
 }
 
 message ListCustomersResponse {
@@ -294,12 +294,12 @@ message ListCustomersResponse {
 }
 
 message GetCustomerRequest {
-  string company_code = 1;
+  string companyCode = 1;
   string code = 2;
 }
 
 message DeleteCustomerRequest {
-  string company_code = 1;
+  string companyCode = 1;
   string code = 2;
   int32 version = 3;
 }
@@ -315,17 +315,17 @@ message DeleteTenantRequest {
 
 // Empty warehouse / customer = resolve only up to the company / warehouse.
 message ResolveTenantRequest {
-  string company_code = 1;
-  string warehouse_code = 2;
-  string customer_code = 3;
+  string companyCode = 1;
+  string warehouseCode = 2;
+  string customerCode = 3;
 }
 
 // Ids for app.company_id / app.warehouse_id / app.customer_id / app.tenant_id; empty when not requested.
 message ResolvedTenant {
-  string company_id = 1;
-  string warehouse_id = 2;
-  string customer_id = 3;
-  string tenant_id = 4;
+  string companyId = 1;
+  string warehouseId = 2;
+  string customerId = 3;
+  string tenantId = 4;
 }
 
 message ListCompaniesResponse {
@@ -333,7 +333,7 @@ message ListCompaniesResponse {
 }
 
 message ListWarehousesRequest {
-  string company_code = 1;
+  string companyCode = 1;
 }
 
 message ListWarehousesResponse {
@@ -341,8 +341,8 @@ message ListWarehousesResponse {
 }
 
 message ListTenantsRequest {
-  string company_code = 1;
-  string warehouse_code = 2;
+  string companyCode = 1;
+  string warehouseCode = 2;
 }
 
 message ListTenantsResponse {
@@ -350,11 +350,11 @@ message ListTenantsResponse {
 }
 
 message CreateTenantRequest {
-  string company_code = 1;
-  string warehouse_code = 2;
-  string customer_code = 3;
-  string customer_name = 4;
-  string copy_config_from_tenant_id = 5;  // optional template tenant
+  string companyCode = 1;
+  string warehouseCode = 2;
+  string customerCode = 3;
+  string customerName = 4;
+  string copyConfigFromTenantId = 5;  // optional template tenant
 }
 
 // ---------------------------------------------------------------------------
@@ -398,15 +398,15 @@ service AuthorizationService {
 }
 
 message CheckRequest {
-  string resource_type = 1;                     // inventory.stock
+  string resourceType = 1;                     // inventory.stock
   string action = 2;                            // adjust
-  string resource_id = 3;
-  map<string, string> resource_attributes = 4;  // bonded=true, qty=12 …
+  string resourceId = 3;
+  map<string, string> resourceAttributes = 4;  // bonded=true, qty=12 …
 }
 
 message CheckResponse {
   bool allowed = 1;
-  repeated string policy_ids = 2;
+  repeated string policyIds = 2;
   string reason = 3;
 }
 
@@ -429,10 +429,10 @@ message Policy {
   string code = 2;
   string description = 3;
   Effect effect = 4;
-  string company_code = 5;     // empty = '*'
-  string warehouse_code = 6;   // empty = '*'
-  string customer_code = 7;    // empty = '*'
-  string resource_type = 8;
+  string companyCode = 5;     // empty = '*'
+  string warehouseCode = 6;   // empty = '*'
+  string customerCode = 7;    // empty = '*'
+  string resourceType = 8;
   repeated string actions = 9; // "*" = all
   string condition = 10;       // CEL expression
   int32 priority = 11;
@@ -441,7 +441,7 @@ message Policy {
 }
 
 message ListPoliciesRequest {
-  string resource_type = 1;
+  string resourceType = 1;
   epl.common.v1.PageRequest page = 2;
 }
 

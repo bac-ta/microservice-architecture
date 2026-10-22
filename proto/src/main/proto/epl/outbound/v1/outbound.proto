@@ -36,46 +36,46 @@ service ShipmentService {
 }
 
 message ShipmentLine {
-  int32 line_no = 1;
+  int32 lineNo = 1;
   string status = 2;
-  string product_code = 3;
-  string product_name = 4;
-  string origin_country = 5;
+  string productCode = 3;
+  string productName = 4;
+  string originCountry = 5;
   epl.common.v1.Quantity ordered = 6;
   epl.common.v1.Quantity allocated = 7;
   epl.common.v1.Quantity shipped = 8;
-  string sub_inventory_code = 9;
-  epl.common.v1.PickKeys pick_keys = 10;  // requested lot / expiry, empty = any
-  string allocation_kind = 11;            // FIFO, FEFO, lot …
-  bool not_shippable = 12;
-  int32 customer_line_seq = 13;
-  string warehouse_instructions = 14;
-  string delivery_note_remarks = 15;
+  string subInventoryCode = 9;
+  epl.common.v1.PickKeys pickKeys = 10;  // requested lot / expiry, empty = any
+  string allocationKind = 11;            // FIFO, FEFO, lot …
+  bool notShippable = 12;
+  int32 customerLineSeq = 13;
+  string warehouseInstructions = 14;
+  string deliveryNoteRemarks = 15;
   google.protobuf.Struct ext = 16;
 }
 
 message Shipment {
-  string shipment_no = 1;
-  epl.common.v1.Date scheduled_date = 2;
-  string transaction_kind = 3;
+  string shipmentNo = 1;
+  epl.common.v1.Date scheduledDate = 2;
+  string transactionKind = 3;
   string status = 4;
-  epl.common.v1.Date shipped_date = 5;
-  epl.common.v1.Date confirmed_date = 6;
-  string batch_no = 7;
-  string total_picking_no = 8;
-  string invoice_no = 9;
-  string customer_ref = 10;
-  string po_no = 11;
-  epl.common.v1.Party ship_to = 12;
-  epl.common.v1.Party final_ship_to = 13;
+  epl.common.v1.Date shippedDate = 5;
+  epl.common.v1.Date confirmedDate = 6;
+  string batchNo = 7;
+  string totalPickingNo = 8;
+  string invoiceNo = 9;
+  string customerRef = 10;
+  string poNo = 11;
+  epl.common.v1.Party shipTo = 12;
+  epl.common.v1.Party finalShipTo = 13;
   epl.common.v1.Party shipper = 14;       // SP_* (consignor)
-  epl.common.v1.Party bill_to = 15;
-  string carrier_code = 16;
-  string warehouse_instructions = 17;
-  string delivery_note_remarks = 18;
-  string waybill_remarks = 19;
-  epl.common.v1.Decimal total_weight = 20;
-  epl.common.v1.Decimal total_volume = 21;
+  epl.common.v1.Party billTo = 15;
+  string carrierCode = 16;
+  string warehouseInstructions = 17;
+  string deliveryNoteRemarks = 18;
+  string waybillRemarks = 19;
+  epl.common.v1.Decimal totalWeight = 20;
+  epl.common.v1.Decimal totalVolume = 21;
   repeated ShipmentLine lines = 22;
   google.protobuf.Struct ext = 23;
   epl.common.v1.Audit audit = 24;
@@ -86,19 +86,19 @@ message CreateShipmentRequest {
 }
 
 message GetShipmentRequest {
-  string shipment_no = 1;
+  string shipmentNo = 1;
 }
 
 message SearchShipmentsRequest {
   epl.common.v1.PageRequest page = 1;
-  epl.common.v1.Date scheduled_from = 2;
-  epl.common.v1.Date scheduled_to = 3;
+  epl.common.v1.Date scheduledFrom = 2;
+  epl.common.v1.Date scheduledTo = 3;
   repeated string statuses = 4;
-  string invoice_no = 5;
-  string customer_ref = 6;
-  string ship_to_code = 7;
-  string batch_no = 8;
-  string product_code = 9;
+  string invoiceNo = 5;
+  string customerRef = 6;
+  string shipToCode = 7;
+  string batchNo = 8;
+  string productCode = 9;
 }
 
 message SearchShipmentsResponse {
@@ -107,23 +107,23 @@ message SearchShipmentsResponse {
 }
 
 message UpdateShipmentRequest {
-  Shipment shipment = 1;  // identified by shipment_no, audit.version required
+  Shipment shipment = 1;  // identified by shipmentNo, audit.version required
 }
 
 message DeleteShipmentRequest {
-  string shipment_no = 1;
+  string shipmentNo = 1;
   int32 version = 2;
 }
 
 message CancelShipmentRequest {
-  string shipment_no = 1;
-  string reason_code = 2;
+  string shipmentNo = 1;
+  string reasonCode = 2;
   int32 version = 3;
 }
 
 message ConfirmShipmentRequest {
-  repeated string shipment_nos = 1;
-  epl.common.v1.Date shipped_date = 2;
+  repeated string shipmentNos = 1;
+  epl.common.v1.Date shippedDate = 2;
 }
 
 message ConfirmShipmentResponse {
@@ -132,7 +132,7 @@ message ConfirmShipmentResponse {
 }
 
 message SendShipmentResultRequest {
-  repeated string shipment_nos = 1;
+  repeated string shipmentNos = 1;
   string channel = 2;  // EDI / CSV / MAIL
 }
 
@@ -147,17 +147,17 @@ service AllocationService {
 }
 
 message AllocatedLot {
-  int32 line_no = 1;
-  string stock_id = 2;
-  string location_code = 3;
-  epl.common.v1.PickKeys pick_keys = 4;
+  int32 lineNo = 1;
+  string stockId = 2;
+  string locationCode = 3;
+  epl.common.v1.PickKeys pickKeys = 4;
   epl.common.v1.Decimal qty = 5;
-  string lot_id = 6;  // inventory lot reserved
+  string lotId = 6;  // inventory lot reserved
 }
 
 message AllocateRequest {
-  repeated string shipment_nos = 1;
-  bool allow_partial = 2;
+  repeated string shipmentNos = 1;
+  bool allowPartial = 2;
 }
 
 message AllocateResponse {
@@ -166,7 +166,7 @@ message AllocateResponse {
 }
 
 message CancelAllocationRequest {
-  repeated string shipment_nos = 1;
+  repeated string shipmentNos = 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -180,36 +180,36 @@ service PickingService {
 }
 
 message PickTask {
-  string shipment_no = 1;
-  int32 line_no = 2;
-  string stock_id = 3;
-  string location_code = 4;
-  string product_code = 5;
-  epl.common.v1.PickKeys pick_keys = 6;
+  string shipmentNo = 1;
+  int32 lineNo = 2;
+  string stockId = 3;
+  string locationCode = 4;
+  string productCode = 5;
+  epl.common.v1.PickKeys pickKeys = 6;
   epl.common.v1.Decimal qty = 7;
-  int32 picking_sequence = 8;
-  string lot_id = 9;
+  int32 pickingSequence = 8;
+  string lotId = 9;
 }
 
 message PickingBatch {
-  string batch_no = 1;
-  string total_picking_no = 2;
-  repeated string shipment_nos = 3;
+  string batchNo = 1;
+  string totalPickingNo = 2;
+  repeated string shipmentNos = 3;
   repeated PickTask tasks = 4;  // ordered by location picking sequence
 }
 
 message CreatePickingBatchRequest {
-  repeated string shipment_nos = 1;
-  bool total_picking = 2;  // one pick list for many orders
+  repeated string shipmentNos = 1;
+  bool totalPicking = 2;  // one pick list for many orders
 }
 
 message RecordPickRequest {
   message Pick {
-    string shipment_no = 1;
-    int32 line_no = 2;
-    string stock_id = 3;
-    string scanned_location = 4;
-    string scanned_cargo_id = 5;
+    string shipmentNo = 1;
+    int32 lineNo = 2;
+    string stockId = 3;
+    string scannedLocation = 4;
+    string scannedCargoId = 5;
     epl.common.v1.Decimal qty = 6;
   }
   repeated Pick picks = 1;
@@ -230,18 +230,18 @@ service PackingService {
 }
 
 message Carton {
-  string carton_id = 1;
-  string shipment_no = 2;
-  string packing_material_code = 3;
+  string cartonId = 1;
+  string shipmentNo = 2;
+  string packingMaterialCode = 3;
   epl.common.v1.Decimal weight = 4;
   epl.common.v1.Decimal volume = 5;
   message Item {
-    int32 line_no = 1;
-    string product_code = 2;
-    epl.common.v1.PickKeys pick_keys = 3;
+    int32 lineNo = 1;
+    string productCode = 2;
+    epl.common.v1.PickKeys pickKeys = 3;
     epl.common.v1.Decimal qty = 4;
-    repeated string serial_numbers = 5;
-    string lot_id = 6;
+    repeated string serialNumbers = 5;
+    string lotId = 6;
   }
   repeated Item items = 6;
 }
@@ -256,7 +256,7 @@ message RecordPackingResponse {
 }
 
 message ListCartonsRequest {
-  string shipment_no = 1;
+  string shipmentNo = 1;
 }
 
 message ListCartonsResponse {

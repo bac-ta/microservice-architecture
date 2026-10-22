@@ -14,13 +14,13 @@ option java_multiple_files = true;
 
 // Cursor pagination for list / search RPCs.
 message PageRequest {
-  int32 page_size = 1;    // 0 = server default
-  string page_token = 2;  // empty = first page
+  int32 pageSize = 1;    // 0 = server default
+  string pageToken = 2;  // empty = first page
 }
 
 message PageResponse {
-  string next_page_token = 1;  // empty = last page
-  int64 total_size = 2;        // -1 when not computed
+  string nextPageToken = 1;  // empty = last page
+  int64 totalSize = 2;        // -1 when not computed
 }
 
 // Calendar date in the warehouse's time zone.
@@ -36,14 +36,14 @@ message Decimal {
 }
 
 // Quantity in the three packing levels used everywhere:
-// cases (CS), balls (BL) and pieces (PC). total_pieces is authoritative.
+// cases (CS), balls (BL) and pieces (PC). totalPieces is authoritative.
 message Quantity {
   int32 cases = 1;
   int32 balls = 2;
   Decimal pieces = 3;
-  Decimal total_pieces = 4;
-  int32 units_per_case = 5;
-  int32 units_per_ball = 6;
+  Decimal totalPieces = 4;
+  int32 unitsPerCase = 5;
+  int32 unitsPerBall = 6;
 }
 
 // Picking keys 1..7 (lot no, expiry date, …). Their meaning is configured per tenant
@@ -60,17 +60,17 @@ message PickKeys {
 
 // Stock lot identity = originating receipt line.
 message ReceiptRef {
-  string receipt_no = 1;
-  int32 line_no = 2;
-  int32 seq_no = 3;
+  string receiptNo = 1;
+  int32 lineNo = 2;
+  int32 seqNo = 3;
 }
 
 message Address {
   repeated string lines = 1;  // ADR1..ADR5
-  string postal_code = 2;
+  string postalCode = 2;
   string city = 3;
-  string state_code = 4;
-  string country_code = 5;    // ISO 3166-1 alpha-2
+  string stateCode = 4;
+  string countryCode = 5;    // ISO 3166-1 alpha-2
   string phone = 6;
 }
 
@@ -82,10 +82,10 @@ message Party {
 }
 
 message Audit {
-  google.protobuf.Timestamp created_at = 1;
-  string created_by = 2;
-  google.protobuf.Timestamp updated_at = 3;
-  string updated_by = 4;
+  google.protobuf.Timestamp createdAt = 1;
+  string createdBy = 2;
+  google.protobuf.Timestamp updatedAt = 3;
+  string updatedBy = 4;
   int32 version = 5;  // optimistic lock: send back on update
 }
 
@@ -93,6 +93,6 @@ message Audit {
 message RowError {
   int32 row = 1;
   string field = 2;
-  string message_code = 3;
-  repeated string message_args = 4;
+  string messageCode = 3;
+  repeated string messageArgs = 4;
 }
