@@ -44,7 +44,7 @@ Adding a new screen:
 |---|---|---|
 | Gradle module | `services:<service>`, `libs:<lib>`; service name is a lowercase English noun | `services:inventory` |
 | Spring `application.name` | = service name | `inventory` |
-| Root Java package | `com.example.epl.<service>` | `com.example.epl.inventory` |
+| Root Java package | `com.epl.<service>` | `com.epl.inventory` |
 | Main class | `<Service>ServiceApplication` | `InventoryServiceApplication` |
 | Configuration | package `configurations`, class `<Service><Thing>Configuration` | `InventoryGrpcServerConfiguration` |
 | gRPC server | package `grpc`, class `<ProtoServiceName>GrpcServer`; only maps calls to services (`GrpcCalls.unary`) | `StockGrpcServer` |
@@ -60,7 +60,7 @@ Adding a new screen:
 |---|---|---|
 | File | `proto/src/main/proto/epl/<service>/v1/<service>.proto` | `epl/inventory/v1/inventory.proto` |
 | Package | `epl.<service>.v1` | `epl.inventory.v1` |
-| `java_package` | `com.example.epl.<service>.v1` | |
+| `java_package` | `com.epl.<service>.v1` | |
 | Service | `<Noun>Service` | `StockService`, `StocktakeService` |
 | RPC | Verb + noun, PascalCase | `SearchArrivals`, `ConfirmShipment` |
 | CRUD RPCs | `Create<X>` / `Get<X>` / `List<X>s` (or `Search<X>s` with filters) / `Update<X>` / `Delete<X>`; `Upsert<X>` for masters keyed by a code | `GetArea`, `UpsertProduct`, `DeleteArrival` |
@@ -106,6 +106,13 @@ Backward-incompatible contract changes go into a new `v2`; never modify `v1`.
 
 `<business domain>.<entity>.<past-tense verb>`, lowercase, e.g. `stock.adjusted`,
 `stocktake.confirmed`, `inbound.arrival.confirmed`, `user.grants.changed`.
+
+* Kafka topic = event type; dead letters go to `<event type>.DLT`.
+* Record key = aggregate id (business key, e.g. arrival no), so one aggregate's events stay in order.
+* Headers: `epl-event-id` (outbox row id, de-duplicated through `processed_event`), `epl-event-type`,
+  `epl-aggregate-type`, `epl-tenant-id` (absent for non-tenant events), `epl-occurred-at`.
+* Consumer group = `spring.application.name`; consumer name in `processed_event` = `<service>.<purpose>`,
+  e.g. `inventory.shipment-issue`.
 
 ## 7. Configuration and sample data
 

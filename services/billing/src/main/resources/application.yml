@@ -27,6 +27,14 @@ spring:
         default_schema: bill
         jdbc.time_zone: UTC
 
+  # Events (libs/messaging): written to outbox_event with the business change and published by the
+  # outbox relay; topic = event type, consumer group = service name
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ${spring.application.name}
+      auto-offset-reset: earliest
+
 server:
   port: ${HTTP_SERVER_PORT:8106}
 
@@ -41,6 +49,10 @@ app:
 epl:
   tenancy:
     auth-target: ${GRPC_AUTH_TARGET:dns:///localhost:9101}
+  # read by libs/messaging: outbox relay (EPL_OUTBOX_RELAY_ENABLED=false stops publishing)
+  messaging:
+    relay:
+      enabled: ${EPL_OUTBOX_RELAY_ENABLED:true}
 
 ---
 # Migrate job: applies pending migrations as the schema owner, then exits (no HTTP / gRPC server).
@@ -52,6 +64,9 @@ spring:
       on-profile: migrate
   main:
     web-application-type: none
+  kafka:
+    listener:
+      auto-startup: false
   flyway:
     user: ${FLYWAY_USERNAME:bill_owner}
     password: ${FLYWAY_PASSWORD:}
@@ -66,3 +81,6 @@ epl:
   database:
     migration:
       mode: migrate
+  messaging:
+    relay:
+      enabled: false

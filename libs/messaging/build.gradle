@@ -1,0 +1,19 @@
+// Kafka for EPL services: transactional outbox (outbox_event -> Kafka relay) and idempotent
+// consumption (processed_event), with the event's tenant applied as RLS context.
+plugins {
+    id 'epl.java-library'
+    id 'java-test-fixtures'
+}
+
+dependencies {
+    api project(':libs:service-core')
+    api libs.spring.kafka
+    implementation libs.spring.boot.autoconfigure
+    annotationProcessor libs.spring.boot.configuration.processor
+
+    // shared by the services' tests: one Kafka broker per test JVM
+    testFixturesApi libs.testcontainers.kafka
+    testFixturesImplementation libs.spring.boot.starter.test
+
+    testImplementation libs.spring.boot.starter.test
+}

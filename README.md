@@ -10,13 +10,14 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 ├── settings.gradle            all modules
 ├── gradle/libs.versions.toml  every dependency version, in one place
 ├── build-logic/               convention plugins: epl.java-library, epl.proto-library, epl.spring-boot-service, epl.database-service
-├── proto/                     .proto contracts -> generated gRPC stubs (com.example.epl.<service>.v1)
+├── proto/                     .proto contracts -> generated gRPC stubs (com.epl.<service>.v1)
 ├── libs/
 │   ├── grpc-server/           @GrpcServer, server lifecycle, interceptor registry
 │   ├── grpc-client/           @GrpcClient, channel factory, discovery name resolver
 │   ├── security/              gRPC auth/header/error interceptors, password hashing, error handling
 │   ├── database/              PostgreSQL + Flyway + JPA: validate at runtime, migrate in the migrate job, RLS context
-│   └── service-core/          request (tenant) context, GrpcCalls error mapping, paging, proto conversions, test fixtures
+│   ├── service-core/          request (tenant) context, GrpcCalls error mapping, paging, proto conversions, test fixtures
+│   └── messaging/             Kafka: transactional outbox + relay, idempotent inbox (processed_event), DLT
 ├── services/                  deployable services (below)
 └── database/                  PostgreSQL design, bootstrap script, migration tests (see database/README.md)
 ```
@@ -37,7 +38,7 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 
 Contracts live in `proto/src/main/proto/epl/<service>/v1/`; each RPC is commented with the
 screens that call it. The `:proto` module generates the Java messages and stubs once
-(`com.example.epl.<service>.v1`); every service and the gateway use them. Screen codes (`EPL-<domain>-<nnn><channel>`) are listed in
+(`com.epl.<service>.v1`); every service and the gateway use them. Screen codes (`EPL-<domain>-<nnn><channel>`) are listed in
 [`docs/screen-codes.md`](docs/screen-codes.md); naming rules for code, proto, DB and events are in
 [`docs/naming-conventions.md`](docs/naming-conventions.md). The services expose every RPC already; one that
 is not implemented yet answers `UNIMPLEMENTED` naming its screens.
@@ -88,12 +89,40 @@ when a migration is pending. Connection settings: `DB_HOST`, `DB_PORT`, `DB_NAME
 `DB_USERNAME` / `DB_PASSWORD` (runtime role), `FLYWAY_USERNAME` / `FLYWAY_PASSWORD` (schema owner,
 migrate job only). Details in [`database/README.md`](database/README.md#migrations-flyway).
 
+### Events (Kafka)
+
+Every service with a schema uses `libs/messaging` (`docker compose up -d kafka` locally,
+`KAFKA_BOOTSTRAP_SERVERS`, default `localhost:9092`):
+
+* **Publish**: `outbox.append(eventType, aggregateType, aggregateId, payload)` inside the business
+  transaction writes a row to the schema's `outbox_event`. `OutboxRelay` sends unpublished rows to Kafka
+  (topic = event type, key = aggregate id, headers `epl-event-id`, `epl-event-type`, `epl-tenant-id` …) and
+  marks them published; a protobuf payload is sent as proto3 JSON. Off in the migrate job and in `report`
+  (no outbox); `EPL_OUTBOX_RELAY_ENABLED=false` stops it.
+* **Consume**: a `@KafkaListener` hands the record to `inbox.process(consumer, record, handler)`; the event id
+  goes into `processed_event` in the handler's transaction (redeliveries are skipped) and the transaction runs
+  with the event's tenant, so RLS applies. Failing records are retried, then sent to `<topic>.DLT`.
+* Published so far: `inbound.arrival.cancelled` (payload `Arrival`), `user.grants.changed`.
+
+Event flows from the schema design (each service has `outbox_event` and/or `processed_event`; most are not emitted yet):
+
+| Service | Publishes | Consumes |
+|---|---|---|
+| `auth` | `user.grants.changed`, `policy.changed` | — |
+| `masterdata` | master data changes | — |
+| `inbound` | `inbound.arrival.*` | outbound returns |
+| `inventory` | `stock.*`, `stocktake.*` | inbound / outbound confirmations |
+| `outbound` | `outbound.shipment.*` | inventory |
+| `billing` | `billing.*` | inbound / outbound / inventory (charge lines, month-end balances) |
+| `integration` | `integration.*` | purge / job triggers |
+| `report` | — | inventory / outbound (KPI read models) |
+
 Modules depend on each other with `project(':libs:security')` etc., so the build no longer
 needs Nexus.
 
 ## Gateway (REST/JSON edge)
 
-`services/gateway` exposes every RPC of the generated `com.example.epl.*` stubs over HTTP, so a new
+`services/gateway` exposes every RPC of the generated `com.epl.*` stubs over HTTP, so a new
 service or RPC in `proto/` needs no gateway code. The backend of an RPC comes from its proto package
 (`epl.inventory.v1.StockService` -> `inventory`) and its gRPC target from `epl.gateway.backends`
 (`GRPC_<BACKEND>_TARGET`, e.g. `GRPC_INVENTORY_TARGET=dns:///inventory:9104`).

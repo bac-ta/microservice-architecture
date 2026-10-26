@@ -8,7 +8,7 @@ import "epl/common/v1/common.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 
-option java_package = "com.example.epl.inbound.v1";
+option java_package = "com.epl.inbound.v1";
 option java_multiple_files = true;
 
 service ArrivalService {

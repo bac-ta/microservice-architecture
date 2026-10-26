@@ -6,7 +6,7 @@ plugins {
 
 def catalog = versionCatalogs.named('libs')
 
-group = 'com.example'
+group = 'com.epl'
 version = '1.0.0-SNAPSHOT'
 
 java {
@@ -28,6 +28,7 @@ dependencyManagement {
             entry 'jdbc'
             entry 'postgresql'
             entry 'junit-jupiter'
+            entry 'kafka'
         }
     }
 }

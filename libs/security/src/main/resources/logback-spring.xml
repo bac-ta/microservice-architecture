@@ -31,19 +31,19 @@
     </appender>
 
     <springProfile name="dev">
-        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+        <logger name="com.epl.grpc.server" level="DEBUG" additivity="false">
             <appender-ref ref="FILE-ROLLING"/>
         </logger>
     </springProfile>
 
     <springProfile name="stg">
-        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+        <logger name="com.epl.grpc.server" level="DEBUG" additivity="false">
             <appender-ref ref="FILE-ROLLING"/>
         </logger>
     </springProfile>
 
     <springProfile name="prod">
-        <logger name="com.example.grpc.server" level="DEBUG" additivity="false">
+        <logger name="com.epl.grpc.server" level="DEBUG" additivity="false">
             <appender-ref ref="FILE-ROLLING"/>
         </logger>
     </springProfile>

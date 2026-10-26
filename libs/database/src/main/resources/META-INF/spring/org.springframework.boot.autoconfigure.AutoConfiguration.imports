@@ -1,2 +1,2 @@
-com.example.database.DatabaseMigrationAutoConfiguration
-com.example.database.DatabasePersistenceAutoConfiguration
+com.epl.database.DatabaseMigrationAutoConfiguration
+com.epl.database.DatabasePersistenceAutoConfiguration

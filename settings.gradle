@@ -22,6 +22,7 @@ include 'libs:grpc-client'
 include 'libs:security'
 include 'libs:database'
 include 'libs:service-core'
+include 'libs:messaging'
 
 // Database: bootstrap + migration tests of every schema (database/README.md)
 include 'database'

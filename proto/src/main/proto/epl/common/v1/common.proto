@@ -9,7 +9,7 @@ package epl.common.v1;
 
 import "google/protobuf/timestamp.proto";
 
-option java_package = "com.example.epl.common.v1";
+option java_package = "com.epl.common.v1";
 option java_multiple_files = true;
 
 // Cursor pagination for list / search RPCs.

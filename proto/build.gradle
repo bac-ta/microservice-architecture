@@ -1,4 +1,4 @@
-// gRPC contracts. Stubs are generated from src/main/proto into com.example.epl.<service>.v1
+// gRPC contracts. Stubs are generated from src/main/proto into com.epl.<service>.v1
 plugins {
     id 'epl.proto-library'
 }

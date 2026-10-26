@@ -50,6 +50,10 @@ flyway-core = { module = "org.flywaydb:flyway-core" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql" }
 testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
+testcontainers-kafka = { module = "org.testcontainers:kafka" }
+
+# Kafka (version from the Spring Boot BOM)
+spring-kafka = { module = "org.springframework.kafka:spring-kafka" }
 
 # Misc
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
