@@ -56,3 +56,8 @@ epl:
         - /actuator/health/**
     cors:
       allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+
+# request id of the call (x-request-id, set by the gateway) on every log line
+logging:
+  pattern:
+    level: "%5p [%X{requestId:-}]"

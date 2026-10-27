@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: grpc-client
-app:
-  grpc:
-    server:
-      port: ${grpc-client-PORT}
-      address: ${grpc-client-ADDRESS}

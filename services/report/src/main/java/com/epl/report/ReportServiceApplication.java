@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
  * Reports, labels and KPIs.
  */
 @SpringBootApplication
-// libs/grpc-server is not auto-configured: import it so the gRPC server starts with this service.
+// libs/grpc-server is not autoconfigured: import it so the gRPC server starts with this service.
 @Import(GrpcServerConfiguration.class)
 public class ReportServiceApplication {
 

@@ -12,10 +12,10 @@ import java.util.UUID;
 
 /**
  * Builds the {@link RequestContext} of each call from its metadata and attaches it to the gRPC context.
- * Register it last in the service's interceptor list so it runs first.
+ * Registered by {@link ServiceCoreAutoConfiguration#eplServerInterceptors}.
  * <p>
  * Trust: x-user and the tenant codes are set by the gateway after it verified the JWT; the
- * backend JWT / grant check (libs/security GrpcAuthServerInterceptor) is not implemented yet.
+ * backends do not verify the JWT or the tenant grants yet, so only the gateway may reach them.
  */
 public class RequestContextServerInterceptor implements ServerInterceptor {
 

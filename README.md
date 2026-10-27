@@ -12,11 +12,9 @@ One Gradle multi-project build (monorepo). Each service is still built and deplo
 ├── build-logic/               convention plugins: epl.java-library, epl.proto-library, epl.spring-boot-service, epl.database-service
 ├── proto/                     .proto contracts -> generated gRPC stubs (com.epl.<service>.v1)
 ├── libs/
-│   ├── grpc-server/           @GrpcServer, server lifecycle, interceptor registry
-│   ├── grpc-client/           @GrpcClient, channel factory, discovery name resolver
-│   ├── security/              gRPC auth/header/error interceptors, password hashing, error handling
+│   ├── grpc-server/           @GrpcServer, server lifecycle (graceful shutdown), interceptor registry, gRPC health
 │   ├── database/              PostgreSQL + Flyway + JPA: validate at runtime, migrate in the migrate job, RLS context
-│   ├── service-core/          request (tenant) context, GrpcCalls error mapping, paging, proto conversions, test fixtures
+│   ├── service-core/          default interceptors (call log + request id, tenant context), GrpcCalls error mapping, paging, proto conversions, test fixtures
 │   └── messaging/             Kafka: transactional outbox + relay, idempotent inbox (processed_event), DLT
 ├── services/                  deployable services (below)
 └── database/                  PostgreSQL design, bootstrap script, migration tests (see database/README.md)
@@ -76,6 +74,17 @@ stocktake confirmation still answer `UNIMPLEMENTED`):
 three headers, warehouse data (areas, locations, printers) `x-company` + `x-warehouse`; the tenant registry
 and users need none. `created_by` / `updated_by` come from `x-user`.
 
+**Not yet verified by the backends**: they trust `x-user` and the tenant headers as sent (the JWT and the
+tenant grants are checked only once `AuthService/Login` / `GetJwks` exist). Until then only the gateway may
+reach the gRPC ports (Kubernetes NetworkPolicy).
+
+**gRPC server** (`libs/grpc-server`, `app.grpc.server.*`): every `@GrpcServer` gets the interceptors from
+`libs/service-core`: `CallLoggingServerInterceptor` (one log line per call with method, status and duration;
+`x-request-id` in the log MDC; an escaped exception becomes a generic `INTERNAL`) and
+`RequestContextServerInterceptor`. The server also serves `grpc.health.v1.Health` (Kubernetes `grpc` probes;
+`NOT_SERVING` while stopping), `reflection-enabled` (default false) for grpcurl,
+`max-inbound-message-size` (4MB) and `shutdown-grace-period` (20s: running calls finish before the pod exits).
+
 **Tests**: each service has `@SpringBootTest` CRUD tests against PostgreSQL 16 (Testcontainers) that call
 the real gRPC endpoints in-process with metadata, through all interceptors (`libs/service-core` test
 fixtures: `EplTestDatabase`, `GrpcTestServer`).
@@ -117,7 +126,7 @@ Event flows from the schema design (each service has `outbox_event` and/or `proc
 | `integration` | `integration.*` | purge / job triggers |
 | `report` | — | inventory / outbound (KPI read models) |
 
-Modules depend on each other with `project(':libs:security')` etc., so the build no longer
+Modules depend on each other with `project(':libs:service-core')` etc., so the build no longer
 needs Nexus.
 
 ## Gateway (REST/JSON edge)
@@ -169,7 +178,7 @@ Requires JDK 21 (the Gradle wrapper downloads Gradle 8.14.5, which cannot run on
    plugins { id 'epl.spring-boot-service' }   // or epl.database-service / epl.java-library / epl.proto-library
    dependencies {
        implementation project(':proto')
-       implementation project(':libs:security')
+       implementation project(':libs:grpc-server')
        implementation libs.spring.boot.starter.web
    }
    ```

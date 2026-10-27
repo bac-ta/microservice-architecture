@@ -1,6 +1,6 @@
-// Building blocks of every EPL gRPC service: request (tenant) context from gRPC metadata,
-// RLS session settings, auditing user, unary call helper with error -> gRPC status mapping,
-// paging and proto <-> Java conversions.
+// Building blocks of every EPL gRPC service: the default server interceptors (call log with request id,
+// request (tenant) context from gRPC metadata), RLS session settings, auditing user, unary call helper
+// with error -> gRPC status mapping, paging and proto <-> Java conversions.
 plugins {
     id 'epl.java-library'
     id 'java-test-fixtures'
@@ -9,6 +9,7 @@ plugins {
 dependencies {
     api project(':proto')
     api project(':libs:database')
+    api project(':libs:grpc-server')
     api libs.grpc.stub
     api libs.protobuf.java.util
     api libs.jackson.databind
@@ -22,7 +23,6 @@ dependencies {
     testFixturesApi libs.testcontainers.postgresql
     testFixturesApi libs.testcontainers.junit.jupiter
     testFixturesApi libs.grpc.inprocess
-    testFixturesApi project(':libs:grpc-server')
     testFixturesImplementation libs.flyway.core
     testFixturesRuntimeOnly libs.flyway.database.postgresql
     testFixturesImplementation libs.postgresql

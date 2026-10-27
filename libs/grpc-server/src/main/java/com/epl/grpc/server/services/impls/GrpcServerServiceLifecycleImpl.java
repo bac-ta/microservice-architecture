@@ -2,13 +2,21 @@ package com.epl.grpc.server.services.impls;
 
 import com.epl.grpc.server.services.GrpcServerService;
 import io.grpc.Server;
+import io.grpc.health.v1.HealthCheckResponse.ServingStatus;
+import io.grpc.protobuf.services.HealthStatusManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.SmartLifecycle;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Starts the gRPC server once the context is ready and stops it gracefully first on shutdown
+ * (SIGTERM in Kubernetes): health NOT_SERVING, no new calls, running calls finish within
+ * app.grpc.server.shutdown-grace-period, then the rest is cancelled.
+ */
 public class GrpcServerServiceLifecycleImpl implements SmartLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(GrpcServerServiceLifecycleImpl.class);
@@ -20,7 +28,6 @@ public class GrpcServerServiceLifecycleImpl implements SmartLifecycle {
 
     public GrpcServerServiceLifecycleImpl(GrpcServerService grpcServerService) {
         this.grpcServerService = grpcServerService;
-        logger.info("constructor");
     }
 
     @Override
@@ -63,6 +70,7 @@ public class GrpcServerServiceLifecycleImpl implements SmartLifecycle {
         if (localServer == null) {
             this.server = grpcServerService.createServer();
             this.server.start();
+            grpcServerService.health().setStatus(HealthStatusManager.SERVICE_NAME_ALL_SERVICES, ServingStatus.SERVING);
 
             logger.info("gRPC Server started, listening on address: {}, port: {}", grpcServerService.getAddress(), grpcServerService.getPort());
 
@@ -84,10 +92,23 @@ public class GrpcServerServiceLifecycleImpl implements SmartLifecycle {
 
     protected void stopGrpcServer() {
         var localServer = this.server;
-        if (localServer != null) {
-            localServer.shutdown();
-            this.server = null;
-            logger.info("gRPC server was stopped");
+        if (localServer == null) {
+            return;
         }
+        grpcServerService.health().enterTerminalState();
+        localServer.shutdown();
+        var grace = grpcServerService.shutdownGracePeriod();
+        try {
+            if (!localServer.awaitTermination(grace.toMillis(), TimeUnit.MILLISECONDS)) {
+                logger.warn("gRPC calls still running after {}, cancelling them", grace);
+                localServer.shutdownNow();
+                localServer.awaitTermination(5, TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            localServer.shutdownNow();
+        }
+        this.server = null;
+        logger.info("gRPC server was stopped");
     }
 }

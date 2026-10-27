@@ -38,6 +38,7 @@ public class OutboxRelay implements SmartLifecycle {
 
     private ScheduledExecutorService executor;
     private volatile long lastCleanup;
+    private volatile boolean stopping;
 
     public OutboxRelay(JdbcTemplate jdbc, TransactionTemplate transactions, KafkaTemplate<String, String> kafka,
                        MessagingProperties properties) {
@@ -82,7 +83,7 @@ public class OutboxRelay implements SmartLifecycle {
         try {
             // keep draining while there is a backlog, then wait for the next poll
             while (publishBatch() == properties.batchSize()) {
-                if (Thread.currentThread().isInterrupted()) {
+                if (Thread.currentThread().isInterrupted() || stopping) {
                     return;
                 }
             }
@@ -125,6 +126,7 @@ public class OutboxRelay implements SmartLifecycle {
         if (executor != null) {
             return;
         }
+        stopping = false;
         executor = Executors.newSingleThreadScheduledExecutor(runnable -> {
             var thread = new Thread(runnable, "outbox-relay");
             thread.setDaemon(true);
@@ -135,12 +137,22 @@ public class OutboxRelay implements SmartLifecycle {
         logger.info("Outbox relay started (every {}, batch {})", properties.pollInterval(), properties.batchSize());
     }
 
+    /** Lets a batch in flight finish (and be marked published) before interrupting, to avoid re-sending it. */
     @Override
     public synchronized void stop() {
         if (executor == null) {
             return;
         }
-        executor.shutdownNow();
+        stopping = true;
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(properties.sendTimeout().toMillis() + 1_000, TimeUnit.MILLISECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            executor.shutdownNow();
+        }
         executor = null;
     }
 

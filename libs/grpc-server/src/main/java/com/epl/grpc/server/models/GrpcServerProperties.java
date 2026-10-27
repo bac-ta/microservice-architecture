@@ -2,14 +2,16 @@ package com.epl.grpc.server.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.util.unit.DataSize;
+
+import java.time.Duration;
 
 @Getter
-@Component
+@Setter
 @ConfigurationProperties("app.grpc.server")
 public class GrpcServerProperties {
+
     @Setter
     @Getter
     public static class Security {
@@ -22,13 +24,21 @@ public class GrpcServerProperties {
 
     }
 
-    @Setter
-    @Value("${app.grpc.server.port}")
-    private int port;
+    /** false (e.g. the "migrate" profile) builds the context without serving. */
+    private boolean enabled = true;
 
-    @Setter
-    @Value("${app.grpc.server.address}")
-    private String address;
+    private String address = "0.0.0.0";
+
+    private int port = 9090;
+
+    /** Largest request message accepted; bigger ones fail with RESOURCE_EXHAUSTED. */
+    private DataSize maxInboundMessageSize = DataSize.ofMegabytes(4);
+
+    /** On shutdown: health turns NOT_SERVING, new calls are refused and running calls get this long to finish. */
+    private Duration shutdownGracePeriod = Duration.ofSeconds(20);
+
+    /** gRPC server reflection (grpcurl, Postman); keep off outside development. */
+    private boolean reflectionEnabled = false;
 
     private final Security security = new Security();
 

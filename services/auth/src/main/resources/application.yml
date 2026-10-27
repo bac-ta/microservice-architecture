@@ -51,6 +51,11 @@ epl:
     outbox:
       tenant-column: false
 
+# request id of the call (x-request-id, set by the gateway) on every log line
+logging:
+  pattern:
+    level: "%5p [%X{requestId:-}]"
+
 ---
 # Migrate job: applies pending migrations as the schema owner, then exits (no HTTP / gRPC server).
 #   ./gradlew :services:auth:bootMigrate

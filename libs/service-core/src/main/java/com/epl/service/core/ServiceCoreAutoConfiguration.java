@@ -2,6 +2,7 @@ package com.epl.service.core;
 
 import com.epl.database.DatabasePersistenceAutoConfiguration;
 import com.epl.database.DatabaseSessionSettings;
+import com.epl.grpc.server.services.GrpcServerInterceptorInitializerService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +27,16 @@ public class ServiceCoreAutoConfiguration {
     @Bean
     public RequestContextServerInterceptor requestContextServerInterceptor(TenantResolver tenantResolver) {
         return new RequestContextServerInterceptor(tenantResolver);
+    }
+
+    /**
+     * Interceptors of every @GrpcServer of the service. The last one runs first: the call log (request id,
+     * status, duration) wraps everything, including a request context that cannot be resolved.
+     */
+    @ConditionalOnMissingBean(name = "eplServerInterceptors")
+    @Bean
+    public GrpcServerInterceptorInitializerService eplServerInterceptors(RequestContextServerInterceptor requestContext) {
+        return () -> List.of(requestContext, new CallLoggingServerInterceptor());
     }
 
     /** RLS context of every transaction = the tenant of the current gRPC call. */

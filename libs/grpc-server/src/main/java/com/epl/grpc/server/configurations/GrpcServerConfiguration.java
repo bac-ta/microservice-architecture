@@ -16,15 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties
+@EnableConfigurationProperties(GrpcServerProperties.class)
 @ConditionalOnClass({Server.class, GrpcServerService.class})
 public class GrpcServerConfiguration {
-
-    @ConditionalOnMissingBean
-    @Bean
-    public GrpcServerProperties grpcServerProperties() {
-        return new GrpcServerProperties();
-    }
 
     @Bean
     public GrpcServerInterceptorContext globalServerInterceptorContext() {

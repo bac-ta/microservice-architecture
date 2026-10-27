@@ -6,7 +6,6 @@ plugins {
 dependencies {
     implementation project(':proto')
     implementation project(':libs:grpc-server')
-    implementation project(':libs:security')
     implementation project(':libs:messaging')
     testImplementation testFixtures(project(':libs:messaging'))
 }

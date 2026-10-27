@@ -46,7 +46,7 @@ Adding a new screen:
 | Spring `application.name` | = service name | `inventory` |
 | Root Java package | `com.epl.<service>` | `com.epl.inventory` |
 | Main class | `<Service>ServiceApplication` | `InventoryServiceApplication` |
-| Configuration | package `configurations`, class `<Service><Thing>Configuration` | `InventoryGrpcServerConfiguration` |
+| Configuration | package `configurations`, class `<Service><Thing>Configuration` | `AuthSecurityConfiguration` |
 | gRPC server | package `grpc`, class `<ProtoServiceName>GrpcServer`; only maps calls to services (`GrpcCalls.unary`) | `StockGrpcServer` |
 | Business logic | package `services`, class `<Aggregate>Service`, `@Transactional` methods | `ArrivalService`, `StocktakeService` |
 | JPA entity | package `entities`, class `<Table>Entity` (`AuditedEntity` for the audit columns) | `ArrivalLineEntity` |
