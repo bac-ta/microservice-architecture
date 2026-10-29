@@ -17,20 +17,18 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.outbound.v1.ShipmentService (contract: proto/src/main/proto/epl/outbound/v1/outbound.proto).
  * Shipment CRUD is implemented; confirmation and result sending answer UNIMPLEMENTED,
  * naming their screens, until they are.
  */
+@RequiredArgsConstructor
 @GrpcServer(ShipmentServiceGrpc.class)
 public class ShipmentGrpcServer extends ShipmentServiceGrpc.ShipmentServiceImplBase {
 
     private final ShipmentService shipmentService;
-
-    public ShipmentGrpcServer(ShipmentService shipmentService) {
-        this.shipmentService = shipmentService;
-    }
 
     @Override
     public void createShipment(CreateShipmentRequest request, StreamObserver<Shipment> responseObserver) {

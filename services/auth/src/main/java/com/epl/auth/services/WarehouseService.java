@@ -5,6 +5,7 @@ import com.epl.auth.mappers.TenantMappers;
 import com.epl.auth.repositories.WarehouseRepository;
 import com.epl.auth.v1.Warehouse;
 import com.epl.service.core.Errors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,16 +13,12 @@ import java.util.List;
 
 import static com.epl.service.core.Protos.localDate;
 
+@RequiredArgsConstructor
 @Service
 public class WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
     private final CompanyService companyService;
-
-    public WarehouseService(WarehouseRepository warehouseRepository, CompanyService companyService) {
-        this.warehouseRepository = warehouseRepository;
-        this.companyService = companyService;
-    }
 
     @Transactional(readOnly = true)
     public List<Warehouse> list(String companyCode) {

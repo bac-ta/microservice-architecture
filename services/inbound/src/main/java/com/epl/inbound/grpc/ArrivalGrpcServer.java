@@ -21,20 +21,18 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.inbound.v1.ArrivalService (contract: proto/src/main/proto/epl/inbound/v1/inbound.proto).
  * Arrival CRUD is implemented; inspection, put-away, confirmation and result sending answer
  * UNIMPLEMENTED, naming their screens, until they are.
  */
+@RequiredArgsConstructor
 @GrpcServer(ArrivalServiceGrpc.class)
 public class ArrivalGrpcServer extends ArrivalServiceGrpc.ArrivalServiceImplBase {
 
     private final ArrivalService arrivalService;
-
-    public ArrivalGrpcServer(ArrivalService arrivalService) {
-        this.arrivalService = arrivalService;
-    }
 
     @Override
     public void createArrival(CreateArrivalRequest request, StreamObserver<Arrival> responseObserver) {

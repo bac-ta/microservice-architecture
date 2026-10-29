@@ -6,6 +6,7 @@ import com.epl.report.repositories.PrinterRepository;
 import com.epl.report.v1.Printer;
 import com.epl.service.core.Errors;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,16 +14,13 @@ import java.util.List;
 import java.util.Set;
 
 /** Printers of the warehouse in x-warehouse. */
+@RequiredArgsConstructor
 @Service
 public class PrinterService {
 
     private static final Set<String> KINDS = Set.of("LABEL", "DOCUMENT");
 
     private final PrinterRepository printerRepository;
-
-    public PrinterService(PrinterRepository printerRepository) {
-        this.printerRepository = printerRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<Printer> list(String kind) {

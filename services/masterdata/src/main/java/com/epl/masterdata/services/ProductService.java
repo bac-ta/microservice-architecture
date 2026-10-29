@@ -13,6 +13,7 @@ import com.epl.masterdata.v1.ResolveBarcodeResponse;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +24,12 @@ import java.util.List;
 import java.util.Locale;
 
 /** Products of the tenant in x-company / x-warehouse / x-customer, with their barcodes. */
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductBarcodeRepository barcodeRepository;
-
-    public ProductService(ProductRepository productRepository, ProductBarcodeRepository barcodeRepository) {
-        this.productRepository = productRepository;
-        this.barcodeRepository = barcodeRepository;
-    }
 
     @Transactional(readOnly = true)
     public Product get(String code) {

@@ -9,18 +9,16 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.auth.v1.RoleService (contract: proto/src/main/proto/epl/auth/v1/auth.proto).
  */
+@RequiredArgsConstructor
 @GrpcServer(RoleServiceGrpc.class)
 public class RoleGrpcServer extends RoleServiceGrpc.RoleServiceImplBase {
 
     private final RoleService roleService;
-
-    public RoleGrpcServer(RoleService roleService) {
-        this.roleService = roleService;
-    }
 
     @Override
     public void listRoles(Empty request, StreamObserver<ListRolesResponse> responseObserver) {

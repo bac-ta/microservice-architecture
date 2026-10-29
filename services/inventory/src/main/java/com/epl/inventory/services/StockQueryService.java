@@ -10,6 +10,7 @@ import com.epl.inventory.v1.StockLot;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,11 @@ import static com.epl.service.core.Protos.uuid;
  * Stock inquiry. Stock rows are only changed by the stock operations (adjust, relocate …),
  * never by plain CRUD, so the ledger always explains the quantities.
  */
+@RequiredArgsConstructor
 @Service
 public class StockQueryService {
 
     private final StockRepository stockRepository;
-
-    public StockQueryService(StockRepository stockRepository) {
-        this.stockRepository = stockRepository;
-    }
 
     @Transactional(readOnly = true)
     public SearchStockResponse search(SearchStockRequest request) {

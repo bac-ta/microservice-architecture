@@ -8,4 +8,5 @@ dependencies {
     implementation project(':libs:grpc-server')
     implementation project(':libs:messaging')
     implementation libs.spring.security.crypto
+    implementation libs.nimbus.jose.jwt
 }

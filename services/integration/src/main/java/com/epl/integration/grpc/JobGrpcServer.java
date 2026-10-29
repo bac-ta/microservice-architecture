@@ -16,19 +16,17 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.integration.v1.JobService (contract: proto/src/main/proto/epl/integration/v1/integration.proto).
  * Job runs and purge history are implemented; RunPurge answers UNIMPLEMENTED, naming its screen, until it is.
  */
+@RequiredArgsConstructor
 @GrpcServer(JobServiceGrpc.class)
 public class JobGrpcServer extends JobServiceGrpc.JobServiceImplBase {
 
     private final JobService jobService;
-
-    public JobGrpcServer(JobService jobService) {
-        this.jobService = jobService;
-    }
 
     @Override
     public void listJobDefinitions(Empty request, StreamObserver<ListJobDefinitionsResponse> responseObserver) {

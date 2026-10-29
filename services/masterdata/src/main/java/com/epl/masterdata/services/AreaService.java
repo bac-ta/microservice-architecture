@@ -11,6 +11,7 @@ import com.epl.masterdata.v1.ListAreasResponse;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 
 /** Areas of the warehouse in x-warehouse. */
+@RequiredArgsConstructor
 @Service
 public class AreaService {
 
     private final AreaRepository areaRepository;
     private final LocationRepository locationRepository;
-
-    public AreaService(AreaRepository areaRepository, LocationRepository locationRepository) {
-        this.areaRepository = areaRepository;
-        this.locationRepository = locationRepository;
-    }
 
     @Transactional(readOnly = true)
     public ListAreasResponse list(ListAreasRequest request) {

@@ -19,6 +19,16 @@ server:
   servlet:
     context-path: /api
 
+# Swagger UI: /api/swagger-ui.html, OpenAPI document: /api/v3/api-docs (OpenApiConfiguration)
+springdoc:
+  api-docs:
+    enabled: ${GATEWAY_API_DOCS_ENABLED:true}
+  swagger-ui:
+    enabled: ${GATEWAY_API_DOCS_ENABLED:true}
+    persist-authorization: true
+    tags-sorter: alpha
+    operations-sorter: alpha
+
 management:
   endpoints:
     web:
@@ -45,15 +55,21 @@ epl:
     deadline: ${GATEWAY_DEADLINE:30s}
     stream-deadline: ${GATEWAY_STREAM_DEADLINE:10m}
     security:
-      # false only for local development while auth/GetJwks is not ported yet
+      # false only for local development without the auth service
       enabled: ${GATEWAY_SECURITY_ENABLED:true}
       issuer: ${JWT_ISSUER:}
       jwks-cache-ttl: 5m
       public-paths:
         - /rpc/epl.auth.v1.AuthService/Login
         - /rpc/epl.auth.v1.AuthService/Refresh
+        # the refresh token in the body is the credential: works after the access token expired
+        - /rpc/epl.auth.v1.AuthService/Logout
         - /rpc/epl.auth.v1.AuthService/GetJwks
         - /actuator/health/**
+        # Swagger UI / OpenAPI document (off with GATEWAY_API_DOCS_ENABLED=false)
+        - /v3/api-docs/**
+        - /swagger-ui/**
+        - /swagger-ui.html
     cors:
       allowed-origins: ${CORS_ALLOWED_ORIGINS:}
 

@@ -17,21 +17,18 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.masterdata.v1.LocationService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
  * Areas and locations of the warehouse in x-warehouse.
  */
+@RequiredArgsConstructor
 @GrpcServer(LocationServiceGrpc.class)
 public class LocationGrpcServer extends LocationServiceGrpc.LocationServiceImplBase {
 
     private final AreaService areaService;
     private final LocationService locationService;
-
-    public LocationGrpcServer(AreaService areaService, LocationService locationService) {
-        this.areaService = areaService;
-        this.locationService = locationService;
-    }
 
     @Override
     public void listAreas(ListAreasRequest request, StreamObserver<ListAreasResponse> responseObserver) {

@@ -10,6 +10,7 @@ import com.epl.auth.v1.ResolveTenantRequest;
 import com.epl.auth.v1.ResolvedTenant;
 import com.epl.auth.v1.Tenant;
 import com.epl.service.core.Errors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import static com.epl.service.core.Protos.text;
 import static com.epl.service.core.Protos.uuid;
 
 /** Tenant = customer operated in a warehouse; also resolves the tenant metadata of every service. */
+@RequiredArgsConstructor
 @Service
 public class TenantService {
 
@@ -28,14 +30,6 @@ public class TenantService {
     private final CustomerRepository customerRepository;
     private final CompanyService companyService;
     private final WarehouseService warehouseService;
-
-    public TenantService(TenantRepository tenantRepository, CustomerRepository customerRepository,
-                         CompanyService companyService, WarehouseService warehouseService) {
-        this.tenantRepository = tenantRepository;
-        this.customerRepository = customerRepository;
-        this.companyService = companyService;
-        this.warehouseService = warehouseService;
-    }
 
     @Transactional(readOnly = true)
     public List<Tenant> list(String companyCode, String warehouseCode) {

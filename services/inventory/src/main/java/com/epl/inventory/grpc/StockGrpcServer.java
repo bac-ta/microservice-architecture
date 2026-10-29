@@ -15,19 +15,17 @@ import com.epl.inventory.v1.StockServiceGrpc;
 import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.inventory.v1.StockService (contract: proto/src/main/proto/epl/inventory/v1/inventory.proto).
  * Search and Get are implemented; the stock operations answer UNIMPLEMENTED, naming their screens, until they are.
  */
+@RequiredArgsConstructor
 @GrpcServer(StockServiceGrpc.class)
 public class StockGrpcServer extends StockServiceGrpc.StockServiceImplBase {
 
     private final StockQueryService stockQueryService;
-
-    public StockGrpcServer(StockQueryService stockQueryService) {
-        this.stockQueryService = stockQueryService;
-    }
 
     @Override
     public void search(SearchStockRequest request, StreamObserver<SearchStockResponse> responseObserver) {

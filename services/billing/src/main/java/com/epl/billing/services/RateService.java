@@ -7,6 +7,7 @@ import com.epl.billing.v1.Rate;
 import com.epl.common.v1.Date;
 import com.epl.service.core.Errors;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,16 +24,13 @@ import static com.epl.service.core.Protos.localDate;
  * Charge rates of the tenant. A rate code has price periods that never overlap: adding a period
  * after an open-ended one closes it the day before.
  */
+@RequiredArgsConstructor
 @Service
 public class RateService {
 
     private static final Set<String> CHARGE_TYPES = Set.of("IN", "OUT", "STORAGE", "PROCESSING", "OTHER");
 
     private final RateRepository rateRepository;
-
-    public RateService(RateRepository rateRepository) {
-        this.rateRepository = rateRepository;
-    }
 
     @Transactional(readOnly = true)
     /** validOn unset = every price period */

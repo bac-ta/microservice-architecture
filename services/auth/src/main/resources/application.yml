@@ -45,11 +45,22 @@ app:
       address: ${GRPC_SERVER_ADDRESS:0.0.0.0}
       port: ${GRPC_SERVER_PORT:9101}
 
-# read by libs/messaging: iam.outbox_event has no tenant_id
 epl:
+  # read by libs/messaging: iam.outbox_event has no tenant_id
   messaging:
     outbox:
       tenant-column: false
+  # read by AuthProperties; access / refresh token lifetimes are per client (iam.oauth_client)
+  auth:
+    token:
+      # same value as the gateway's JWT_ISSUER
+      issuer: ${JWT_ISSUER:epl-auth}
+      # EC P-256 private key as a JWK (JSON) from the secret store; empty = new key on every start (local only)
+      signing-key: ${JWT_SIGNING_KEY:}
+    # first user, created while iam.app_user is empty; empty password = none
+    bootstrap-admin:
+      username: ${BOOTSTRAP_ADMIN_USERNAME:admin}
+      password: ${BOOTSTRAP_ADMIN_PASSWORD:}
 
 # request id of the call (x-request-id, set by the gateway) on every log line
 logging:

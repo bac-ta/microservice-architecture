@@ -12,6 +12,7 @@ import com.epl.service.core.DocumentNumbers;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import static com.epl.service.core.Protos.map;
  * Stocktake headers. Lines are produced from stock when counting starts and filled by RecordCount;
  * confirmation adjusts stock — both are stock operations, not CRUD.
  */
+@RequiredArgsConstructor
 @Service
 public class StocktakeService {
 
@@ -35,13 +37,6 @@ public class StocktakeService {
     private final StocktakeRepository stocktakeRepository;
     private final StocktakeLineRepository lineRepository;
     private final DocumentNumbers documentNumbers;
-
-    public StocktakeService(StocktakeRepository stocktakeRepository, StocktakeLineRepository lineRepository,
-                            DocumentNumbers documentNumbers) {
-        this.stocktakeRepository = stocktakeRepository;
-        this.lineRepository = lineRepository;
-        this.documentNumbers = documentNumbers;
-    }
 
     @Transactional
     public Stocktake create(Stocktake request) {

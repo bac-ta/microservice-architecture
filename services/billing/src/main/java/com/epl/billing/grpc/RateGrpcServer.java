@@ -11,18 +11,16 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.billing.v1.RateService (contract: proto/src/main/proto/epl/billing/v1/billing.proto).
  */
+@RequiredArgsConstructor
 @GrpcServer(RateServiceGrpc.class)
 public class RateGrpcServer extends RateServiceGrpc.RateServiceImplBase {
 
     private final RateService rateService;
-
-    public RateGrpcServer(RateService rateService) {
-        this.rateService = rateService;
-    }
 
     @Override
     public void listRates(ListRatesRequest request, StreamObserver<ListRatesResponse> responseObserver) {

@@ -7,6 +7,7 @@ import com.epl.auth.entities.UserTenantGrantEntity;
 import com.epl.auth.mappers.UserMappers;
 import com.epl.auth.repositories.AppUserRepository;
 import com.epl.auth.repositories.CustomerRepository;
+import com.epl.auth.repositories.RefreshTokenRepository;
 import com.epl.auth.repositories.RoleRepository;
 import com.epl.auth.repositories.UserCredentialRepository;
 import com.epl.auth.repositories.UserTenantGrantRepository;
@@ -22,6 +23,7 @@ import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
 import io.grpc.Status;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ import static com.epl.service.core.Protos.localDate;
 import static com.epl.service.core.Protos.nullIfEmpty;
 import static com.epl.service.core.Protos.uuid;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
 
@@ -48,28 +51,12 @@ public class UserService {
     private final UserTenantGrantRepository grantRepository;
     private final RoleRepository roleRepository;
     private final CustomerRepository customerRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final CompanyService companyService;
     private final WarehouseService warehouseService;
     private final CustomerService customerService;
     private final PasswordEncoder passwordEncoder;
     private final Outbox outbox;
-
-    public UserService(AppUserRepository userRepository, UserCredentialRepository credentialRepository,
-                       UserTenantGrantRepository grantRepository, RoleRepository roleRepository,
-                       CustomerRepository customerRepository, CompanyService companyService,
-                       WarehouseService warehouseService, CustomerService customerService,
-                       PasswordEncoder passwordEncoder, Outbox outbox) {
-        this.userRepository = userRepository;
-        this.credentialRepository = credentialRepository;
-        this.grantRepository = grantRepository;
-        this.roleRepository = roleRepository;
-        this.customerRepository = customerRepository;
-        this.companyService = companyService;
-        this.warehouseService = warehouseService;
-        this.customerService = customerService;
-        this.passwordEncoder = passwordEncoder;
-        this.outbox = outbox;
-    }
 
     @Transactional
     public User create(CreateUserRequest request) {
@@ -132,6 +119,7 @@ public class UserService {
         userRepository.flush();
     }
 
+    /** Ends every session of the user: the caller signs in again with the new password. */
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
         var user = find(request.getUserId());
@@ -144,6 +132,8 @@ public class UserService {
         credential.setMustChange(false);
         credential.setUpdatedAt(Instant.now());
         user.setTokenVersion(user.getTokenVersion() + 1);
+        // other sessions must sign in again with the new password
+        refreshTokenRepository.revokeAllOfUser(user.getId(), Instant.now());
     }
 
     // grants ------------------------------------------------------------------

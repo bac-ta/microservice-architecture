@@ -2,12 +2,21 @@ package com.epl.gateway.controllers;
 
 import com.epl.integration.v1.UploadChunk;
 import com.epl.integration.v1.UploadServiceGrpc;
+import com.epl.gateway.configurations.OpenApiConfiguration;
+import com.epl.gateway.configurations.TenantScoped;
 import com.epl.gateway.rpc.CallMetadata;
 import com.epl.gateway.rpc.ProtoJson;
 import com.epl.gateway.rpc.RpcInvoker;
 import com.epl.gateway.rpc.RpcRegistry;
 import com.google.protobuf.ByteString;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +31,8 @@ import java.util.Objects;
  * File upload (arrival / shipment / product master files …) as multipart, streamed to
  * epl.integration.v1.UploadService/Upload in chunks.
  */
+@Tag(name = "Files", description = "Report downloads and file uploads")
+@RequiredArgsConstructor
 @RestController
 public class UploadController {
 
@@ -30,18 +41,25 @@ public class UploadController {
 
     private final RpcInvoker invoker;
 
-    public UploadController(RpcInvoker invoker) {
-        this.invoker = invoker;
-    }
-
     /**
      * @param fileKind     ARRIVAL, SHIPMENT, PRODUCT …
      * @param validateOnly true = check the rows without registering them
      * @return UploadResult as JSON
      */
+    @Operation(summary = "Upload a file (arrivals, shipments, product master …)",
+            description = "Streamed in 64 KiB chunks to epl.integration.v1.UploadService/Upload.")
+    @ApiResponse(responseCode = "200", description = "Rows read, registered and rejected",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(ref = "#/components/schemas/epl.integration.v1.UploadResult")))
+    @ApiResponse(responseCode = "default", description = "gRPC status mapped to HTTP",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(ref = OpenApiConfiguration.API_ERROR_REF)))
+    @TenantScoped
     @PostMapping(value = "/files/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<String> upload(@Parameter(description = "The file to import")
+                                         @RequestParam("file") MultipartFile file,
+                                         @Parameter(description = "ARRIVAL, SHIPMENT, PRODUCT …", example = "ARRIVAL")
                                          @RequestParam("fileKind") String fileKind,
+                                         @Parameter(description = "true = check the rows without registering them")
                                          @RequestParam(value = "validateOnly", defaultValue = "false") boolean validateOnly,
                                          HttpServletRequest request) throws IOException {
         var header = UploadChunk.Header.newBuilder()

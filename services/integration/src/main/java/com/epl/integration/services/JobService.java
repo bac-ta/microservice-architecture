@@ -15,6 +15,7 @@ import com.epl.integration.v1.ListPurgeHistoryResponse;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,19 +30,13 @@ import static com.epl.service.core.Protos.map;
 import static com.epl.service.core.Protos.uuid;
 
 /** Job runs of the tenant: queue, inspect, and remove a run that has not started. */
+@RequiredArgsConstructor
 @Service
 public class JobService {
 
     private final JobDefinitionRepository definitionRepository;
     private final JobRunRepository runRepository;
     private final PurgeHistoryRepository purgeHistoryRepository;
-
-    public JobService(JobDefinitionRepository definitionRepository, JobRunRepository runRepository,
-                      PurgeHistoryRepository purgeHistoryRepository) {
-        this.definitionRepository = definitionRepository;
-        this.runRepository = runRepository;
-        this.purgeHistoryRepository = purgeHistoryRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<JobDefinition> definitions() {

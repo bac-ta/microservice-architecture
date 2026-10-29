@@ -15,20 +15,18 @@ import com.epl.inventory.v1.UpdateStocktakeRequest;
 import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.inventory.v1.StocktakeService (contract: proto/src/main/proto/epl/inventory/v1/inventory.proto).
  * Create, Get, List, Update and Cancel are implemented; RecordCount and Confirm (stock operations)
  * answer UNIMPLEMENTED, naming their screens, until they are.
  */
+@RequiredArgsConstructor
 @GrpcServer(StocktakeServiceGrpc.class)
 public class StocktakeGrpcServer extends StocktakeServiceGrpc.StocktakeServiceImplBase {
 
     private final StocktakeService stocktakeService;
-
-    public StocktakeGrpcServer(StocktakeService stocktakeService) {
-        this.stocktakeService = stocktakeService;
-    }
 
     @Override
     public void create(CreateStocktakeRequest request, StreamObserver<Stocktake> responseObserver) {

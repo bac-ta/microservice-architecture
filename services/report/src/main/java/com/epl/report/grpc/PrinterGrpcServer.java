@@ -11,19 +11,17 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.report.v1.PrinterService (contract: proto/src/main/proto/epl/report/v1/report.proto).
  * Printers of the warehouse in x-warehouse.
  */
+@RequiredArgsConstructor
 @GrpcServer(PrinterServiceGrpc.class)
 public class PrinterGrpcServer extends PrinterServiceGrpc.PrinterServiceImplBase {
 
     private final PrinterService printerService;
-
-    public PrinterGrpcServer(PrinterService printerService) {
-        this.printerService = printerService;
-    }
 
     @Override
     public void listPrinters(ListPrintersRequest request, StreamObserver<ListPrintersResponse> responseObserver) {

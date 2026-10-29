@@ -13,6 +13,7 @@ dependencies {
     implementation libs.spring.boot.starter.actuator
     implementation libs.grpc.netty
     implementation libs.protobuf.java.util
+    implementation libs.springdoc.openapi.webmvc.ui
     annotationProcessor libs.spring.boot.configuration.processor
 
     testImplementation libs.grpc.inprocess

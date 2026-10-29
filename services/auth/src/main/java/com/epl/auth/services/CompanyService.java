@@ -5,6 +5,7 @@ import com.epl.auth.mappers.TenantMappers;
 import com.epl.auth.repositories.CompanyRepository;
 import com.epl.auth.v1.Company;
 import com.epl.service.core.Errors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,14 +13,11 @@ import java.util.List;
 
 import static com.epl.service.core.Protos.nullIfEmpty;
 
+@RequiredArgsConstructor
 @Service
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
-
-    public CompanyService(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<Company> list() {

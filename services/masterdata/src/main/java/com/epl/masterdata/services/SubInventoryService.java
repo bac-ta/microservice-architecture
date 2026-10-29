@@ -7,6 +7,7 @@ import com.epl.masterdata.repositories.SubInventoryRepository;
 import com.epl.masterdata.v1.SubInventory;
 import com.epl.service.core.Errors;
 import com.epl.service.core.RequestContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +15,11 @@ import java.time.Instant;
 import java.util.List;
 
 /** Sub-inventories (stock grades) of the tenant. The table has no version: last write wins. */
+@RequiredArgsConstructor
 @Service
 public class SubInventoryService {
 
     private final SubInventoryRepository subInventoryRepository;
-
-    public SubInventoryService(SubInventoryRepository subInventoryRepository) {
-        this.subInventoryRepository = subInventoryRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<SubInventory> list() {

@@ -18,18 +18,16 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.auth.v1.UserService (contract: proto/src/main/proto/epl/auth/v1/auth.proto).
  */
+@RequiredArgsConstructor
 @GrpcServer(UserServiceGrpc.class)
 public class UserGrpcServer extends UserServiceGrpc.UserServiceImplBase {
 
     private final UserService userService;
-
-    public UserGrpcServer(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     public void createUser(CreateUserRequest request, StreamObserver<User> responseObserver) {

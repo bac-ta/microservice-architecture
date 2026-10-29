@@ -13,6 +13,7 @@ import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
 import jakarta.persistence.criteria.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -31,16 +32,12 @@ import static com.epl.service.core.Protos.localDate;
  * Shipping orders of the tenant: entry, change and cancellation while nothing is reserved yet.
  * Allocation, picking, packing and confirmation are separate RPCs.
  */
+@RequiredArgsConstructor
 @Service
 public class ShipmentService {
 
     private final ShipmentRepository shipmentRepository;
     private final DocumentNumbers documentNumbers;
-
-    public ShipmentService(ShipmentRepository shipmentRepository, DocumentNumbers documentNumbers) {
-        this.shipmentRepository = shipmentRepository;
-        this.documentNumbers = documentNumbers;
-    }
 
     @Transactional
     public Shipment create(Shipment request) {

@@ -13,19 +13,17 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.masterdata.v1.ProductService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
  * Products of the tenant in x-company / x-warehouse / x-customer.
  */
+@RequiredArgsConstructor
 @GrpcServer(ProductServiceGrpc.class)
 public class ProductGrpcServer extends ProductServiceGrpc.ProductServiceImplBase {
 
     private final ProductService productService;
-
-    public ProductGrpcServer(ProductService productService) {
-        this.productService = productService;
-    }
 
     @Override
     public void getProduct(GetProductRequest request, StreamObserver<Product> responseObserver) {

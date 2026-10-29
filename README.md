@@ -143,6 +143,7 @@ service or RPC in `proto/` needs no gateway code. The backend of an RPC comes fr
 | `POST /api/files/upload` | multipart `file`, `fileKind`, `validateOnly` -> `UploadService/Upload` (client streaming) |
 | `POST /api/reports/render` | `RenderRequest` JSON -> file download from `ReportService/Render` |
 | `GET /api/actuator/health` | liveness / readiness |
+| `GET /api/swagger-ui.html` | Swagger UI: one operation per RPC with its proto3 JSON schemas (`/api/v3/api-docs`; off with `GATEWAY_API_DOCS_ENABLED=false`) |
 
 ```bash
 curl -X POST localhost:5555/api/rpc/epl.masterdata.v1.ProductService/GetProduct \
@@ -150,14 +151,36 @@ curl -X POST localhost:5555/api/rpc/epl.masterdata.v1.ProductService/GetProduct 
   -H "Content-Type: application/json" -d '{"code":"P001"}'
 ```
 
-- **Auth**: every path except `epl.gateway.security.public-paths` (Login, Refresh, GetJwks, health) needs a JWT
+- **Auth**: every path except `epl.gateway.security.public-paths` (Login, Refresh, Logout, GetJwks, health) needs a JWT
   signed by the auth service; keys come from `AuthService/GetJwks` (cached, `JWT_ISSUER` checked when set).
   Backends verify the token again and enforce tenant grants. `GATEWAY_SECURITY_ENABLED=false` turns the check
-  off for local development while `GetJwks` is not ported.
+  off for local development without the auth service.
 - **Forwarded as gRPC metadata**: `Authorization`, `X-Company`, `X-Warehouse`, `X-Customer`, `Accept-Language`,
   `X-Request-Id` (generated when missing, echoed in the response).
 - **Errors**: gRPC status -> HTTP status (`NOT_FOUND` 404, `INVALID_ARGUMENT` 400, `PERMISSION_DENIED` 403,
   `UNIMPLEMENTED` 501, `UNAVAILABLE` 503 …), body `{"code","message","requestId"}`.
+
+### Sign-in (auth service)
+
+`AuthService/Login` (username, password, `clientId` from `iam.oauth_client`: `PC_WEB`, `HHT`) returns a 15-minute
+ES256 access token (claims in [`database/README.md`](database/README.md#2-authentication-jwt)) and a refresh token.
+`Refresh` rotates the refresh token; presenting an already used one ends that session (reuse detection).
+`Logout` ends one session, or all of them with `allSessions`; so does `UserService/ChangePassword`.
+Five wrong passwords lock the account for 15 minutes.
+
+| Variable (auth) | Meaning |
+|---|---|
+| `JWT_SIGNING_KEY` | EC P-256 private key as a JWK (JSON). Empty = a new key on every start (local only, one instance) |
+| `JWT_ISSUER` | `iss` claim (default `epl-auth`); set the same value on the gateway to have it checked |
+| `BOOTSTRAP_ADMIN_PASSWORD` | creates user `BOOTSTRAP_ADMIN_USERNAME` (default `admin`) while there is no user; must be changed at first login |
+
+```bash
+FLYWAY_PASSWORD=iam_owner DB_PASSWORD=iam_app ./gradlew :services:auth:bootMigrate
+DB_PASSWORD=iam_app BOOTSTRAP_ADMIN_PASSWORD='at-least-12-chars' ./gradlew :services:auth:bootRun
+./gradlew :services:gateway:bootRun
+```
+
+The web client (`epl-frontend` repository) calls the gateway through the Vite dev proxy (`/api` -> `localhost:5555`).
 
 ## Build
 

@@ -14,6 +14,7 @@ import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
 import jakarta.persistence.criteria.Predicate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static com.epl.service.core.Protos.localDate;
 
 /** Arrival documents of the tenant: entry, change and cancellation (inspection etc. are separate RPCs). */
+@RequiredArgsConstructor
 @Service
 public class ArrivalService {
 
@@ -38,12 +40,6 @@ public class ArrivalService {
     private final ArrivalRepository arrivalRepository;
     private final DocumentNumbers documentNumbers;
     private final Outbox outbox;
-
-    public ArrivalService(ArrivalRepository arrivalRepository, DocumentNumbers documentNumbers, Outbox outbox) {
-        this.arrivalRepository = arrivalRepository;
-        this.documentNumbers = documentNumbers;
-        this.outbox = outbox;
-    }
 
     @Transactional
     public Arrival create(Arrival request) {

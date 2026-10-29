@@ -18,19 +18,17 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.masterdata.v1.ConfigService (contract: proto/src/main/proto/epl/masterdata/v1/masterdata.proto).
  * Sub-inventories are implemented; the other RPCs answer UNIMPLEMENTED, naming their screens, until they are.
  */
+@RequiredArgsConstructor
 @GrpcServer(ConfigServiceGrpc.class)
 public class ConfigGrpcServer extends ConfigServiceGrpc.ConfigServiceImplBase {
 
     private final SubInventoryService subInventoryService;
-
-    public ConfigGrpcServer(SubInventoryService subInventoryService) {
-        this.subInventoryService = subInventoryService;
-    }
 
     @Override
     public void listSubInventories(Empty request, StreamObserver<ListSubInventoriesResponse> responseObserver) {

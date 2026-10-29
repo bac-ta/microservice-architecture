@@ -9,19 +9,17 @@ import com.epl.report.v1.ReportServiceGrpc;
 import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.report.v1.ReportService (contract: proto/src/main/proto/epl/report/v1/report.proto).
  * ListReports is implemented; Render answers UNIMPLEMENTED, naming its screen, until it is.
  */
+@RequiredArgsConstructor
 @GrpcServer(ReportServiceGrpc.class)
 public class ReportGrpcServer extends ReportServiceGrpc.ReportServiceImplBase {
 
     private final ReportCatalogService reportCatalogService;
-
-    public ReportGrpcServer(ReportCatalogService reportCatalogService) {
-        this.reportCatalogService = reportCatalogService;
-    }
 
     @Override
     public void listReports(ListReportsRequest request, StreamObserver<ListReportsResponse> responseObserver) {

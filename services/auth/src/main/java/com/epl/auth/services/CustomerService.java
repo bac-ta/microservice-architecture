@@ -5,21 +5,18 @@ import com.epl.auth.mappers.TenantMappers;
 import com.epl.auth.repositories.CustomerRepository;
 import com.epl.auth.v1.Customer;
 import com.epl.service.core.Errors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CompanyService companyService;
-
-    public CustomerService(CustomerRepository customerRepository, CompanyService companyService) {
-        this.customerRepository = customerRepository;
-        this.companyService = companyService;
-    }
 
     @Transactional(readOnly = true)
     public List<Customer> list(String companyCode) {

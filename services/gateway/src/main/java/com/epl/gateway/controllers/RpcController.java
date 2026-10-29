@@ -13,8 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -42,6 +46,8 @@ import java.util.Map;
  *     <li>client-streaming: not mapped, see {@link UploadController}</li>
  * </ul>
  */
+@Tag(name = "Gateway", description = "What the gateway exposes")
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/rpc")
 public class RpcController {
@@ -52,17 +58,15 @@ public class RpcController {
     private final RpcInvoker invoker;
     private final ObjectMapper objectMapper;
 
-    public RpcController(RpcRegistry registry, RpcInvoker invoker, ObjectMapper objectMapper) {
-        this.registry = registry;
-        this.invoker = invoker;
-        this.objectMapper = objectMapper;
-    }
-
-    @GetMapping
+    @Operation(summary = "List every RPC exposed under /rpc",
+            description = "Path, backend, call type and message names of each RPC.")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RpcDescription> list() {
         return registry.routes().stream().map(RpcDescription::of).toList();
     }
 
+    // documented per RPC by OpenApiConfiguration
+    @Hidden
     @PostMapping("/{service}/{method}")
     public ResponseEntity<String> call(@PathVariable String service,
                                   @PathVariable String method,

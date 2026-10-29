@@ -6,6 +6,7 @@ import com.epl.auth.repositories.RoleRepository;
 import com.epl.auth.repositories.UserTenantGrantRepository;
 import com.epl.auth.v1.Role;
 import com.epl.service.core.Errors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 
 import static com.epl.service.core.Protos.nullIfEmpty;
 
+@RequiredArgsConstructor
 @Service
 public class RoleService {
 
@@ -21,11 +23,6 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
     private final UserTenantGrantRepository grantRepository;
-
-    public RoleService(RoleRepository roleRepository, UserTenantGrantRepository grantRepository) {
-        this.roleRepository = roleRepository;
-        this.grantRepository = grantRepository;
-    }
 
     @Transactional(readOnly = true)
     public List<Role> list() {

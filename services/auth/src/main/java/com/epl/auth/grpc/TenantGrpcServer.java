@@ -31,11 +31,13 @@ import com.epl.grpc.server.models.annotations.GrpcServer;
 import com.epl.service.core.GrpcCalls;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import lombok.RequiredArgsConstructor;
 
 /**
  * gRPC endpoint epl.auth.v1.TenantService (contract: proto/src/main/proto/epl/auth/v1/auth.proto):
  * the tenant registry (company / warehouse / customer / tenant).
  */
+@RequiredArgsConstructor
 @GrpcServer(TenantServiceGrpc.class)
 public class TenantGrpcServer extends TenantServiceGrpc.TenantServiceImplBase {
 
@@ -43,14 +45,6 @@ public class TenantGrpcServer extends TenantServiceGrpc.TenantServiceImplBase {
     private final WarehouseService warehouseService;
     private final CustomerService customerService;
     private final TenantService tenantService;
-
-    public TenantGrpcServer(CompanyService companyService, WarehouseService warehouseService,
-                            CustomerService customerService, TenantService tenantService) {
-        this.companyService = companyService;
-        this.warehouseService = warehouseService;
-        this.customerService = customerService;
-        this.tenantService = tenantService;
-    }
 
     // companies ---------------------------------------------------------------
 
