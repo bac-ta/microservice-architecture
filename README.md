@@ -189,7 +189,7 @@ Requires JDK 21 (the Gradle wrapper downloads Gradle 8.14.5, which cannot run on
 
 ```bash
 docker compose up -d
-sudo docker exec -it microservice-architecture-starter-kit-nexus-1 cat /nexus-data/admin.password
+sudo docker exec -it epl-backend-apis-starter-kit-nexus-1 cat /nexus-data/admin.password
 ```
 
 Nexus URL: http://localhost:8081. Keep its credentials out of the repository

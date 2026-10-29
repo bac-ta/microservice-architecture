@@ -11,7 +11,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'microservice-architecture'
+rootProject.name = 'epl-backend-apis'
 
 // gRPC contracts (.proto) and the generated stubs
 include 'proto'
