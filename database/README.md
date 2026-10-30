@@ -69,9 +69,9 @@ The runtime role can read `flyway_schema_history` (bootstrap default privileges)
 
 ```bash
 docker compose up -d postgres                  # bootstrap.sql + dev passwords (password = role name)
-FLYWAY_PASSWORD=iam_owner ./gradlew :services:auth:bootMigrate
-FLYWAY_PASSWORD=inv_owner ./gradlew :services:inventory:bootMigrate
-DB_PASSWORD=inv_app       ./gradlew :services:inventory:bootRun
+./gradlew migrateAll                           # every service, auth first
+./gradlew :services:inventory:bootMigrate      # or one service (FLYWAY_PASSWORD defaults to the owner role name)
+DB_PASSWORD=inv_app ./gradlew :services:inventory:bootRun
 ```
 
 **Kubernetes**: a Job per service and release (or a Helm `pre-install,pre-upgrade` hook), using the

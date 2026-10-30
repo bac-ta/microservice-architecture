@@ -13,6 +13,21 @@ spring:
     async:
       # report downloads are written asynchronously
       request-timeout: ${GATEWAY_STREAM_DEADLINE:10m}
+  # Mobile API: GraphQL generated from the protos (GraphQlConfiguration, MobileGraphQlSchema).
+  # /api/m/graphql, GraphiQL /api/m/graphiql, SDL /api/m/graphql/schema
+  graphql:
+    path: /m/graphql
+    graphiql:
+      enabled: ${GATEWAY_API_DOCS_ENABLED:true}
+      path: /m/graphiql
+    schema:
+      printer:
+        enabled: ${GATEWAY_API_DOCS_ENABLED:true}
+      introspection:
+        enabled: ${GATEWAY_API_DOCS_ENABLED:true}
+      # fields are wired in code, not by controllers
+      inspection:
+        enabled: false
 
 server:
   port: ${HTTP_SERVER_PORT:5555}
@@ -66,12 +81,27 @@ epl:
         - /rpc/auth/v1/auth/logout
         - /rpc/auth/v1/auth/get-jwks
         - /actuator/health/**
+        # mobile GraphQL: a token is checked per field (Login, Refresh … are public, see MobileGraphQlSchema)
+        - /m/graphql
+        - /m/graphql/schema
+        - /m/graphiql
         # Swagger UI / OpenAPI document (off with GATEWAY_API_DOCS_ENABLED=false)
         - /v3/api-docs/**
         - /swagger-ui/**
         - /swagger-ui.html
     cors:
       allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+    graphql:
+      # one request = at most this many backend calls (aliases included)
+      max-rpc-calls: ${GRAPHQL_MAX_RPC_CALLS:20}
+      max-depth: 15
+      persisted-query-cache-size: 1000
+      # server-to-server RPCs, not for screens
+      exclude:
+        - epl.auth.v1.AuthService/GetJwks
+        - epl.auth.v1.TenantService/ResolveTenant
+        - epl.auth.v1.AuthorizationService/Check
+        - epl.auth.v1.AuthorizationService/BatchCheck
 
 # request id of the call (x-request-id, set by the gateway) on every log line
 logging:

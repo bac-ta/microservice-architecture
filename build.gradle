@@ -1,0 +1,8 @@
+// Local database: ./gradlew migrateAll applies the Flyway migrations of every service (auth first).
+tasks.register('migrateAll') {
+    group = 'database'
+    description = 'Runs bootMigrate of every service that owns a schema, auth first.'
+    dependsOn {
+        subprojects.findAll { it.pluginManager.hasPlugin('epl.database-service') }.collect { "${it.path}:bootMigrate" }
+    }
+}

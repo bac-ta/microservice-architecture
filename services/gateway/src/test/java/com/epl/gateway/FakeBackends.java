@@ -89,6 +89,14 @@ public class FakeBackends {
     static class FakeProductService extends ProductServiceGrpc.ProductServiceImplBase {
         @Override
         public void getProduct(GetProductRequest request, StreamObserver<Product> responseObserver) {
+            if (request.getCode().startsWith("slow")) {
+                // a backend taking 300 ms
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
             if (request.getCode().equals("missing")) {
                 responseObserver.onError(Status.NOT_FOUND.withDescription("Product missing not found").asRuntimeException());
                 return;

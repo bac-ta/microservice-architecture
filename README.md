@@ -143,6 +143,7 @@ service or RPC in `proto/` needs no gateway code. The backend of an RPC comes fr
 | `POST /api/files/upload` | multipart `file`, `fileKind`, `validateOnly` -> `UploadService/Upload` (client streaming) |
 | `POST /api/reports/render` | `RenderRequest` JSON -> file download from `ReportService/Render` |
 | `GET /api/actuator/health` | liveness / readiness |
+| `POST /api/m/graphql` | **mobile API**: GraphQL generated from the same RPCs (see below); GraphiQL `/api/m/graphiql`, SDL `/api/m/graphql/schema` |
 | `GET /api/swagger-ui.html` | Swagger UI: one operation per RPC with its proto3 JSON schemas (`/api/v3/api-docs`; off with `GATEWAY_API_DOCS_ENABLED=false`) |
 
 ```bash
@@ -150,6 +151,37 @@ curl -X POST localhost:5555/api/rpc/masterdata/v1/product/get-product \
   -H "Authorization: Bearer $TOKEN" -H "X-Company: C001" -H "X-Warehouse: WH01" -H "X-Customer: CUST01" \
   -H "Content-Type: application/json" -d '{"code":"P001"}'
 ```
+
+### Mobile API (GraphQL)
+
+`POST /api/m/graphql` exposes every unary RPC as a GraphQL field, generated from the protos at start-up
+(`MobileGraphQlSchema`): namespace = backend, then service without `Service`, then method in lowerCamelCase,
+with the request message as `input`. Get / List / Search / Resolve / Check RPCs are queries, the others mutations;
+streaming RPCs are not mapped (use `/api/files/upload`, `/api/reports/render`).
+
+```graphql
+mutation { auth { auth { login(input: {username: "u", password: "p", clientId: "MOBILE"}) { accessToken refreshToken } } } }
+query    { inventory { stock { search(input: {productCode: "P001"}) { lots { id productCode } } } } }
+```
+
+Fields and values are the proto3 JSON ones (64-bit integers as `Long` strings, enums by name, `Struct` as `JSON`).
+Same headers as REST (`Authorization`, `X-Company` …). Every field needs a token except the public RPCs of
+`epl.gateway.security.public-paths` (Login, Refresh, Logout, GetJwks). A gRPC error is a GraphQL error with
+`extensions.code` (`NOT_FOUND` …) and `extensions.requestId`; the HTTP status stays 200.
+
+- **One round trip per screen**: query fields run in parallel (virtual threads), so a screen loading 3 RPCs waits for
+  the slowest, not the sum. Mutation fields run one after the other, in document order.
+- **Only the selected fields**: each RPC field sends its selection to the backend as gRPC metadata `x-field-mask`
+  (FieldMask paths, `arrivalNo,lines.productCode`). `ResponseMaskServerInterceptor` (libs/service-core, every service)
+  trims the response to them; a service skips work nobody reads with `ResponseMask.current().includes("lines")`
+  (GetArrival / GetShipment then load the header without the lines). No contract change: without the header,
+  the full response, as before.
+- **Automatic Persisted Queries** (Apollo Kotlin / iOS `autoPersistedQueries`): the app sends the SHA-256 of a query
+  instead of its text; parsing and validation are cached (`persisted-query-cache-size`, least recently used dropped).
+- **Limits** (`epl.gateway.graphql`): at most `max-rpc-calls` RPC fields per request, aliases included
+  (`GRAPHQL_MAX_RPC_CALLS`, default 20), and `max-depth` 15. Checked before any backend call.
+- **Not exposed**: streaming RPCs and `exclude` (server-to-server RPCs: `GetJwks`, `ResolveTenant`,
+  `AuthorizationService/Check`, `BatchCheck`). Introspection, GraphiQL and the SDL are off with `GATEWAY_API_DOCS_ENABLED=false`.
 
 - **Auth**: every path except `epl.gateway.security.public-paths` (Login, Refresh, Logout, GetJwks, health) needs a JWT
   signed by the auth service; keys come from `AuthService/GetJwks` (cached, `JWT_ISSUER` checked when set).

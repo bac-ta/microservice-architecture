@@ -1,6 +1,6 @@
 // Spring Boot service that owns a PostgreSQL schema (services/<service>/src/main/resources/db/migration).
 // Adds libs/service-core (+ libs/database: JPA, Flyway) and a bootMigrate task that applies the
-// migrations, then exits.
+// migrations, then exits (./gradlew migrateAll runs it for every service, auth first).
 plugins {
     id 'epl.spring-boot-service'
 }
@@ -10,6 +10,16 @@ dependencies {
     testImplementation testFixtures(project(':libs:service-core'))
 }
 
+// Schema owner role: the FLYWAY_USERNAME default of the migrate profile in application.yml
+def ownerRole = providers.environmentVariable('FLYWAY_USERNAME').orElse(providers.provider {
+    def yml = file('src/main/resources/application.yml').text
+    def match = yml =~ /\$\{FLYWAY_USERNAME:([^}]+)}/
+    if (!match.find()) {
+        throw new GradleException("No \${FLYWAY_USERNAME:<owner role>} in ${project.path} application.yml")
+    }
+    match.group(1)
+})
+
 tasks.register('bootMigrate', org.springframework.boot.gradle.tasks.run.BootRun) {
     group = 'database'
     description = 'Applies this service\'s Flyway migrations as the schema owner (profile "migrate"), then exits.'
@@ -17,4 +27,10 @@ tasks.register('bootMigrate', org.springframework.boot.gradle.tasks.run.BootRun)
     mainClass = bootRun.mainClass
     classpath = bootRun.classpath
     args '--spring.profiles.active=migrate'
+    // local only (the deployed jar gets it from the secret): password = role name, see database/local/dev-passwords.sql
+    environment 'FLYWAY_PASSWORD', providers.environmentVariable('FLYWAY_PASSWORD').orElse(ownerRole).get()
+    // the other schemas reference the iam tenant tables
+    if (project.path != ':services:auth') {
+        mustRunAfter ':services:auth:bootMigrate'
+    }
 }

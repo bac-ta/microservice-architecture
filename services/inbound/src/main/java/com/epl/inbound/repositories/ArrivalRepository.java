@@ -12,4 +12,7 @@ public interface ArrivalRepository extends JpaRepository<ArrivalEntity, UUID>, J
 
     @EntityGraph(attributePaths = "lines")
     Optional<ArrivalEntity> findWithLinesByTenantIdAndArrivalNo(UUID tenantId, String arrivalNo);
+
+    /** Header only: GetArrival when the caller does not read the lines (ResponseMask). */
+    Optional<ArrivalEntity> findByTenantIdAndArrivalNo(UUID tenantId, String arrivalNo);
 }

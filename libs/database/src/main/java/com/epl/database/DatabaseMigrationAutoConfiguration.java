@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * Migrations are applied by a separate run of the service (profile "migrate": Kubernetes Job,
- * init container or {@code ./gradlew :services:<service>:bootMigrate}), never by the running service,
- * which connects with its runtime role and only validates that its schema is up to date.
+ * init container or {@code ./gradlew :services:<service>:bootMigrate}, see {@link MigrateJobRunListener}),
+ * never by the running service, which connects with its runtime role and only validates that its schema
+ * is up to date. Mode MIGRATE without that profile (tests) migrates in the context, then starts the service.
  */
 @AutoConfiguration(before = FlywayAutoConfiguration.class)
 @ConditionalOnClass(Flyway.class)

@@ -31,12 +31,13 @@ public class ServiceCoreAutoConfiguration {
 
     /**
      * Interceptors of every @GrpcServer of the service. The last one runs first: the call log (request id,
-     * status, duration) wraps everything, including a request context that cannot be resolved.
+     * status, duration) wraps everything, including a request context that cannot be resolved; the response
+     * mask (x-field-mask) is closest to the service.
      */
     @ConditionalOnMissingBean(name = "eplServerInterceptors")
     @Bean
     public GrpcServerInterceptorInitializerService eplServerInterceptors(RequestContextServerInterceptor requestContext) {
-        return () -> List.of(requestContext, new CallLoggingServerInterceptor());
+        return () -> List.of(new ResponseMaskServerInterceptor(), requestContext, new CallLoggingServerInterceptor());
     }
 
     /** RLS context of every transaction = the tenant of the current gRPC call. */

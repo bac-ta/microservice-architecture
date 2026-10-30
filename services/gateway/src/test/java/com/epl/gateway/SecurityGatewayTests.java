@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,6 +24,7 @@ import java.util.Date;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = "epl.gateway.security.issuer=https://auth.epl.test")
@@ -31,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SecurityGatewayTests {
 
     private static final String GET_PRODUCT = "/rpc/masterdata/v1/product/get-product";
+    private static final String GRAPHQL_GET_PRODUCT = """
+            {"query": "{ masterdata { product { getProduct(input: {code: \\"P001\\"}) { code } } } }"}""";
 
     @Autowired
     private MockMvc mvc;
@@ -88,6 +92,37 @@ class SecurityGatewayTests {
         mvc.perform(get("/actuator/health")).andExpect(status().isOk());
         // reaches the backend: the fake auth service does not implement Login
         mvc.perform(post("/rpc/auth/v1/auth/login")).andExpect(status().isNotImplemented());
+    }
+
+    @Test
+    void graphQlFieldWithoutTokenIsRejected() throws Exception {
+        backends.lastHeaders.set(null);
+
+        GraphQlRequests.graphql(mvc, GRAPHQL_GET_PRODUCT, new HttpHeaders())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.errors[0].extensions.code").value("UNAUTHENTICATED"))
+                .andExpect(jsonPath("$.errors[0].extensions.classification").value("UNAUTHORIZED"));
+        assertThat(backends.lastHeaders.get()).isNull();
+    }
+
+    @Test
+    void graphQlFieldWithValidTokenIsForwarded() throws Exception {
+        var token = token(FakeBackends.SIGNING_KEY, "https://auth.epl.test", Instant.now().plusSeconds(300));
+
+        var headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        GraphQlRequests.graphql(mvc, GRAPHQL_GET_PRODUCT, headers)
+                .andExpect(jsonPath("$.errors").doesNotExist())
+                .andExpect(jsonPath("$.data.masterdata.product.getProduct.code").value("P001"));
+    }
+
+    @Test
+    void graphQlLoginNeedsNoToken() throws Exception {
+        // reaches the backend: the fake auth service does not implement Login
+        mvc.perform(post("/m/graphql").contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"query": "mutation { auth { auth { login(input: {username: \\"u\\"}) { accessToken } } } }"}"""))
+                .andExpect(jsonPath("$.errors[0].extensions.code").value("UNIMPLEMENTED"));
     }
 
     private static String token(com.nimbusds.jose.jwk.ECKey key, String issuer, Instant expiresAt) throws JOSEException {

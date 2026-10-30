@@ -14,6 +14,7 @@ import java.util.Map;
  * @param deadline       deadline of a unary / client-streaming call
  * @param streamDeadline deadline of a server-streaming call (exports, report rendering)
  * @param scanPackages   packages searched for generated {@code *Grpc} classes; their RPCs are exposed under /rpc
+ * @param graphql        mobile GraphQL API ({@code /m/graphql})
  */
 @ConfigurationProperties("epl.gateway")
 public record GatewayProperties(
@@ -22,7 +23,8 @@ public record GatewayProperties(
         @DefaultValue("10m") Duration streamDeadline,
         @DefaultValue("com.epl") List<String> scanPackages,
         @DefaultValue Security security,
-        @DefaultValue Cors cors) {
+        @DefaultValue Cors cors,
+        @DefaultValue Graphql graphql) {
 
     public GatewayProperties {
         backends = backends == null ? Map.of() : Map.copyOf(backends);
@@ -44,6 +46,23 @@ public record GatewayProperties(
 
         public Security {
             publicPaths = publicPaths == null ? List.of() : List.copyOf(publicPaths);
+        }
+    }
+
+    /**
+     * @param maxRpcCalls             RPC fields one request may call (aliases count once each)
+     * @param maxDepth                maximum query depth (namespace and service count as levels)
+     * @param persistedQueryCacheSize parsed documents kept for Automatic Persisted Queries (least recently used dropped)
+     * @param exclude                 RPCs not exposed, as full method name patterns ({@code epl.auth.v1.AuthorizationService/*})
+     */
+    public record Graphql(
+            @DefaultValue("20") int maxRpcCalls,
+            @DefaultValue("15") int maxDepth,
+            @DefaultValue("1000") int persistedQueryCacheSize,
+            List<String> exclude) {
+
+        public Graphql {
+            exclude = exclude == null ? List.of() : List.copyOf(exclude);
         }
     }
 

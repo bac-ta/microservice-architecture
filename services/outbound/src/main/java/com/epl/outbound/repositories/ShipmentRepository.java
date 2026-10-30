@@ -12,4 +12,8 @@ public interface ShipmentRepository extends JpaRepository<ShipmentEntity, UUID>,
 
     @EntityGraph(attributePaths = {"lines", "pickingBatch"})
     Optional<ShipmentEntity> findWithLinesByTenantIdAndShipmentNo(UUID tenantId, String shipmentNo);
+
+    /** Header only: GetShipment when the caller does not read the lines (ResponseMask). */
+    @EntityGraph(attributePaths = "pickingBatch")
+    Optional<ShipmentEntity> findByTenantIdAndShipmentNo(UUID tenantId, String shipmentNo);
 }

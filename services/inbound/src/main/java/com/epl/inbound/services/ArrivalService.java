@@ -13,6 +13,7 @@ import com.epl.service.core.DocumentNumbers;
 import com.epl.service.core.Errors;
 import com.epl.service.core.Pages;
 import com.epl.service.core.RequestContext;
+import com.epl.service.core.ResponseMask;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -57,6 +58,12 @@ public class ArrivalService {
 
     @Transactional(readOnly = true)
     public Arrival get(String arrivalNo) {
+        if (!ResponseMask.current().includes("lines")) {
+            // the caller does not read the lines (GraphQL selection): no join
+            var tenantId = RequestContext.current().requireTenant();
+            return ArrivalMappers.arrival(arrivalRepository.findByTenantIdAndArrivalNo(tenantId, Errors.required(arrivalNo, "arrival_no"))
+                    .orElseThrow(() -> Errors.notFound("Arrival", arrivalNo)));
+        }
         return ArrivalMappers.arrivalWithLines(find(arrivalNo));
     }
 
