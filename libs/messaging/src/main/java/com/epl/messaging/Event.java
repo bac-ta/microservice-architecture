@@ -27,7 +27,7 @@ public record Event(UUID id, String type, String aggregateType, String aggregate
         var tenantId = header(headers, EventHeaders.TENANT_ID);
         var occurredAt = header(headers, EventHeaders.OCCURRED_AT);
         return new Event(UUID.fromString(id),
-                headerOr(headers, EventHeaders.EVENT_TYPE, record.topic()),
+                headerOr(headers, record.topic()),
                 header(headers, EventHeaders.AGGREGATE_TYPE),
                 record.key(),
                 tenantId == null ? null : UUID.fromString(tenantId),
@@ -60,8 +60,8 @@ public record Event(UUID id, String type, String aggregateType, String aggregate
         return header == null ? null : new String(header.value(), StandardCharsets.UTF_8);
     }
 
-    private static String headerOr(Headers headers, String name, String fallback) {
-        var value = header(headers, name);
+    private static String headerOr(Headers headers, String fallback) {
+        var value = header(headers, EventHeaders.EVENT_TYPE);
         return value == null ? fallback : value;
     }
 }

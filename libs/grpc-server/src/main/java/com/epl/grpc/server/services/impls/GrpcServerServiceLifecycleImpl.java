@@ -55,11 +55,6 @@ public class GrpcServerServiceLifecycleImpl implements SmartLifecycle {
     }
 
     @Override
-    public boolean isAutoStartup() {
-        return true;
-    }
-
-    @Override
     public void stop(Runnable callback) {
         this.stop();
         callback.run();

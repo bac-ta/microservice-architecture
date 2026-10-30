@@ -1,6 +1,7 @@
 package com.epl.database;
 
 import jakarta.persistence.EntityManagerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -24,7 +25,7 @@ public class SessionSettingsJpaTransactionManager extends JpaTransactionManager 
     }
 
     @Override
-    protected void doBegin(Object transaction, TransactionDefinition definition) {
+    protected void doBegin(@NonNull Object transaction, @NonNull TransactionDefinition definition) {
         super.doBegin(transaction, definition);
 
         var values = settings.current();
