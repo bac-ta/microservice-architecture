@@ -258,7 +258,7 @@ gRPC call ─► AuthInterceptor ─► PEP (per method) ─► PDP (library ins
 | subject     | `id`, `type` (INTERNAL/CUSTOMER/SYSTEM), `roles` (effective for this tenant), `attrs.*`     |
 | resource    | `type` (`inventory.stock`), `tenant`, `warehouse`, and type attributes from `resource_type.attributes` (`bonded`, `on_hold`, `qty`, `status` …) |
 | action      | `adjust`, `relocate`, `confirm` … (`iam.action`, one per gRPC method)                        |
-| environment | `channel` (PC_WEB / HHT / API), `time`, `ip`, `warehouse_local_time`                         |
+| environment | `channel` (PC_WEB / MOBILE / API), `time`, `ip`, `warehouse_local_time`                         |
 
 **Evaluation**
 
@@ -277,7 +277,7 @@ Policies are cached in each service and reloaded when `policy_revision` changes
 |------------------------------|--------|--------------------|-------------------------------------------|-----------------|
 | `operator-stock-ops`         | PERMIT | `*`                | `inventory.stock` / read, relocate, change_pick_key, change_sub_inventory, divide | `'WMS_OPERATOR' in subject.roles \|\| 'WMS_SUPERVISOR' in subject.roles` |
 | `adjust-within-limit`        | PERMIT | `*`                | `inventory.stock` / adjust                | `'WMS_SUPERVISOR' in subject.roles && resource.qty <= subject.attrs.max_adjust_qty` |
-| `no-touch-bonded-from-hht`   | DENY   | `C001/WH01/*`      | `inventory.stock` / adjust, relocate, divide | `resource.bonded && env.channel == 'HHT'` |
+| `no-touch-bonded-from-mobile` | DENY   | `C001/WH01/*`      | `inventory.stock` / adjust, relocate, divide | `resource.bonded && env.channel == 'MOBILE'` |
 | `customer-read-own`          | PERMIT | `*`                | `inventory.stock`, `inventory.movement` / read, export | `subject.type == 'CUSTOMER'` (grant already limits the tenant) |
 | `stocktake-confirm`          | PERMIT | `*`                | `inventory.stocktake` / confirm, cancel   | `'WMS_SUPERVISOR' in subject.roles && resource.status == 'COUNTED'` |
 | `month-end-office-hours`     | PERMIT | `*`                | `billing.charge` / close_month            | `'WMS_BILLING' in subject.roles && env.warehouse_local_time.getHours() < 20` |

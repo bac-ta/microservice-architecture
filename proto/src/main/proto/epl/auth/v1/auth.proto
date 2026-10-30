@@ -26,7 +26,7 @@ service AuthService {
 message LoginRequest {
   string username = 1;
   string password = 2;
-  string clientId = 3;  // PC_WEB, HHT, API …
+  string clientId = 3;  // PC_WEB, MOBILE, API …
 }
 
 message RefreshRequest {

@@ -120,7 +120,7 @@ message ChangePickKeyRequest {
   int32 stockVersion = 2;
   epl.common.v1.Decimal qty = 3;
   epl.common.v1.PickKeys newPickKeys = 4;
-  optional bool lock = 5;  // HHT lock / unlock cargo ID
+  optional bool lock = 5;  // mobile lock / unlock cargo ID
   string transactionKind = 6;
   string reasonCode = 7;
 }
@@ -281,7 +281,7 @@ message ListStocktakesResponse {
 message RecordCountRequest {
   string stocktakeNo = 1;
   repeated StocktakeLine lines = 2;  // counted quantities; new lines for found stock
-  string entryKind = 3;             // PC / HHT / UPLOAD
+  string entryKind = 3;             // PC / MOBILE / UPLOAD
 }
 
 message RecordCountResponse {

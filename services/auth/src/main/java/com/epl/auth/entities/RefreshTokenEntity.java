@@ -35,7 +35,7 @@ public class RefreshTokenEntity {
     @Column(name = "token_hash", nullable = false, updatable = false)
     private byte[] tokenHash;
 
-    /** PC_WEB, HHT … */
+    /** PC_WEB, MOBILE … */
     @Column(name = "client_id", nullable = false, updatable = false, length = 50)
     private String clientId;
 

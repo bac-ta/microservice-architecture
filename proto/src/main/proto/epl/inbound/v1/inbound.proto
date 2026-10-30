@@ -123,7 +123,7 @@ message InspectionResult {
   epl.common.v1.PickKeys pickKeys = 3;  // actual lot / expiry
   string subInventoryCode = 4;
   bool onHold = 5;
-  string cargoId = 6;                   // pallet / cargo label scanned on HHT
+  string cargoId = 6;                   // pallet / cargo label scanned on mobile
 }
 
 message RecordInspectionRequest {

@@ -162,7 +162,7 @@ curl -X POST localhost:5555/api/rpc/masterdata/v1/product/get-product \
 
 ### Sign-in (auth service)
 
-`AuthService/Login` (username, password, `clientId` from `iam.oauth_client`: `PC_WEB`, `HHT`) returns a 15-minute
+`AuthService/Login` (username, password, `clientId` from `iam.oauth_client`: `PC_WEB`, `MOBILE`) returns a 15-minute
 ES256 access token (claims in [`database/README.md`](database/README.md#2-authentication-jwt)) and a refresh token.
 `Refresh` rotates the refresh token; presenting an already used one ends that session (reuse detection).
 `Logout` ends one session, or all of them with `allSessions`; so does `UserService/ChangePassword`.
