@@ -1,5 +1,6 @@
 package com.epl.gateway;
 
+import com.epl.gateway.rpc.RpcRegistry;
 import io.grpc.Metadata;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ class RpcGatewayTests {
 
     @Test
     void unaryCallIsTranscodedAndForwardsTenantHeaders() throws Exception {
-        mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/GetProduct")
+        mvc.perform(post("/rpc/masterdata/v1/product/get-product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Company", "C001")
                         .header("X-Warehouse", "WH01")
@@ -58,7 +59,7 @@ class RpcGatewayTests {
 
     @Test
     void grpcErrorBecomesHttpStatus() throws Exception {
-        mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/GetProduct")
+        mvc.perform(post("/rpc/masterdata/v1/product/get-product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"code\":\"missing\"}"))
                 .andExpect(status().isNotFound())
@@ -70,20 +71,20 @@ class RpcGatewayTests {
     @Test
     void unimplementedRpcIs501() throws Exception {
         // the fake ProductService does not override ListProducts
-        mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/ListProducts"))
+        mvc.perform(post("/rpc/masterdata/v1/product/list-products"))
                 .andExpect(status().isNotImplemented())
                 .andExpect(jsonPath("$.code").value("UNIMPLEMENTED"));
     }
 
     @Test
     void unknownRpcIs404() throws Exception {
-        mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/Nope"))
+        mvc.perform(post("/rpc/masterdata/v1/product/nope"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void invalidBodyIs400() throws Exception {
-        mvc.perform(post("/rpc/epl.masterdata.v1.ProductService/GetProduct")
+        mvc.perform(post("/rpc/masterdata/v1/product/get-product")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"no_such_field\":1}"))
                 .andExpect(status().isBadRequest())
@@ -92,7 +93,7 @@ class RpcGatewayTests {
 
     @Test
     void serverStreamingIsNdjson() throws Exception {
-        var body = mvc.perform(post("/rpc/epl.inventory.v1.StockService/Export")
+        var body = mvc.perform(post("/rpc/inventory/v1/stock/export")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"productCode\":\"P001\"}"))
                 .andExpect(status().isOk())
@@ -105,7 +106,7 @@ class RpcGatewayTests {
 
     @Test
     void errorInTheMiddleOfAStreamIsTheLastLine() throws Exception {
-        var lines = mvc.perform(post("/rpc/epl.inventory.v1.StockService/Export")
+        var lines = mvc.perform(post("/rpc/inventory/v1/stock/export")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"productCode\":\"broken\"}"))
                 .andExpect(status().isOk())
@@ -144,8 +145,17 @@ class RpcGatewayTests {
     void rpcListShowsEveryContract() throws Exception {
         mvc.perform(get("/rpc"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].path", hasItem("/rpc/epl.inventory.v1.StockService/Search")))
-                .andExpect(jsonPath("$[?(@.path == '/rpc/epl.inventory.v1.StockService/Search')].backend").value("inventory"));
+                .andExpect(jsonPath("$[*].path", hasItem("/rpc/inventory/v1/stock/search")))
+                .andExpect(jsonPath("$[?(@.path == '/rpc/inventory/v1/stock/search')].backend").value("inventory"))
+                .andExpect(jsonPath("$[?(@.path == '/rpc/inventory/v1/stock/search')].rpc").value("epl.inventory.v1.StockService/Search"));
+    }
+
+    @Test
+    void rpcPathIsLowercaseWithHyphens() {
+        assertThat(RpcRegistry.pathOf("epl.masterdata.v1.ProductService/GetProduct")).isEqualTo("/masterdata/v1/product/get-product");
+        assertThat(RpcRegistry.pathOf("epl.auth.v1.AuthService/GetJwks")).isEqualTo("/auth/v1/auth/get-jwks");
+        assertThat(RpcRegistry.pathOf("epl.inventory.v1.StocktakeService/ConfirmCount")).isEqualTo("/inventory/v1/stocktake/confirm-count");
+        assertThat(RpcRegistry.pathOf("user.UserService/ListAPIKeys")).isEqualTo("/user/user/list-api-keys");
     }
 
     private static Metadata.Key<String> key(String name) {

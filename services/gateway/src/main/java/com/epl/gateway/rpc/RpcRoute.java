@@ -24,6 +24,11 @@ public record RpcRoute(String backend, MethodDescriptor<Message, Message> method
         return method.getFullMethodName();
     }
 
+    /** Path below {@code /rpc}, see {@link RpcRegistry#pathOf(String)}. */
+    public String path() {
+        return RpcRegistry.pathOf(method.getFullMethodName());
+    }
+
     public MethodType type() {
         return method.getType();
     }

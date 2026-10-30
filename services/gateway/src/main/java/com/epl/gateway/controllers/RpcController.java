@@ -37,8 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Every backend RPC as JSON over HTTP: {@code POST /api/rpc/{package.Service}/{Method}}, body = request message
- * in proto3 JSON, e.g. {@code POST /api/rpc/epl.masterdata.v1.ProductService/GetProduct  {"code":"P001"}}.
+ * Every backend RPC as JSON over HTTP: {@code POST /api/rpc/{backend}/{version}/{service}/{method}} in lowercase
+ * words joined by '-' (see {@link RpcRegistry#pathOf(String)}), body = request message in proto3 JSON, e.g.
+ * {@code POST /api/rpc/masterdata/v1/product/get-product  {"code":"P001"}} for epl.masterdata.v1.ProductService/GetProduct.
  * <ul>
  *     <li>unary: response message as JSON</li>
  *     <li>server-streaming: one JSON message per line (application/x-ndjson); an error after the first line
@@ -67,14 +68,13 @@ public class RpcController {
 
     // documented per RPC by OpenApiConfiguration
     @Hidden
-    @PostMapping("/{service}/{method}")
-    public ResponseEntity<String> call(@PathVariable String service,
-                                  @PathVariable String method,
-                                  @RequestBody(required = false) String body,
-                                  HttpServletRequest request,
-                                  HttpServletResponse response) throws IOException {
-        var route = registry.find(service, method).orElseThrow(() -> Status.NOT_FOUND
-                .withDescription("Unknown RPC " + service + "/" + method + " (GET /api/rpc lists them)")
+    @PostMapping("/{*path}")
+    public ResponseEntity<String> call(@PathVariable String path,
+                                       @RequestBody(required = false) String body,
+                                       HttpServletRequest request,
+                                       HttpServletResponse response) throws IOException {
+        var route = registry.find(path).orElseThrow(() -> Status.NOT_FOUND
+                .withDescription("Unknown RPC /rpc" + path + " (GET /api/rpc lists them)")
                 .asRuntimeException());
         var message = ProtoJson.parse(body, route.requestPrototype());
         var metadata = CallMetadata.from(request);

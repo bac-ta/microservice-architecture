@@ -51,8 +51,10 @@ public class OpenApiConfiguration {
                         .title("EPL gateway")
                         .version("v1")
                         .description("""
-                                Every backend RPC as `POST /rpc/{package.Service}/{Method}` with a proto3 JSON body.
-                                Sign in with `epl.auth.v1.AuthService/Login` (clientId `PC_WEB`), then **Authorize**
+                                Every backend RPC as `POST /rpc/{backend}/{version}/{service}/{method}` (lowercase, words joined by `-`,
+                                e.g. `epl.masterdata.v1.ProductService/GetProduct` -> `/rpc/masterdata/v1/product/get-product`)
+                                with a proto3 JSON body.
+                                Sign in with `POST /rpc/auth/v1/auth/login` (clientId `PC_WEB`), then **Authorize**
                                 with the `accessToken`. Tenant-scoped RPCs need the X-Company / X-Warehouse / X-Customer headers."""))
                 .components(new Components().addSecuritySchemes(BEARER, new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
@@ -83,7 +85,7 @@ public class OpenApiConfiguration {
                     schemas.ref(route.responsePrototype().getDescriptorForType());
                     continue;
                 }
-                var path = "/rpc/" + route.fullMethodName();
+                var path = "/rpc" + route.path();
                 var isPublic = properties.security().publicPaths().stream().anyMatch(pattern -> matcher.match(pattern, path));
                 openApi.path(path, new PathItem().post(operation(route, schemas, isPublic)));
             }
@@ -97,7 +99,7 @@ public class OpenApiConfiguration {
                 .addTagsItem(descriptor.getServiceName())
                 .summary(descriptor.getBareMethodName())
                 .operationId(route.fullMethodName().replaceAll("[^A-Za-z0-9]", "_"))
-                .description("Backend `" + route.backend() + "`, " + route.type()
+                .description("`" + route.fullMethodName() + "` on backend `" + route.backend() + "`, " + route.type()
                         + (streaming ? ": one JSON message per line (NDJSON)" : ""))
                 .requestBody(new RequestBody().required(true).content(json(schemas.ref(route.requestPrototype().getDescriptorForType()))))
                 .responses(new ApiResponses()

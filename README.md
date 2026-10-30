@@ -138,15 +138,15 @@ service or RPC in `proto/` needs no gateway code. The backend of an RPC comes fr
 
 | Request | Meaning |
 |---|---|
-| `POST /api/rpc/{package.Service}/{Method}` | body = request message in [proto3 JSON](https://protobuf.dev/programming-guides/json/); unary -> JSON, server-streaming -> NDJSON (one message per line) |
-| `GET /api/rpc` | every exposed RPC with its backend, type and message names |
+| `POST /api/rpc/{backend}/{version}/{service}/{method}` | lowercase, words joined by `-` (`epl.masterdata.v1.ProductService/GetProduct` -> `/api/rpc/masterdata/v1/product/get-product`); body = request message in [proto3 JSON](https://protobuf.dev/programming-guides/json/); unary -> JSON, server-streaming -> NDJSON (one message per line) |
+| `GET /api/rpc` | every exposed RPC with its path, gRPC method, backend, type and message names |
 | `POST /api/files/upload` | multipart `file`, `fileKind`, `validateOnly` -> `UploadService/Upload` (client streaming) |
 | `POST /api/reports/render` | `RenderRequest` JSON -> file download from `ReportService/Render` |
 | `GET /api/actuator/health` | liveness / readiness |
 | `GET /api/swagger-ui.html` | Swagger UI: one operation per RPC with its proto3 JSON schemas (`/api/v3/api-docs`; off with `GATEWAY_API_DOCS_ENABLED=false`) |
 
 ```bash
-curl -X POST localhost:5555/api/rpc/epl.masterdata.v1.ProductService/GetProduct \
+curl -X POST localhost:5555/api/rpc/masterdata/v1/product/get-product \
   -H "Authorization: Bearer $TOKEN" -H "X-Company: C001" -H "X-Warehouse: WH01" -H "X-Customer: CUST01" \
   -H "Content-Type: application/json" -d '{"code":"P001"}'
 ```

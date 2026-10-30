@@ -60,11 +60,11 @@ epl:
       issuer: ${JWT_ISSUER:}
       jwks-cache-ttl: 5m
       public-paths:
-        - /rpc/epl.auth.v1.AuthService/Login
-        - /rpc/epl.auth.v1.AuthService/Refresh
+        - /rpc/auth/v1/auth/login
+        - /rpc/auth/v1/auth/refresh
         # the refresh token in the body is the credential: works after the access token expired
-        - /rpc/epl.auth.v1.AuthService/Logout
-        - /rpc/epl.auth.v1.AuthService/GetJwks
+        - /rpc/auth/v1/auth/logout
+        - /rpc/auth/v1/auth/get-jwks
         - /actuator/health/**
         # Swagger UI / OpenAPI document (off with GATEWAY_API_DOCS_ENABLED=false)
         - /v3/api-docs/**

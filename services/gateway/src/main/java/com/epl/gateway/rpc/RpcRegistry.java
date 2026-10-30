@@ -12,13 +12,14 @@ import org.springframework.util.ClassUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /**
- * Every RPC of the generated {@code *Grpc} classes found in {@code epl.gateway.scan-packages}, by full method name.
+ * Every RPC of the generated {@code *Grpc} classes found in {@code epl.gateway.scan-packages}, by HTTP path.
  * A new service or RPC in proto/ is reachable through the gateway without any change here.
  */
 @Component
@@ -26,6 +27,8 @@ public class RpcRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcRegistry.class);
     private static final Pattern VERSION_SEGMENT = Pattern.compile("v\\d+\\w*");
+    private static final Pattern WORD_BOUNDARY = Pattern.compile("(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])");
+    private static final String SERVICE_SUFFIX = "Service";
 
     private final Map<String, RpcRoute> routes;
 
@@ -35,11 +38,10 @@ public class RpcRegistry {
     }
 
     /**
-     * @param service full service name, e.g. {@code epl.inventory.v1.StockService}
-     * @param method  method name, e.g. {@code Search}
+     * @param path path below {@code /rpc}, e.g. {@code /inventory/v1/stock/search}
      */
-    public Optional<RpcRoute> find(String service, String method) {
-        return Optional.ofNullable(routes.get(service + "/" + method));
+    public Optional<RpcRoute> find(String path) {
+        return Optional.ofNullable(routes.get(path));
     }
 
     public Collection<RpcRoute> routes() {
@@ -60,6 +62,33 @@ public class RpcRegistry {
         throw new IllegalArgumentException("Service " + fullServiceName + " has no proto package");
     }
 
+    /**
+     * Path of an RPC below {@code /rpc}, lowercase words joined by '-': the proto package from the backend on,
+     * the service without its "Service" suffix, the method.
+     * {@code epl.masterdata.v1.ProductService/GetProduct -> /masterdata/v1/product/get-product}.
+     */
+    public static String pathOf(String fullMethodName) {
+        var service = fullMethodName.substring(0, fullMethodName.indexOf('/'));
+        var method = fullMethodName.substring(fullMethodName.indexOf('/') + 1);
+        var backend = backendOf(service);
+        var packageName = service.substring(0, service.lastIndexOf('.'));
+        var serviceName = service.substring(service.lastIndexOf('.') + 1);
+        if (serviceName.endsWith(SERVICE_SUFFIX) && serviceName.length() > SERVICE_SUFFIX.length()) {
+            serviceName = serviceName.substring(0, serviceName.length() - SERVICE_SUFFIX.length());
+        }
+
+        var path = new StringBuilder();
+        var segments = List.of(packageName.split("\\."));
+        for (var segment : segments.subList(segments.lastIndexOf(backend), segments.size())) {
+            path.append('/').append(kebab(segment));
+        }
+        return path.append('/').append(kebab(serviceName)).append('/').append(kebab(method)).toString();
+    }
+
+    private static String kebab(String name) {
+        return WORD_BOUNDARY.matcher(name).replaceAll("-").replace('_', '-').toLowerCase(Locale.ROOT);
+    }
+
     private static Map<String, RpcRoute> scan(List<String> packages) {
         var scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(".*Grpc")));
@@ -70,7 +99,12 @@ public class RpcRegistry {
                 var service = serviceDescriptor(candidate.getBeanClassName());
                 var backend = backendOf(service.getName());
                 for (var method : service.getMethods()) {
-                    routes.put(method.getFullMethodName(), RpcRoute.of(backend, method));
+                    var route = RpcRoute.of(backend, method);
+                    var previous = routes.put(route.path(), route);
+                    if (previous != null) {
+                        throw new IllegalStateException(previous.fullMethodName() + " and " + route.fullMethodName()
+                                + " both map to /rpc" + route.path());
+                    }
                 }
             }
         }

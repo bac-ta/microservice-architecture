@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(FakeBackends.class)
 class SecurityGatewayTests {
 
-    private static final String GET_PRODUCT = "/rpc/epl.masterdata.v1.ProductService/GetProduct";
+    private static final String GET_PRODUCT = "/rpc/masterdata/v1/product/get-product";
 
     @Autowired
     private MockMvc mvc;
@@ -87,7 +87,7 @@ class SecurityGatewayTests {
     void publicPathsNeedNoToken() throws Exception {
         mvc.perform(get("/actuator/health")).andExpect(status().isOk());
         // reaches the backend: the fake auth service does not implement Login
-        mvc.perform(post("/rpc/epl.auth.v1.AuthService/Login")).andExpect(status().isNotImplemented());
+        mvc.perform(post("/rpc/auth/v1/auth/login")).andExpect(status().isNotImplemented());
     }
 
     private static String token(com.nimbusds.jose.jwk.ECKey key, String issuer, Instant expiresAt) throws JOSEException {

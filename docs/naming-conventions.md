@@ -71,6 +71,7 @@ Adding a new screen:
 | Enum | Values `<ENUM>_<VALUE>`, value 0 = `<ENUM>_UNSPECIFIED` | `USER_TYPE_CUSTOMER` |
 | RPC comment | `// screens: EPL-…` (omit if the RPC is shared by all screens) | |
 | Full method name | `epl.<service>.v1.<Service>/<Rpc>` (used in `iam.action.grpc_method`) | `epl.inventory.v1.StockService/Adjust` |
+| Gateway path | `/api/rpc/<service>/v1/<noun>/<rpc>`: lowercase, words joined by `-`, `Service` suffix dropped (derived, never written by hand) | `/api/rpc/inventory/v1/stock/adjust` |
 
 Backward-incompatible contract changes go into a new `v2`; never modify `v1`.
 
